@@ -13,48 +13,24 @@ import java.util.List;
 @NamedQuery(name="Numero.findAll", query="SELECT n FROM Numero n")
 public class Numero implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idNumero;
-
 	private String descricao;
-
 	private String extenso;
-
 	private int num;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero1")
 	private List<ConcursoMegaSena> concursoMegaSenas1;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero2")
 	private List<ConcursoMegaSena> concursoMegaSenas2;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero3")
 	private List<ConcursoMegaSena> concursoMegaSenas3;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero4")
 	private List<ConcursoMegaSena> concursoMegaSenas4;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero5")
 	private List<ConcursoMegaSena> concursoMegaSenas5;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero6")
 	private List<ConcursoMegaSena> concursoMegaSenas6;
-
-	//bi-directional many-to-one association to Palpite
-	@OneToMany(mappedBy="numero")
 	private List<Palpite> palpites;
 
 	public Numero() {
 	}
 
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getIdNumero() {
 		return this.idNumero;
 	}
@@ -62,6 +38,7 @@ public class Numero implements Serializable {
 	public void setIdNumero(int idNumero) {
 		this.idNumero = idNumero;
 	}
+
 
 	public String getDescricao() {
 		return this.descricao;
@@ -71,6 +48,7 @@ public class Numero implements Serializable {
 		this.descricao = descricao;
 	}
 
+
 	public String getExtenso() {
 		return this.extenso;
 	}
@@ -78,6 +56,7 @@ public class Numero implements Serializable {
 	public void setExtenso(String extenso) {
 		this.extenso = extenso;
 	}
+
 
 	public int getNum() {
 		return this.num;
@@ -87,6 +66,9 @@ public class Numero implements Serializable {
 		this.num = num;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero1")
 	public List<ConcursoMegaSena> getConcursoMegaSenas1() {
 		return this.concursoMegaSenas1;
 	}
@@ -109,6 +91,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas1;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero2")
 	public List<ConcursoMegaSena> getConcursoMegaSenas2() {
 		return this.concursoMegaSenas2;
 	}
@@ -131,6 +116,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas2;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero3")
 	public List<ConcursoMegaSena> getConcursoMegaSenas3() {
 		return this.concursoMegaSenas3;
 	}
@@ -153,6 +141,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas3;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero4")
 	public List<ConcursoMegaSena> getConcursoMegaSenas4() {
 		return this.concursoMegaSenas4;
 	}
@@ -175,6 +166,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas4;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero5")
 	public List<ConcursoMegaSena> getConcursoMegaSenas5() {
 		return this.concursoMegaSenas5;
 	}
@@ -197,6 +191,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas5;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@OneToMany(mappedBy="numero6")
 	public List<ConcursoMegaSena> getConcursoMegaSenas6() {
 		return this.concursoMegaSenas6;
 	}
@@ -219,6 +216,9 @@ public class Numero implements Serializable {
 		return concursoMegaSenas6;
 	}
 
+
+	//bi-directional many-to-one association to Palpite
+	@OneToMany(mappedBy="numero")
 	public List<Palpite> getPalpites() {
 		return this.palpites;
 	}

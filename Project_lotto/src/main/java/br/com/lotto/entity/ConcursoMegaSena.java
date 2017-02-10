@@ -16,79 +16,36 @@ import java.util.List;
 @NamedQuery(name="ConcursoMegaSena.findAll", query="SELECT c FROM ConcursoMegaSena c")
 public class ConcursoMegaSena implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idConcurso;
-
 	private byte acumulado;
-
 	private BigDecimal acumulado_Mega_da_Virada;
-
 	private String arrecadacao_Total;
-
 	private String cidade;
-
 	private int concurso;
-
-	@Temporal(TemporalType.DATE)
 	private Date data_Sorteio;
-
 	private BigDecimal estimativa_Premio;
-
 	private int ganhadores_Quadra;
-
 	private int ganhadores_Quina;
-
 	private int ganhadores_Sena;
-
 	private BigDecimal rateio_Quadra;
-
 	private BigDecimal rateio_Quina;
-
 	private BigDecimal rateio_Sena;
-
 	private String uf;
-
 	private BigDecimal valor_Acumulado;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="1_Dezena")
 	private Numero numero1;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="2_Dezena")
 	private Numero numero2;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="3_Dezena")
 	private Numero numero3;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="4_Dezena")
 	private Numero numero4;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="5_Dezena")
 	private Numero numero5;
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="6_Dezena")
 	private Numero numero6;
-
-	//bi-directional many-to-one association to Tipo
-	@OneToMany(mappedBy="concursoMegaSena")
 	private List<Tipo> tipos;
 
 	public ConcursoMegaSena() {
 	}
 
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getIdConcurso() {
 		return this.idConcurso;
 	}
@@ -96,6 +53,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setIdConcurso(int idConcurso) {
 		this.idConcurso = idConcurso;
 	}
+
 
 	public byte getAcumulado() {
 		return this.acumulado;
@@ -105,6 +63,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.acumulado = acumulado;
 	}
 
+
 	public BigDecimal getAcumulado_Mega_da_Virada() {
 		return this.acumulado_Mega_da_Virada;
 	}
@@ -112,6 +71,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setAcumulado_Mega_da_Virada(BigDecimal acumulado_Mega_da_Virada) {
 		this.acumulado_Mega_da_Virada = acumulado_Mega_da_Virada;
 	}
+
 
 	public String getArrecadacao_Total() {
 		return this.arrecadacao_Total;
@@ -121,6 +81,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.arrecadacao_Total = arrecadacao_Total;
 	}
 
+
 	public String getCidade() {
 		return this.cidade;
 	}
@@ -128,6 +89,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
+
 
 	public int getConcurso() {
 		return this.concurso;
@@ -137,6 +99,8 @@ public class ConcursoMegaSena implements Serializable {
 		this.concurso = concurso;
 	}
 
+
+	@Temporal(TemporalType.DATE)
 	public Date getData_Sorteio() {
 		return this.data_Sorteio;
 	}
@@ -144,6 +108,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setData_Sorteio(Date data_Sorteio) {
 		this.data_Sorteio = data_Sorteio;
 	}
+
 
 	public BigDecimal getEstimativa_Premio() {
 		return this.estimativa_Premio;
@@ -153,6 +118,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.estimativa_Premio = estimativa_Premio;
 	}
 
+
 	public int getGanhadores_Quadra() {
 		return this.ganhadores_Quadra;
 	}
@@ -160,6 +126,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setGanhadores_Quadra(int ganhadores_Quadra) {
 		this.ganhadores_Quadra = ganhadores_Quadra;
 	}
+
 
 	public int getGanhadores_Quina() {
 		return this.ganhadores_Quina;
@@ -169,6 +136,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.ganhadores_Quina = ganhadores_Quina;
 	}
 
+
 	public int getGanhadores_Sena() {
 		return this.ganhadores_Sena;
 	}
@@ -176,6 +144,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setGanhadores_Sena(int ganhadores_Sena) {
 		this.ganhadores_Sena = ganhadores_Sena;
 	}
+
 
 	public BigDecimal getRateio_Quadra() {
 		return this.rateio_Quadra;
@@ -185,6 +154,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.rateio_Quadra = rateio_Quadra;
 	}
 
+
 	public BigDecimal getRateio_Quina() {
 		return this.rateio_Quina;
 	}
@@ -192,6 +162,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setRateio_Quina(BigDecimal rateio_Quina) {
 		this.rateio_Quina = rateio_Quina;
 	}
+
 
 	public BigDecimal getRateio_Sena() {
 		return this.rateio_Sena;
@@ -201,6 +172,7 @@ public class ConcursoMegaSena implements Serializable {
 		this.rateio_Sena = rateio_Sena;
 	}
 
+
 	public String getUf() {
 		return this.uf;
 	}
@@ -208,6 +180,7 @@ public class ConcursoMegaSena implements Serializable {
 	public void setUf(String uf) {
 		this.uf = uf;
 	}
+
 
 	public BigDecimal getValor_Acumulado() {
 		return this.valor_Acumulado;
@@ -217,6 +190,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.valor_Acumulado = valor_Acumulado;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="1_Dezena")
 	public Numero getNumero1() {
 		return this.numero1;
 	}
@@ -225,6 +202,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero1 = numero1;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="2_Dezena")
 	public Numero getNumero2() {
 		return this.numero2;
 	}
@@ -233,6 +214,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero2 = numero2;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="3_Dezena")
 	public Numero getNumero3() {
 		return this.numero3;
 	}
@@ -241,6 +226,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero3 = numero3;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="4_Dezena")
 	public Numero getNumero4() {
 		return this.numero4;
 	}
@@ -249,6 +238,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero4 = numero4;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="5_Dezena")
 	public Numero getNumero5() {
 		return this.numero5;
 	}
@@ -257,6 +250,10 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero5 = numero5;
 	}
 
+
+	//bi-directional many-to-one association to Numero
+	@ManyToOne
+	@JoinColumn(name="6_Dezena")
 	public Numero getNumero6() {
 		return this.numero6;
 	}
@@ -265,6 +262,9 @@ public class ConcursoMegaSena implements Serializable {
 		this.numero6 = numero6;
 	}
 
+
+	//bi-directional many-to-one association to Tipo
+	@OneToMany(mappedBy="concursoMegaSena")
 	public List<Tipo> getTipos() {
 		return this.tipos;
 	}

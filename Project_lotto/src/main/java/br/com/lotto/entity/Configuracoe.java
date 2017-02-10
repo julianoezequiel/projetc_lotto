@@ -13,14 +13,14 @@ import javax.persistence.*;
 @NamedQuery(name="Configuracoe.findAll", query="SELECT c FROM Configuracoe c")
 public class Configuracoe implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idConfiguracoes;
 
 	public Configuracoe() {
 	}
 
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getIdConfiguracoes() {
 		return this.idConfiguracoes;
 	}

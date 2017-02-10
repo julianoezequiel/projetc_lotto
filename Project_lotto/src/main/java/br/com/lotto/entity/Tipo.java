@@ -12,21 +12,16 @@ import javax.persistence.*;
 @NamedQuery(name="Tipo.findAll", query="SELECT t FROM Tipo t")
 public class Tipo implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idTipo;
-
 	private String descricao;
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@ManyToOne
-	@JoinColumn(name="Concurso_idConcurso")
 	private ConcursoMegaSena concursoMegaSena;
 
 	public Tipo() {
 	}
 
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getIdTipo() {
 		return this.idTipo;
 	}
@@ -34,6 +29,7 @@ public class Tipo implements Serializable {
 	public void setIdTipo(int idTipo) {
 		this.idTipo = idTipo;
 	}
+
 
 	public String getDescricao() {
 		return this.descricao;
@@ -43,6 +39,10 @@ public class Tipo implements Serializable {
 		this.descricao = descricao;
 	}
 
+
+	//bi-directional many-to-one association to ConcursoMegaSena
+	@ManyToOne
+	@JoinColumn(name="Concurso_idConcurso")
 	public ConcursoMegaSena getConcursoMegaSena() {
 		return this.concursoMegaSena;
 	}
