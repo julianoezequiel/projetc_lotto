@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import br.com.lotto.entity.ConcursoMegaSena;
+import br.com.lotto.entity.MegaSena;
 
 @Repository
-public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSena,Integer>{
+public interface ConcursoMegaSenaRepository extends JpaRepository<MegaSena,Integer>{
 
 }

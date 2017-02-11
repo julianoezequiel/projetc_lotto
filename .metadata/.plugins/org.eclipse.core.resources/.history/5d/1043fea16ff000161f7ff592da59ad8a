@@ -1,0 +1,205 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.lotto.entity;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author Juliano
+ */
+@Entity
+@Table(name = "numero")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Numero.findAll", query = "SELECT n FROM Numero n")
+    , @NamedQuery(name = "Numero.findByIdNumero", query = "SELECT n FROM Numero n WHERE n.idNumero = :idNumero")
+    , @NamedQuery(name = "Numero.findByDescricao", query = "SELECT n FROM Numero n WHERE n.descricao = :descricao")
+    , @NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num")
+    , @NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso")})
+public class Numero implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idNumero")
+    private Integer idNumero;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
+    @Column(name = "Descricao")
+    private String descricao;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Num")
+    private int num;
+    @Size(max = 200)
+    @Column(name = "Extenso")
+    private String extenso;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numeroidNumero")
+    private Collection<Palpite> palpiteCollection;
+    @OneToMany(mappedBy = "dezena")
+    private Collection<MegaSena> concursoMegaSenaCollection;
+    @OneToMany(mappedBy = "dezena1")
+    private Collection<MegaSena> concursoMegaSenaCollection1;
+    @OneToMany(mappedBy = "dezena2")
+    private Collection<MegaSena> concursoMegaSenaCollection2;
+    @OneToMany(mappedBy = "dezena3")
+    private Collection<MegaSena> concursoMegaSenaCollection3;
+    @OneToMany(mappedBy = "dezena4")
+    private Collection<MegaSena> concursoMegaSenaCollection4;
+    @OneToMany(mappedBy = "dezena5")
+    private Collection<MegaSena> concursoMegaSenaCollection5;
+
+    public Numero() {
+    }
+
+    public Numero(Integer idNumero) {
+        this.idNumero = idNumero;
+    }
+
+    public Numero(Integer idNumero, String descricao, int num) {
+        this.idNumero = idNumero;
+        this.descricao = descricao;
+        this.num = num;
+    }
+
+    public Integer getIdNumero() {
+        return idNumero;
+    }
+
+    public void setIdNumero(Integer idNumero) {
+        this.idNumero = idNumero;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public String getExtenso() {
+        return extenso;
+    }
+
+    public void setExtenso(String extenso) {
+        this.extenso = extenso;
+    }
+
+    @XmlTransient
+    public Collection<Palpite> getPalpiteCollection() {
+        return palpiteCollection;
+    }
+
+    public void setPalpiteCollection(Collection<Palpite> palpiteCollection) {
+        this.palpiteCollection = palpiteCollection;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection() {
+        return concursoMegaSenaCollection;
+    }
+
+    public void setConcursoMegaSenaCollection(Collection<MegaSena> concursoMegaSenaCollection) {
+        this.concursoMegaSenaCollection = concursoMegaSenaCollection;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection1() {
+        return concursoMegaSenaCollection1;
+    }
+
+    public void setConcursoMegaSenaCollection1(Collection<MegaSena> concursoMegaSenaCollection1) {
+        this.concursoMegaSenaCollection1 = concursoMegaSenaCollection1;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection2() {
+        return concursoMegaSenaCollection2;
+    }
+
+    public void setConcursoMegaSenaCollection2(Collection<MegaSena> concursoMegaSenaCollection2) {
+        this.concursoMegaSenaCollection2 = concursoMegaSenaCollection2;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection3() {
+        return concursoMegaSenaCollection3;
+    }
+
+    public void setConcursoMegaSenaCollection3(Collection<MegaSena> concursoMegaSenaCollection3) {
+        this.concursoMegaSenaCollection3 = concursoMegaSenaCollection3;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection4() {
+        return concursoMegaSenaCollection4;
+    }
+
+    public void setConcursoMegaSenaCollection4(Collection<MegaSena> concursoMegaSenaCollection4) {
+        this.concursoMegaSenaCollection4 = concursoMegaSenaCollection4;
+    }
+
+    @XmlTransient
+    public Collection<MegaSena> getConcursoMegaSenaCollection5() {
+        return concursoMegaSenaCollection5;
+    }
+
+    public void setConcursoMegaSenaCollection5(Collection<MegaSena> concursoMegaSenaCollection5) {
+        this.concursoMegaSenaCollection5 = concursoMegaSenaCollection5;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idNumero != null ? idNumero.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Numero)) {
+            return false;
+        }
+        Numero other = (Numero) object;
+        if ((this.idNumero == null && other.idNumero != null) || (this.idNumero != null && !this.idNumero.equals(other.idNumero))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.Numero[ idNumero=" + idNumero + " ]";
+    }
+    
+}

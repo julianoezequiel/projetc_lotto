@@ -1,244 +1,214 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.com.lotto.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.List;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * The persistent class for the numero database table.
- * 
+ *
+ * @author Juliano
  */
 @Entity
-@NamedQuery(name="Numero.findAll", query="SELECT n FROM Numero n")
+@Table(name = "numero")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Numero.findAll", query = "SELECT n FROM Numero n")
+    , @NamedQuery(name = "Numero.findByIdNumero", query = "SELECT n FROM Numero n WHERE n.idNumero = :idNumero")
+    , @NamedQuery(name = "Numero.findByDescricao", query = "SELECT n FROM Numero n WHERE n.descricao = :descricao")
+    , @NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num")
+    , @NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso")})
 public class Numero implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int idNumero;
-	private String descricao;
-	private String extenso;
-	private int num;
-	private List<ConcursoMegaSena> concursoMegaSenas1;
-	private List<ConcursoMegaSena> concursoMegaSenas2;
-	private List<ConcursoMegaSena> concursoMegaSenas3;
-	private List<ConcursoMegaSena> concursoMegaSenas4;
-	private List<ConcursoMegaSena> concursoMegaSenas5;
-	private List<ConcursoMegaSena> concursoMegaSenas6;
-	private List<Palpite> palpites;
 
-	public Numero() {
-	}
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idNumero")
+    private Integer idNumero;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
+    @Column(name = "Descricao")
+    private String descricao;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Num")
+    private int num;
+    @Size(max = 200)
+    @Column(name = "Extenso")
+    private String extenso;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numeroidNumero")
+    private Collection<Palpite> palpiteCollection;
+    @OneToMany(mappedBy = "dezena")
+    private Collection<MegaSena> concursoMegaSenaCollection;
+    @OneToMany(mappedBy = "dezena1")
+    private Collection<MegaSena> concursoMegaSenaCollection1;
+    @OneToMany(mappedBy = "dezena2")
+    private Collection<MegaSena> concursoMegaSenaCollection2;
+    @OneToMany(mappedBy = "dezena3")
+    private Collection<MegaSena> concursoMegaSenaCollection3;
+    @OneToMany(mappedBy = "dezena4")
+    private Collection<MegaSena> concursoMegaSenaCollection4;
+    @OneToMany(mappedBy = "dezena5")
+    private Collection<MegaSena> concursoMegaSenaCollection5;
 
+    public Numero() {
+    }
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	public int getIdNumero() {
-		return this.idNumero;
-	}
+    public Numero(Integer idNumero) {
+        this.idNumero = idNumero;
+    }
 
-	public void setIdNumero(int idNumero) {
-		this.idNumero = idNumero;
-	}
+    public Numero(Integer idNumero, String descricao, int num) {
+        this.idNumero = idNumero;
+        this.descricao = descricao;
+        this.num = num;
+    }
 
+    public Integer getIdNumero() {
+        return idNumero;
+    }
 
-	public String getDescricao() {
-		return this.descricao;
-	}
+    public void setIdNumero(Integer idNumero) {
+        this.idNumero = idNumero;
+    }
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
+    public String getDescricao() {
+        return descricao;
+    }
 
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-	public String getExtenso() {
-		return this.extenso;
-	}
+    public int getNum() {
+        return num;
+    }
 
-	public void setExtenso(String extenso) {
-		this.extenso = extenso;
-	}
+    public void setNum(int num) {
+        this.num = num;
+    }
 
+    public String getExtenso() {
+        return extenso;
+    }
 
-	public int getNum() {
-		return this.num;
-	}
+    public void setExtenso(String extenso) {
+        this.extenso = extenso;
+    }
 
-	public void setNum(int num) {
-		this.num = num;
-	}
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Palpite> getPalpiteCollection() {
+        return palpiteCollection;
+    }
 
+    public void setPalpiteCollection(Collection<Palpite> palpiteCollection) {
+        this.palpiteCollection = palpiteCollection;
+    }
 
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero1")
-	public List<ConcursoMegaSena> getConcursoMegaSenas1() {
-		return this.concursoMegaSenas1;
-	}
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection() {
+        return concursoMegaSenaCollection;
+    }
 
-	public void setConcursoMegaSenas1(List<ConcursoMegaSena> concursoMegaSenas1) {
-		this.concursoMegaSenas1 = concursoMegaSenas1;
-	}
+    public void setConcursoMegaSenaCollection(Collection<MegaSena> concursoMegaSenaCollection) {
+        this.concursoMegaSenaCollection = concursoMegaSenaCollection;
+    }
 
-	public ConcursoMegaSena addConcursoMegaSenas1(ConcursoMegaSena concursoMegaSenas1) {
-		getConcursoMegaSenas1().add(concursoMegaSenas1);
-		concursoMegaSenas1.setNumero1(this);
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection1() {
+        return concursoMegaSenaCollection1;
+    }
 
-		return concursoMegaSenas1;
-	}
+    public void setConcursoMegaSenaCollection1(Collection<MegaSena> concursoMegaSenaCollection1) {
+        this.concursoMegaSenaCollection1 = concursoMegaSenaCollection1;
+    }
 
-	public ConcursoMegaSena removeConcursoMegaSenas1(ConcursoMegaSena concursoMegaSenas1) {
-		getConcursoMegaSenas1().remove(concursoMegaSenas1);
-		concursoMegaSenas1.setNumero1(null);
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection2() {
+        return concursoMegaSenaCollection2;
+    }
 
-		return concursoMegaSenas1;
-	}
+    public void setConcursoMegaSenaCollection2(Collection<MegaSena> concursoMegaSenaCollection2) {
+        this.concursoMegaSenaCollection2 = concursoMegaSenaCollection2;
+    }
 
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection3() {
+        return concursoMegaSenaCollection3;
+    }
 
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero2")
-	public List<ConcursoMegaSena> getConcursoMegaSenas2() {
-		return this.concursoMegaSenas2;
-	}
+    public void setConcursoMegaSenaCollection3(Collection<MegaSena> concursoMegaSenaCollection3) {
+        this.concursoMegaSenaCollection3 = concursoMegaSenaCollection3;
+    }
 
-	public void setConcursoMegaSenas2(List<ConcursoMegaSena> concursoMegaSenas2) {
-		this.concursoMegaSenas2 = concursoMegaSenas2;
-	}
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection4() {
+        return concursoMegaSenaCollection4;
+    }
 
-	public ConcursoMegaSena addConcursoMegaSenas2(ConcursoMegaSena concursoMegaSenas2) {
-		getConcursoMegaSenas2().add(concursoMegaSenas2);
-		concursoMegaSenas2.setNumero2(this);
+    public void setConcursoMegaSenaCollection4(Collection<MegaSena> concursoMegaSenaCollection4) {
+        this.concursoMegaSenaCollection4 = concursoMegaSenaCollection4;
+    }
 
-		return concursoMegaSenas2;
-	}
+    @XmlTransient
+    @JsonIgnore
+    public Collection<MegaSena> getConcursoMegaSenaCollection5() {
+        return concursoMegaSenaCollection5;
+    }
 
-	public ConcursoMegaSena removeConcursoMegaSenas2(ConcursoMegaSena concursoMegaSenas2) {
-		getConcursoMegaSenas2().remove(concursoMegaSenas2);
-		concursoMegaSenas2.setNumero2(null);
+    public void setConcursoMegaSenaCollection5(Collection<MegaSena> concursoMegaSenaCollection5) {
+        this.concursoMegaSenaCollection5 = concursoMegaSenaCollection5;
+    }
 
-		return concursoMegaSenas2;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idNumero != null ? idNumero.hashCode() : 0);
+        return hash;
+    }
 
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Numero)) {
+            return false;
+        }
+        Numero other = (Numero) object;
+        if ((this.idNumero == null && other.idNumero != null) || (this.idNumero != null && !this.idNumero.equals(other.idNumero))) {
+            return false;
+        }
+        return true;
+    }
 
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero3")
-	public List<ConcursoMegaSena> getConcursoMegaSenas3() {
-		return this.concursoMegaSenas3;
-	}
-
-	public void setConcursoMegaSenas3(List<ConcursoMegaSena> concursoMegaSenas3) {
-		this.concursoMegaSenas3 = concursoMegaSenas3;
-	}
-
-	public ConcursoMegaSena addConcursoMegaSenas3(ConcursoMegaSena concursoMegaSenas3) {
-		getConcursoMegaSenas3().add(concursoMegaSenas3);
-		concursoMegaSenas3.setNumero3(this);
-
-		return concursoMegaSenas3;
-	}
-
-	public ConcursoMegaSena removeConcursoMegaSenas3(ConcursoMegaSena concursoMegaSenas3) {
-		getConcursoMegaSenas3().remove(concursoMegaSenas3);
-		concursoMegaSenas3.setNumero3(null);
-
-		return concursoMegaSenas3;
-	}
-
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero4")
-	public List<ConcursoMegaSena> getConcursoMegaSenas4() {
-		return this.concursoMegaSenas4;
-	}
-
-	public void setConcursoMegaSenas4(List<ConcursoMegaSena> concursoMegaSenas4) {
-		this.concursoMegaSenas4 = concursoMegaSenas4;
-	}
-
-	public ConcursoMegaSena addConcursoMegaSenas4(ConcursoMegaSena concursoMegaSenas4) {
-		getConcursoMegaSenas4().add(concursoMegaSenas4);
-		concursoMegaSenas4.setNumero4(this);
-
-		return concursoMegaSenas4;
-	}
-
-	public ConcursoMegaSena removeConcursoMegaSenas4(ConcursoMegaSena concursoMegaSenas4) {
-		getConcursoMegaSenas4().remove(concursoMegaSenas4);
-		concursoMegaSenas4.setNumero4(null);
-
-		return concursoMegaSenas4;
-	}
-
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero5")
-	public List<ConcursoMegaSena> getConcursoMegaSenas5() {
-		return this.concursoMegaSenas5;
-	}
-
-	public void setConcursoMegaSenas5(List<ConcursoMegaSena> concursoMegaSenas5) {
-		this.concursoMegaSenas5 = concursoMegaSenas5;
-	}
-
-	public ConcursoMegaSena addConcursoMegaSenas5(ConcursoMegaSena concursoMegaSenas5) {
-		getConcursoMegaSenas5().add(concursoMegaSenas5);
-		concursoMegaSenas5.setNumero5(this);
-
-		return concursoMegaSenas5;
-	}
-
-	public ConcursoMegaSena removeConcursoMegaSenas5(ConcursoMegaSena concursoMegaSenas5) {
-		getConcursoMegaSenas5().remove(concursoMegaSenas5);
-		concursoMegaSenas5.setNumero5(null);
-
-		return concursoMegaSenas5;
-	}
-
-
-	//bi-directional many-to-one association to ConcursoMegaSena
-	@OneToMany(mappedBy="numero6")
-	public List<ConcursoMegaSena> getConcursoMegaSenas6() {
-		return this.concursoMegaSenas6;
-	}
-
-	public void setConcursoMegaSenas6(List<ConcursoMegaSena> concursoMegaSenas6) {
-		this.concursoMegaSenas6 = concursoMegaSenas6;
-	}
-
-	public ConcursoMegaSena addConcursoMegaSenas6(ConcursoMegaSena concursoMegaSenas6) {
-		getConcursoMegaSenas6().add(concursoMegaSenas6);
-		concursoMegaSenas6.setNumero6(this);
-
-		return concursoMegaSenas6;
-	}
-
-	public ConcursoMegaSena removeConcursoMegaSenas6(ConcursoMegaSena concursoMegaSenas6) {
-		getConcursoMegaSenas6().remove(concursoMegaSenas6);
-		concursoMegaSenas6.setNumero6(null);
-
-		return concursoMegaSenas6;
-	}
-
-
-	//bi-directional many-to-one association to Palpite
-	@OneToMany(mappedBy="numero")
-	public List<Palpite> getPalpites() {
-		return this.palpites;
-	}
-
-	public void setPalpites(List<Palpite> palpites) {
-		this.palpites = palpites;
-	}
-
-	public Palpite addPalpite(Palpite palpite) {
-		getPalpites().add(palpite);
-		palpite.setNumero(this);
-
-		return palpite;
-	}
-
-	public Palpite removePalpite(Palpite palpite) {
-		getPalpites().remove(palpite);
-		palpite.setNumero(null);
-
-		return palpite;
-	}
-
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.Numero[ idNumero=" + idNumero + " ]";
+    }
+    
 }

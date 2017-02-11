@@ -1,0 +1,285 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.lotto.entity;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ * @author Juliano
+ */
+@Entity
+@Table(name = "concurso_loto_facil")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "ConcursoLotoFacil.findAll", query = "SELECT c FROM ConcursoLotoFacil c")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByIdConcursoLotoFacil", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.idConcursoLotoFacil = :idConcursoLotoFacil")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByConcurso", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.concurso = :concurso")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByDataSorteio", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.dataSorteio = :dataSorteio")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByArrecadacaoTotal", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.arrecadacaoTotal = :arrecadacaoTotal")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByGanhadores15Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.ganhadores15Numeros = :ganhadores15Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByCidade", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.cidade = :cidade")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByUf", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.uf = :uf")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByGanhadores14Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.ganhadores14Numeros = :ganhadores14Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByGanhadores13Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.ganhadores13Numeros = :ganhadores13Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByGanhadores12Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.ganhadores12Numeros = :ganhadores12Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByGanhadores11Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.ganhadores11Numeros = :ganhadores11Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorRateio15Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorRateio15Numeros = :valorRateio15Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorRateio14Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorRateio14Numeros = :valorRateio14Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorRateio13Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorRateio13Numeros = :valorRateio13Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorRateio12Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorRateio12Numeros = :valorRateio12Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorRateio11Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorRateio11Numeros = :valorRateio11Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByAcumulado15Numeros", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.acumulado15Numeros = :acumulado15Numeros")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByEstimativaPremio", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.estimativaPremio = :estimativaPremio")
+    , @NamedQuery(name = "ConcursoLotoFacil.findByValorAcumuladoEspecial", query = "SELECT c FROM ConcursoLotoFacil c WHERE c.valorAcumuladoEspecial = :valorAcumuladoEspecial")})
+public class LotoFacil implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idConcurso_Loto_Facil")
+    private Integer idConcursoLotoFacil;
+    @Column(name = "Concurso")
+    private Integer concurso;
+    @Column(name = "Data_Sorteio")
+    @Temporal(TemporalType.DATE)
+    private Date dataSorteio;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "Arrecadacao_Total")
+    private BigDecimal arrecadacaoTotal;
+    @Column(name = "Ganhadores_15_Numeros")
+    private Integer ganhadores15Numeros;
+    @Size(max = 400)
+    @Column(name = "Cidade")
+    private String cidade;
+    @Size(max = 4)
+    @Column(name = "UF")
+    private String uf;
+    @Column(name = "Ganhadores_14_Numeros")
+    private Integer ganhadores14Numeros;
+    @Column(name = "Ganhadores_13_Numeros")
+    private Integer ganhadores13Numeros;
+    @Column(name = "Ganhadores_12_Numeros")
+    private Integer ganhadores12Numeros;
+    @Column(name = "Ganhadores_11_Numeros")
+    private Integer ganhadores11Numeros;
+    @Column(name = "Valor_Rateio_15_Numeros")
+    private BigDecimal valorRateio15Numeros;
+    @Column(name = "Valor_Rateio_14_Numeros")
+    private BigDecimal valorRateio14Numeros;
+    @Column(name = "Valor_Rateio_13_Numeros")
+    private BigDecimal valorRateio13Numeros;
+    @Column(name = "Valor_Rateio_12_Numeros")
+    private BigDecimal valorRateio12Numeros;
+    @Column(name = "Valor_Rateio_11_Numeros")
+    private BigDecimal valorRateio11Numeros;
+    @Column(name = "Acumulado_15_Numeros")
+    private BigDecimal acumulado15Numeros;
+    @Column(name = "Estimativa_Premio")
+    private BigDecimal estimativaPremio;
+    @Column(name = "Valor_Acumulado_Especial")
+    private BigDecimal valorAcumuladoEspecial;
+
+    public LotoFacil() {
+    }
+
+    public LotoFacil(Integer idConcursoLotoFacil) {
+        this.idConcursoLotoFacil = idConcursoLotoFacil;
+    }
+
+    public Integer getIdConcursoLotoFacil() {
+        return idConcursoLotoFacil;
+    }
+
+    public void setIdConcursoLotoFacil(Integer idConcursoLotoFacil) {
+        this.idConcursoLotoFacil = idConcursoLotoFacil;
+    }
+
+    public Integer getConcurso() {
+        return concurso;
+    }
+
+    public void setConcurso(Integer concurso) {
+        this.concurso = concurso;
+    }
+
+    public Date getDataSorteio() {
+        return dataSorteio;
+    }
+
+    public void setDataSorteio(Date dataSorteio) {
+        this.dataSorteio = dataSorteio;
+    }
+
+    public BigDecimal getArrecadacaoTotal() {
+        return arrecadacaoTotal;
+    }
+
+    public void setArrecadacaoTotal(BigDecimal arrecadacaoTotal) {
+        this.arrecadacaoTotal = arrecadacaoTotal;
+    }
+
+    public Integer getGanhadores15Numeros() {
+        return ganhadores15Numeros;
+    }
+
+    public void setGanhadores15Numeros(Integer ganhadores15Numeros) {
+        this.ganhadores15Numeros = ganhadores15Numeros;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public Integer getGanhadores14Numeros() {
+        return ganhadores14Numeros;
+    }
+
+    public void setGanhadores14Numeros(Integer ganhadores14Numeros) {
+        this.ganhadores14Numeros = ganhadores14Numeros;
+    }
+
+    public Integer getGanhadores13Numeros() {
+        return ganhadores13Numeros;
+    }
+
+    public void setGanhadores13Numeros(Integer ganhadores13Numeros) {
+        this.ganhadores13Numeros = ganhadores13Numeros;
+    }
+
+    public Integer getGanhadores12Numeros() {
+        return ganhadores12Numeros;
+    }
+
+    public void setGanhadores12Numeros(Integer ganhadores12Numeros) {
+        this.ganhadores12Numeros = ganhadores12Numeros;
+    }
+
+    public Integer getGanhadores11Numeros() {
+        return ganhadores11Numeros;
+    }
+
+    public void setGanhadores11Numeros(Integer ganhadores11Numeros) {
+        this.ganhadores11Numeros = ganhadores11Numeros;
+    }
+
+    public BigDecimal getValorRateio15Numeros() {
+        return valorRateio15Numeros;
+    }
+
+    public void setValorRateio15Numeros(BigDecimal valorRateio15Numeros) {
+        this.valorRateio15Numeros = valorRateio15Numeros;
+    }
+
+    public BigDecimal getValorRateio14Numeros() {
+        return valorRateio14Numeros;
+    }
+
+    public void setValorRateio14Numeros(BigDecimal valorRateio14Numeros) {
+        this.valorRateio14Numeros = valorRateio14Numeros;
+    }
+
+    public BigDecimal getValorRateio13Numeros() {
+        return valorRateio13Numeros;
+    }
+
+    public void setValorRateio13Numeros(BigDecimal valorRateio13Numeros) {
+        this.valorRateio13Numeros = valorRateio13Numeros;
+    }
+
+    public BigDecimal getValorRateio12Numeros() {
+        return valorRateio12Numeros;
+    }
+
+    public void setValorRateio12Numeros(BigDecimal valorRateio12Numeros) {
+        this.valorRateio12Numeros = valorRateio12Numeros;
+    }
+
+    public BigDecimal getValorRateio11Numeros() {
+        return valorRateio11Numeros;
+    }
+
+    public void setValorRateio11Numeros(BigDecimal valorRateio11Numeros) {
+        this.valorRateio11Numeros = valorRateio11Numeros;
+    }
+
+    public BigDecimal getAcumulado15Numeros() {
+        return acumulado15Numeros;
+    }
+
+    public void setAcumulado15Numeros(BigDecimal acumulado15Numeros) {
+        this.acumulado15Numeros = acumulado15Numeros;
+    }
+
+    public BigDecimal getEstimativaPremio() {
+        return estimativaPremio;
+    }
+
+    public void setEstimativaPremio(BigDecimal estimativaPremio) {
+        this.estimativaPremio = estimativaPremio;
+    }
+
+    public BigDecimal getValorAcumuladoEspecial() {
+        return valorAcumuladoEspecial;
+    }
+
+    public void setValorAcumuladoEspecial(BigDecimal valorAcumuladoEspecial) {
+        this.valorAcumuladoEspecial = valorAcumuladoEspecial;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idConcursoLotoFacil != null ? idConcursoLotoFacil.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof LotoFacil)) {
+            return false;
+        }
+        LotoFacil other = (LotoFacil) object;
+        if ((this.idConcursoLotoFacil == null && other.idConcursoLotoFacil != null) || (this.idConcursoLotoFacil != null && !this.idConcursoLotoFacil.equals(other.idConcursoLotoFacil))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.ConcursoLotoFacil[ idConcursoLotoFacil=" + idConcursoLotoFacil + " ]";
+    }
+    
+}

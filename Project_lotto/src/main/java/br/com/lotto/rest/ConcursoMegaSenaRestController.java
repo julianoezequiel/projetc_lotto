@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.lotto.entity.ConcursoMegaSena;
+import br.com.lotto.entity.MegaSena;
 import br.com.lotto.service.ConcursoMegaSenaService;
 
 @RestController
@@ -21,7 +21,7 @@ public class ConcursoMegaSenaRestController {
 	private ConcursoMegaSenaService concursoMegaSenaService;
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<ConcursoMegaSena>> listarClientes() {
+	public ResponseEntity<Collection<MegaSena>> listarClientes() {
 		return new ResponseEntity<>(concursoMegaSenaService.buscartodos(), HttpStatus.OK);
 	}
 
