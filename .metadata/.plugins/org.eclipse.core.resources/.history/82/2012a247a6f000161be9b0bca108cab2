@@ -1,0 +1,16 @@
+package br.com.lotto.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.lotto.dao.NumeroRepository;
+
+@Service
+public class NumeroService {
+
+	
+	@Autowired
+	private NumeroRepository numeroRepository;
+	
+	
+}

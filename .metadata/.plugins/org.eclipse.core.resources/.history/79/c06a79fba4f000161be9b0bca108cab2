@@ -1,0 +1,56 @@
+/**
+ * 
+ */
+package br.com.lotto.service;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.lotto.dao.MegaSenaRepository;
+import br.com.lotto.entity.Megasena;
+
+/**
+ * @author Juliano
+ *
+ */
+@Service
+public class MegaSenaService {
+
+	@Autowired
+	private MegaSenaRepository megaSenaRepository;
+
+	public Collection<Megasena> buscartodos() {
+		return this.megaSenaRepository.findAll();
+	}
+
+	public Megasena buscarPorId(Integer id) {
+		return this.megaSenaRepository.findOne(id);
+	}
+
+	public Object buscarFrequencias() {
+		List<Megasena> listaConcursos = (List<Megasena>) this.buscartodos();
+		HashMap<Integer, Long> mapCount = new HashMap<>();
+		AtomicInteger count = new AtomicInteger(1);
+		for(;count.get()<=60;count.incrementAndGet()){
+	 Long l = listaConcursos.stream().filter(c->
+		c.getNumero1().getIdNumero() == i 
+		|| c.getNumero2().getIdNumero() == i
+		|| c.getNumero3().getIdNumero() == i
+		|| c.getNumero4().getIdNumero() == i
+		|| c.getNumero5().getIdNumero() == i 
+		|| c.getNumero6().getIdNumero() == i)
+				.count();
+				mapCount.put(i, l);
+		
+		
+		}
+		
+		return null;
+	}
+
+}
