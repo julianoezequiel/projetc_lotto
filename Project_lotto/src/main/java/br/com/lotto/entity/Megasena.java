@@ -1,320 +1,312 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.com.lotto.entity;
 
+import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.NumeroDTO;
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * The persistent class for the megasena database table.
- * 
+ *
+ * @author Juliano
  */
 @Entity
-@NamedQuery(name="Megasena.findAll", query="SELECT m FROM Megasena m")
+@Table(name = "megasena")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Megasena.findAll", query = "SELECT m FROM Megasena m")
+    , @NamedQuery(name = "Megasena.findByIdconcurso", query = "SELECT m FROM Megasena m WHERE m.idconcurso = :idconcurso")
+    , @NamedQuery(name = "Megasena.findByConcurso", query = "SELECT m FROM Megasena m WHERE m.concurso = :concurso")
+    , @NamedQuery(name = "Megasena.findByDatasorteio", query = "SELECT m FROM Megasena m WHERE m.datasorteio = :datasorteio")
+    , @NamedQuery(name = "Megasena.findByArrecadacaototal", query = "SELECT m FROM Megasena m WHERE m.arrecadacaototal = :arrecadacaototal")
+    , @NamedQuery(name = "Megasena.findByGanhadoressena", query = "SELECT m FROM Megasena m WHERE m.ganhadoressena = :ganhadoressena")
+    , @NamedQuery(name = "Megasena.findByCidade", query = "SELECT m FROM Megasena m WHERE m.cidade = :cidade")
+    , @NamedQuery(name = "Megasena.findByUf", query = "SELECT m FROM Megasena m WHERE m.uf = :uf")
+    , @NamedQuery(name = "Megasena.findByRateiosena", query = "SELECT m FROM Megasena m WHERE m.rateiosena = :rateiosena")
+    , @NamedQuery(name = "Megasena.findByGanhadoresQuina", query = "SELECT m FROM Megasena m WHERE m.ganhadoresquina = :ganhadoresquina")
+    , @NamedQuery(name = "Megasena.findByRateioquina", query = "SELECT m FROM Megasena m WHERE m.rateioquina = :rateioquina")
+    , @NamedQuery(name = "Megasena.findByGanhadoresquadra", query = "SELECT m FROM Megasena m WHERE m.ganhadoresquadra = :ganhadoresquadra")
+    , @NamedQuery(name = "Megasena.findByRateioquadra", query = "SELECT m FROM Megasena m WHERE m.rateioquadra = :rateioquadra")
+    , @NamedQuery(name = "Megasena.findByAcumulado", query = "SELECT m FROM Megasena m WHERE m.acumulado = :acumulado")
+    , @NamedQuery(name = "Megasena.findByValoracumulado", query = "SELECT m FROM Megasena m WHERE m.valoracumulado = :valoracumulado")
+    , @NamedQuery(name = "Megasena.findByEstimativapremio", query = "SELECT m FROM Megasena m WHERE m.estimativapremio = :estimativapremio")
+    , @NamedQuery(name = "Megasena.findByAcumuladomegadavirada", query = "SELECT m FROM Megasena m WHERE m.acumuladomegadavirada = :acumuladomegadavirada")})
 public class Megasena implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int idConcurso;
-	private byte acumulado;
-	private BigDecimal acumulado_Mega_da_Virada;
-	private String arrecadacao_Total;
-	private String cidade;
-	private int concurso;
-	private Date dataSorteio;
-	private BigDecimal estimativa_Premio;
-	private int ganhadores_Quadra;
-	private int ganhadores_Quina;
-	private int ganhadores_Sena;
-	private BigDecimal rateio_Quadra;
-	private BigDecimal rateio_Quina;
-	private BigDecimal rateio_Sena;
-	private String uf;
-	private BigDecimal valor_Acumulado;
-	private Numero numero1;
-	private Numero numero2;
-	private Numero numero3;
-	private Numero numero4;
-	private Numero numero5;
-	private Numero numero6;
-	@JsonIgnore
-	private List<Palpite> palpites;
-	@JsonIgnore
-	private List<Tipo> tipos;
 
-	public Megasena() {
-	}
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idconcurso")
+    private Integer idconcurso;
+    @Column(name = "concurso")
+    private Integer concurso;
+    @Column(name = "datasorteio")
+    @Temporal(TemporalType.DATE)
+    private Date datasorteio;
+    @Size(max = 45)
+    @Column(name = "arrecadacaototal")
+    private String arrecadacaototal;
+    @Column(name = "ganhadoressena")
+    private Integer ganhadoressena;
+    @Size(max = 400)
+    @Column(name = "cidade")
+    private String cidade;
+    @Size(max = 200)
+    @Column(name = "uf")
+    private String uf;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "rateiosena")
+    private BigDecimal rateiosena;
+    @Column(name = "ganhadoresquina")
+    private Integer ganhadoresquina;
+    @Column(name = "rateioquina")
+    private BigDecimal rateioquina;
+    @Column(name = "ganhadoresquadra")
+    private Integer ganhadoresquadra;
+    @Column(name = "rateioquadra")
+    private BigDecimal rateioquadra;
+    @Column(name = "acumulado")
+    private Boolean acumulado;
+    @Column(name = "valoracumulado")
+    private BigDecimal valoracumulado;
+    @Column(name = "estimativapremio")
+    private BigDecimal estimativapremio;
+    @Column(name = "acumuladomegadavirada")
+    private BigDecimal acumuladomegadavirada;
+    @JoinTable(name = "megasenanumero", joinColumns = {
+        @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")}, inverseJoinColumns = {
+        @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")})
+    @ManyToMany
+    private Collection<Numero> numeroCollection;
+    @OneToMany(mappedBy = "megasenaidconcurso")
+    private Collection<Palpite> palpiteCollection;
+
+    public Megasena() {
+    }
+
+    public Megasena(Integer idconcurso) {
+        this.idconcurso = idconcurso;
+    }
+
+    public Integer getIdconcurso() {
+        return idconcurso;
+    }
+
+    public void setIdconcurso(Integer idconcurso) {
+        this.idconcurso = idconcurso;
+    }
+
+    public Integer getConcurso() {
+        return concurso;
+    }
+
+    public void setConcurso(Integer concurso) {
+        this.concurso = concurso;
+    }
+
+    public Date getDatasorteio() {
+        return datasorteio;
+    }
+
+    public void setDatasorteio(Date datasorteio) {
+        this.datasorteio = datasorteio;
+    }
+
+    public String getArrecadacaototal() {
+        return arrecadacaototal;
+    }
+
+    public void setArrecadacaototal(String arrecadacaototal) {
+        this.arrecadacaototal = arrecadacaototal;
+    }
+
+    public Integer getGanhadoressena() {
+        return ganhadoressena;
+    }
+
+    public void setGanhadoressena(Integer ganhadoressena) {
+        this.ganhadoressena = ganhadoressena;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
 
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_concurso")
-	public int getIdConcurso() {
-		return this.idConcurso;
-	}
-
-	public void setIdConcurso(int idConcurso) {
-		this.idConcurso = idConcurso;
-	}
-
-
-	public byte getAcumulado() {
-		return this.acumulado;
-	}
-
-	public void setAcumulado(byte acumulado) {
-		this.acumulado = acumulado;
-	}
-
-
-	public BigDecimal getAcumulado_Mega_da_Virada() {
-		return this.acumulado_Mega_da_Virada;
-	}
-
-	public void setAcumulado_Mega_da_Virada(BigDecimal acumulado_Mega_da_Virada) {
-		this.acumulado_Mega_da_Virada = acumulado_Mega_da_Virada;
-	}
-
-
-	public String getArrecadacao_Total() {
-		return this.arrecadacao_Total;
-	}
-
-	public void setArrecadacao_Total(String arrecadacao_Total) {
-		this.arrecadacao_Total = arrecadacao_Total;
-	}
-
-
-	public String getCidade() {
-		return this.cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-
-	public int getConcurso() {
-		return this.concurso;
-	}
-
-	public void setConcurso(int concurso) {
-		this.concurso = concurso;
-	}
-
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="data_sorteio")
-	public Date getDataSorteio() {
-		return this.dataSorteio;
-	}
-
-	public void setDataSorteio(Date dataSorteio) {
-		this.dataSorteio = dataSorteio;
-	}
-
-
-	public BigDecimal getEstimativa_Premio() {
-		return this.estimativa_Premio;
-	}
-
-	public void setEstimativa_Premio(BigDecimal estimativa_Premio) {
-		this.estimativa_Premio = estimativa_Premio;
-	}
-
-
-	public int getGanhadores_Quadra() {
-		return this.ganhadores_Quadra;
-	}
-
-	public void setGanhadores_Quadra(int ganhadores_Quadra) {
-		this.ganhadores_Quadra = ganhadores_Quadra;
-	}
-
-
-	public int getGanhadores_Quina() {
-		return this.ganhadores_Quina;
-	}
-
-	public void setGanhadores_Quina(int ganhadores_Quina) {
-		this.ganhadores_Quina = ganhadores_Quina;
-	}
-
-
-	public int getGanhadores_Sena() {
-		return this.ganhadores_Sena;
-	}
-
-	public void setGanhadores_Sena(int ganhadores_Sena) {
-		this.ganhadores_Sena = ganhadores_Sena;
-	}
-
-
-	public BigDecimal getRateio_Quadra() {
-		return this.rateio_Quadra;
-	}
-
-	public void setRateio_Quadra(BigDecimal rateio_Quadra) {
-		this.rateio_Quadra = rateio_Quadra;
-	}
-
-
-	public BigDecimal getRateio_Quina() {
-		return this.rateio_Quina;
-	}
-
-	public void setRateio_Quina(BigDecimal rateio_Quina) {
-		this.rateio_Quina = rateio_Quina;
-	}
-
-
-	public BigDecimal getRateio_Sena() {
-		return this.rateio_Sena;
-	}
-
-	public void setRateio_Sena(BigDecimal rateio_Sena) {
-		this.rateio_Sena = rateio_Sena;
-	}
-
-
-	public String getUf() {
-		return this.uf;
-	}
-
-	public void setUf(String uf) {
-		this.uf = uf;
-	}
-
-
-	public BigDecimal getValor_Acumulado() {
-		return this.valor_Acumulado;
-	}
-
-	public void setValor_Acumulado(BigDecimal valor_Acumulado) {
-		this.valor_Acumulado = valor_Acumulado;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="1_Dezena")
-	public Numero getNumero1() {
-		return this.numero1;
-	}
-
-	public void setNumero1(Numero numero1) {
-		this.numero1 = numero1;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="2_Dezena")
-	public Numero getNumero2() {
-		return this.numero2;
-	}
-
-	public void setNumero2(Numero numero2) {
-		this.numero2 = numero2;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="3_Dezena")
-	public Numero getNumero3() {
-		return this.numero3;
-	}
-
-	public void setNumero3(Numero numero3) {
-		this.numero3 = numero3;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="4_Dezena")
-	public Numero getNumero4() {
-		return this.numero4;
-	}
-
-	public void setNumero4(Numero numero4) {
-		this.numero4 = numero4;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="5_Dezena")
-	public Numero getNumero5() {
-		return this.numero5;
-	}
-
-	public void setNumero5(Numero numero5) {
-		this.numero5 = numero5;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="6_Dezena")
-	public Numero getNumero6() {
-		return this.numero6;
-	}
-
-	public void setNumero6(Numero numero6) {
-		this.numero6 = numero6;
-	}
-
-
-	//bi-directional many-to-one association to Palpite
-	@OneToMany(mappedBy="megasena")
-	public List<Palpite> getPalpites() {
-		return this.palpites;
-	}
-
-	public void setPalpites(List<Palpite> palpites) {
-		this.palpites = palpites;
-	}
-
-	public Palpite addPalpite(Palpite palpite) {
-		getPalpites().add(palpite);
-		palpite.setMegasena(this);
-
-		return palpite;
-	}
-
-	public Palpite removePalpite(Palpite palpite) {
-		getPalpites().remove(palpite);
-		palpite.setMegasena(null);
-
-		return palpite;
-	}
-
-
-	//bi-directional many-to-one association to Tipo
-	@OneToMany(mappedBy="megasena")
-	public List<Tipo> getTipos() {
-		return this.tipos;
-	}
-
-	public void setTipos(List<Tipo> tipos) {
-		this.tipos = tipos;
-	}
-
-	public Tipo addTipo(Tipo tipo) {
-		getTipos().add(tipo);
-		tipo.setMegasena(this);
-
-		return tipo;
-	}
-
-	public Tipo removeTipo(Tipo tipo) {
-		getTipos().remove(tipo);
-		tipo.setMegasena(null);
-
-		return tipo;
-	}
-
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public BigDecimal getRateiosena() {
+        return rateiosena;
+    }
+
+    public void setRateiosena(BigDecimal rateiosena) {
+        this.rateiosena = rateiosena;
+    }
+
+    public Integer getGanhadoresquina() {
+        return ganhadoresquina;
+    }
+
+    public void setGanhadoresQuina(Integer ganhadoresquina) {
+        this.ganhadoresquina = ganhadoresquina;
+    }
+
+    public BigDecimal getRateioquina() {
+        return rateioquina;
+    }
+
+    public void setRateioquina(BigDecimal rateioquina) {
+        this.rateioquina = rateioquina;
+    }
+
+    public Integer getGanhadoresquadra() {
+        return ganhadoresquadra;
+    }
+
+    public void setGanhadoresquadra(Integer ganhadoresquadra) {
+        this.ganhadoresquadra = ganhadoresquadra;
+    }
+
+    public BigDecimal getRateioquadra() {
+        return rateioquadra;
+    }
+
+    public void setRateioquadra(BigDecimal rateioquadra) {
+        this.rateioquadra = rateioquadra;
+    }
+
+    public Boolean getAcumulado() {
+        return acumulado;
+    }
+
+    public void setAcumulado(Boolean acumulado) {
+        this.acumulado = acumulado;
+    }
+
+    public BigDecimal getValoracumulado() {
+        return valoracumulado;
+    }
+
+    public void setValoracumulado(BigDecimal valoracumulado) {
+        this.valoracumulado = valoracumulado;
+    }
+
+    public BigDecimal getEstimativapremio() {
+        return estimativapremio;
+    }
+
+    public void setEstimativapremio(BigDecimal estimativapremio) {
+        this.estimativapremio = estimativapremio;
+    }
+
+    public BigDecimal getAcumuladomegadavirada() {
+        return acumuladomegadavirada;
+    }
+
+    public void setAcumuladomegadavirada(BigDecimal acumuladomegadavirada) {
+        this.acumuladomegadavirada = acumuladomegadavirada;
+    }
+
+    @XmlTransient
+    public Collection<Numero> getNumeroCollection() {
+        return numeroCollection;
+    }
+
+    public void setNumeroCollection(Collection<Numero> numeroCollection) {
+        this.numeroCollection = numeroCollection;
+    }
+
+    @XmlTransient
+    public Collection<Palpite> getPalpiteCollection() {
+        return palpiteCollection;
+    }
+
+    public void setPalpiteCollection(Collection<Palpite> palpiteCollection) {
+        this.palpiteCollection = palpiteCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idconcurso != null ? idconcurso.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Megasena)) {
+            return false;
+        }
+        Megasena other = (Megasena) object;
+        if ((this.idconcurso == null && other.idconcurso != null) || (this.idconcurso != null && !this.idconcurso.equals(other.idconcurso))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.Megasena[ idconcurso=" + idconcurso + " ]";
+    }
+    
+     public MegaSenaDTO toMegaSenaDTO(){
+    	MegaSenaDTO dto = new MegaSenaDTO();
+    	dto.setAcumulado(acumulado);
+    	dto.setAcumuladoMegadaVirada(acumuladomegadavirada);
+    	dto.setArrecadacaoTotal(arrecadacaototal);
+    	dto.setCidade(cidade);
+    	dto.setConcurso(concurso);
+    	dto.setDataSorteio(datasorteio);
+    	dto.setEstimativaPremio(estimativapremio);
+    	dto.setGanhadoresQuadra(ganhadoresquadra);
+    	dto.setGanhadoresQuina(ganhadoresquina);
+    	dto.setGanhadoresSena(ganhadoressena);
+    	Collection<NumeroDTO> numeroDTOList = new ArrayList<>();
+    	numeroCollection.stream().forEach(n->{
+    		numeroDTOList.add(n.toNumeroDTO());
+    	});
+    	dto.setNumeroCollection(numeroDTOList);
+    	dto.setRateioQuadra(rateioquadra);
+    	dto.setRateioQuina(rateioquina);
+    	dto.setRateioSena(rateiosena);
+    	dto.setUf(uf);
+    	dto.setValorAcumulado(valoracumulado);
+    	return dto;		
+    	
+    }
 }

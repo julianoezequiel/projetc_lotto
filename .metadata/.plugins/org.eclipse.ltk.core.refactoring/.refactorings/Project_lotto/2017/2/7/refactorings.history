@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename field &apos;numeroCollection&apos; in &apos;br.com.lotto.entity.Megasena&apos; to &apos;numeroIdCollection&apos;&#x0D;&#x0A;- Original project: &apos;Project_lotto&apos;&#x0D;&#x0A;- Original element: &apos;br.com.lotto.entity.Megasena.numeroCollection&apos;&#x0D;&#x0A;- Renamed element: &apos;br.com.lotto.entity.Megasena.numeroIdCollection&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field &apos;numeroCollection&apos;" flags="589826" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src\/main\/java&lt;br.com.lotto.entity{Megasena.java[Megasena^numeroCollection" name="numeroIdCollection" references="true" setter="false" stamp="1487376581653" textual="false" version="1.0"/>
+</session>

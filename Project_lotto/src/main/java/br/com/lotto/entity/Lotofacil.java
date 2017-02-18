@@ -1,440 +1,316 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.com.lotto.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * The persistent class for the lotofacil database table.
- * 
+ *
+ * @author Juliano
  */
 @Entity
-@NamedQuery(name="Lotofacil.findAll", query="SELECT l FROM Lotofacil l")
+@Table(name = "lotofacil")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Lotofacil.findAll", query = "SELECT l FROM Lotofacil l")
+    , @NamedQuery(name = "Lotofacil.findByIdlotofacil", query = "SELECT l FROM Lotofacil l WHERE l.idlotofacil = :idlotofacil")
+    , @NamedQuery(name = "Lotofacil.findByConcurso", query = "SELECT l FROM Lotofacil l WHERE l.concurso = :concurso")
+    , @NamedQuery(name = "Lotofacil.findByDatasorteio", query = "SELECT l FROM Lotofacil l WHERE l.datasorteio = :datasorteio")
+    , @NamedQuery(name = "Lotofacil.findByArrecadacaototal", query = "SELECT l FROM Lotofacil l WHERE l.arrecadacaototal = :arrecadacaototal")
+    , @NamedQuery(name = "Lotofacil.findByGanhadores15numeros", query = "SELECT l FROM Lotofacil l WHERE l.ganhadores15numeros = :ganhadores15numeros")
+    , @NamedQuery(name = "Lotofacil.findByCidade", query = "SELECT l FROM Lotofacil l WHERE l.cidade = :cidade")
+    , @NamedQuery(name = "Lotofacil.findByUf", query = "SELECT l FROM Lotofacil l WHERE l.uf = :uf")
+    , @NamedQuery(name = "Lotofacil.findByGanhadores14numeros", query = "SELECT l FROM Lotofacil l WHERE l.ganhadores14numeros = :ganhadores14numeros")
+    , @NamedQuery(name = "Lotofacil.findByGanhadores13numeros", query = "SELECT l FROM Lotofacil l WHERE l.ganhadores13numeros = :ganhadores13numeros")
+    , @NamedQuery(name = "Lotofacil.findByGanhadores12numeros", query = "SELECT l FROM Lotofacil l WHERE l.ganhadores12numeros = :ganhadores12numeros")
+    , @NamedQuery(name = "Lotofacil.findByGanhadores11numeros", query = "SELECT l FROM Lotofacil l WHERE l.ganhadores11numeros = :ganhadores11numeros")
+    , @NamedQuery(name = "Lotofacil.findByValorrateio15numeros", query = "SELECT l FROM Lotofacil l WHERE l.valorrateio15numeros = :valorrateio15numeros")
+    , @NamedQuery(name = "Lotofacil.findByValorrateio14numeros", query = "SELECT l FROM Lotofacil l WHERE l.valorrateio14numeros = :valorrateio14numeros")
+    , @NamedQuery(name = "Lotofacil.findByValorrateio13numeros", query = "SELECT l FROM Lotofacil l WHERE l.valorrateio13numeros = :valorrateio13numeros")
+    , @NamedQuery(name = "Lotofacil.findByValorrateio12numeros", query = "SELECT l FROM Lotofacil l WHERE l.valorrateio12numeros = :valorrateio12numeros")
+    , @NamedQuery(name = "Lotofacil.findByValorrateio11numeros", query = "SELECT l FROM Lotofacil l WHERE l.valorrateio11numeros = :valorrateio11numeros")
+    , @NamedQuery(name = "Lotofacil.findByAcumulado15numeros", query = "SELECT l FROM Lotofacil l WHERE l.acumulado15numeros = :acumulado15numeros")
+    , @NamedQuery(name = "Lotofacil.findByEstimativapremio", query = "SELECT l FROM Lotofacil l WHERE l.estimativapremio = :estimativapremio")
+    , @NamedQuery(name = "Lotofacil.findByValoracumuladoespecial", query = "SELECT l FROM Lotofacil l WHERE l.valoracumuladoespecial = :valoracumuladoespecial")})
 public class Lotofacil implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int id_LotoFacil;
-	private BigDecimal acumulado_15_Numeros;
-	private BigDecimal arrecadacao_Total;
-	private String cidade;
-	private int concurso;
-	private Date data_Sorteio;
-	private BigDecimal estimativa_Premio;
-	private int ganhadores_11_Numeros;
-	private int ganhadores_12_Numeros;
-	private int ganhadores_13_Numeros;
-	private int ganhadores_14_Numeros;
-	private int ganhadores_15_Numeros;
-	private String uf;
-	private BigDecimal valor_Acumulado_Especial;
-	private BigDecimal valor_Rateio_11_Numeros;
-	private BigDecimal valor_Rateio_12_Numeros;
-	private BigDecimal valor_Rateio_13_Numeros;
-	private BigDecimal valor_Rateio_14_Numeros;
-	private BigDecimal valor_Rateio_15_Numeros;
-	private Numero numero1;
-	private Numero numero2;
-	private Numero numero3;
-	private Numero numero4;
-	private Numero numero5;
-	private Numero numero6;
-	private Numero numero7;
-	private Numero numero8;
-	private Numero numero9;
-	private Numero numero10;
-	private Numero numero11;
-	private Numero numero12;
-	private Numero numero13;
-	private Numero numero14;
-	private Numero numero15;
-	private List<Palpite> palpites;
-
-	public Lotofacil() {
-	}
-
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	public int getId_LotoFacil() {
-		return this.id_LotoFacil;
-	}
-
-	public void setId_LotoFacil(int id_LotoFacil) {
-		this.id_LotoFacil = id_LotoFacil;
-	}
-
 
-	public BigDecimal getAcumulado_15_Numeros() {
-		return this.acumulado_15_Numeros;
-	}
-
-	public void setAcumulado_15_Numeros(BigDecimal acumulado_15_Numeros) {
-		this.acumulado_15_Numeros = acumulado_15_Numeros;
-	}
-
-
-	public BigDecimal getArrecadacao_Total() {
-		return this.arrecadacao_Total;
-	}
-
-	public void setArrecadacao_Total(BigDecimal arrecadacao_Total) {
-		this.arrecadacao_Total = arrecadacao_Total;
-	}
-
-
-	public String getCidade() {
-		return this.cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-
-	public int getConcurso() {
-		return this.concurso;
-	}
-
-	public void setConcurso(int concurso) {
-		this.concurso = concurso;
-	}
-
-
-	@Temporal(TemporalType.DATE)
-	public Date getData_Sorteio() {
-		return this.data_Sorteio;
-	}
-
-	public void setData_Sorteio(Date data_Sorteio) {
-		this.data_Sorteio = data_Sorteio;
-	}
-
-
-	public BigDecimal getEstimativa_Premio() {
-		return this.estimativa_Premio;
-	}
-
-	public void setEstimativa_Premio(BigDecimal estimativa_Premio) {
-		this.estimativa_Premio = estimativa_Premio;
-	}
-
-
-	public int getGanhadores_11_Numeros() {
-		return this.ganhadores_11_Numeros;
-	}
-
-	public void setGanhadores_11_Numeros(int ganhadores_11_Numeros) {
-		this.ganhadores_11_Numeros = ganhadores_11_Numeros;
-	}
-
-
-	public int getGanhadores_12_Numeros() {
-		return this.ganhadores_12_Numeros;
-	}
-
-	public void setGanhadores_12_Numeros(int ganhadores_12_Numeros) {
-		this.ganhadores_12_Numeros = ganhadores_12_Numeros;
-	}
-
-
-	public int getGanhadores_13_Numeros() {
-		return this.ganhadores_13_Numeros;
-	}
-
-	public void setGanhadores_13_Numeros(int ganhadores_13_Numeros) {
-		this.ganhadores_13_Numeros = ganhadores_13_Numeros;
-	}
-
-
-	public int getGanhadores_14_Numeros() {
-		return this.ganhadores_14_Numeros;
-	}
-
-	public void setGanhadores_14_Numeros(int ganhadores_14_Numeros) {
-		this.ganhadores_14_Numeros = ganhadores_14_Numeros;
-	}
-
-
-	public int getGanhadores_15_Numeros() {
-		return this.ganhadores_15_Numeros;
-	}
-
-	public void setGanhadores_15_Numeros(int ganhadores_15_Numeros) {
-		this.ganhadores_15_Numeros = ganhadores_15_Numeros;
-	}
-
-
-	public String getUf() {
-		return this.uf;
-	}
-
-	public void setUf(String uf) {
-		this.uf = uf;
-	}
-
-
-	public BigDecimal getValor_Acumulado_Especial() {
-		return this.valor_Acumulado_Especial;
-	}
-
-	public void setValor_Acumulado_Especial(BigDecimal valor_Acumulado_Especial) {
-		this.valor_Acumulado_Especial = valor_Acumulado_Especial;
-	}
-
-
-	public BigDecimal getValor_Rateio_11_Numeros() {
-		return this.valor_Rateio_11_Numeros;
-	}
-
-	public void setValor_Rateio_11_Numeros(BigDecimal valor_Rateio_11_Numeros) {
-		this.valor_Rateio_11_Numeros = valor_Rateio_11_Numeros;
-	}
-
-
-	public BigDecimal getValor_Rateio_12_Numeros() {
-		return this.valor_Rateio_12_Numeros;
-	}
-
-	public void setValor_Rateio_12_Numeros(BigDecimal valor_Rateio_12_Numeros) {
-		this.valor_Rateio_12_Numeros = valor_Rateio_12_Numeros;
-	}
-
-
-	public BigDecimal getValor_Rateio_13_Numeros() {
-		return this.valor_Rateio_13_Numeros;
-	}
-
-	public void setValor_Rateio_13_Numeros(BigDecimal valor_Rateio_13_Numeros) {
-		this.valor_Rateio_13_Numeros = valor_Rateio_13_Numeros;
-	}
-
-
-	public BigDecimal getValor_Rateio_14_Numeros() {
-		return this.valor_Rateio_14_Numeros;
-	}
-
-	public void setValor_Rateio_14_Numeros(BigDecimal valor_Rateio_14_Numeros) {
-		this.valor_Rateio_14_Numeros = valor_Rateio_14_Numeros;
-	}
-
-
-	public BigDecimal getValor_Rateio_15_Numeros() {
-		return this.valor_Rateio_15_Numeros;
-	}
-
-	public void setValor_Rateio_15_Numeros(BigDecimal valor_Rateio_15_Numeros) {
-		this.valor_Rateio_15_Numeros = valor_Rateio_15_Numeros;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="1_Dezena")
-	public Numero getNumero1() {
-		return this.numero1;
-	}
-
-	public void setNumero1(Numero numero1) {
-		this.numero1 = numero1;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="2_Dezena")
-	public Numero getNumero2() {
-		return this.numero2;
-	}
-
-	public void setNumero2(Numero numero2) {
-		this.numero2 = numero2;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="3_Dezena")
-	public Numero getNumero3() {
-		return this.numero3;
-	}
-
-	public void setNumero3(Numero numero3) {
-		this.numero3 = numero3;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="4_Dezena")
-	public Numero getNumero4() {
-		return this.numero4;
-	}
-
-	public void setNumero4(Numero numero4) {
-		this.numero4 = numero4;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="5_Dezena")
-	public Numero getNumero5() {
-		return this.numero5;
-	}
-
-	public void setNumero5(Numero numero5) {
-		this.numero5 = numero5;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="6_Dezena")
-	public Numero getNumero6() {
-		return this.numero6;
-	}
-
-	public void setNumero6(Numero numero6) {
-		this.numero6 = numero6;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="7_Dezena")
-	public Numero getNumero7() {
-		return this.numero7;
-	}
-
-	public void setNumero7(Numero numero7) {
-		this.numero7 = numero7;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="8_Dezena")
-	public Numero getNumero8() {
-		return this.numero8;
-	}
-
-	public void setNumero8(Numero numero8) {
-		this.numero8 = numero8;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="9_Dezena")
-	public Numero getNumero9() {
-		return this.numero9;
-	}
-
-	public void setNumero9(Numero numero9) {
-		this.numero9 = numero9;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="10_Dezena")
-	public Numero getNumero10() {
-		return this.numero10;
-	}
-
-	public void setNumero10(Numero numero10) {
-		this.numero10 = numero10;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="11_Dezena")
-	public Numero getNumero11() {
-		return this.numero11;
-	}
-
-	public void setNumero11(Numero numero11) {
-		this.numero11 = numero11;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="12_Dezena")
-	public Numero getNumero12() {
-		return this.numero12;
-	}
-
-	public void setNumero12(Numero numero12) {
-		this.numero12 = numero12;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="13_Dezena")
-	public Numero getNumero13() {
-		return this.numero13;
-	}
-
-	public void setNumero13(Numero numero13) {
-		this.numero13 = numero13;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="14_Dezena")
-	public Numero getNumero14() {
-		return this.numero14;
-	}
-
-	public void setNumero14(Numero numero14) {
-		this.numero14 = numero14;
-	}
-
-
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="15_Dezena")
-	public Numero getNumero15() {
-		return this.numero15;
-	}
-
-	public void setNumero15(Numero numero15) {
-		this.numero15 = numero15;
-	}
-
-
-	//bi-directional many-to-one association to Palpite
-	@OneToMany(mappedBy="lotofacil")
-	@JsonIgnore
-	public List<Palpite> getPalpites() {
-		return this.palpites;
-	}
-
-	public void setPalpites(List<Palpite> palpites) {
-		this.palpites = palpites;
-	}
-
-	public Palpite addPalpite(Palpite palpite) {
-		getPalpites().add(palpite);
-		palpite.setLotofacil(this);
-
-		return palpite;
-	}
-
-	public Palpite removePalpite(Palpite palpite) {
-		getPalpites().remove(palpite);
-		palpite.setLotofacil(null);
-
-		return palpite;
-	}
-
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idlotofacil")
+    private Integer idlotofacil;
+    @Column(name = "concurso")
+    private Integer concurso;
+    @Column(name = "datasorteio")
+    @Temporal(TemporalType.DATE)
+    private Date datasorteio;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "arrecadacaototal")
+    private BigDecimal arrecadacaototal;
+    @Column(name = "ganhadores15numeros")
+    private Integer ganhadores15numeros;
+    @Size(max = 400)
+    @Column(name = "cidade")
+    private String cidade;
+    @Size(max = 4)
+    @Column(name = "uf")
+    private String uf;
+    @Column(name = "ganhadores14numeros")
+    private Integer ganhadores14numeros;
+    @Column(name = "ganhadores13numeros")
+    private Integer ganhadores13numeros;
+    @Column(name = "ganhadores12numeros")
+    private Integer ganhadores12numeros;
+    @Column(name = "ganhadores11numeros")
+    private Integer ganhadores11numeros;
+    @Column(name = "valorrateio15numeros")
+    private BigDecimal valorrateio15numeros;
+    @Column(name = "valorrateio14numeros")
+    private BigDecimal valorrateio14numeros;
+    @Column(name = "valorrateio13numeros")
+    private BigDecimal valorrateio13numeros;
+    @Column(name = "valorrateio12numeros")
+    private BigDecimal valorrateio12numeros;
+    @Column(name = "valorrateio11numeros")
+    private BigDecimal valorrateio11numeros;
+    @Column(name = "acumulado15numeros")
+    private BigDecimal acumulado15numeros;
+    @Column(name = "estimativapremio")
+    private BigDecimal estimativapremio;
+    @Column(name = "valoracumuladoespecial")
+    private BigDecimal valoracumuladoespecial;
+    @JoinTable(name = "lotofacilnumero", joinColumns = {
+        @JoinColumn(name = "lotoFacillidlotofacil", referencedColumnName = "idlotofacil")}, inverseJoinColumns = {
+        @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")})
+    @ManyToMany
+    private Collection<Numero> numeroCollection;
+    @OneToMany(mappedBy = "lotolacilidconcursolotofacil")
+    private Collection<Palpite> palpiteCollection;
+
+    public Lotofacil() {
+    }
+
+    public Lotofacil(Integer idlotofacil) {
+        this.idlotofacil = idlotofacil;
+    }
+
+    public Integer getIdlotofacil() {
+        return idlotofacil;
+    }
+
+    public void setIdlotofacil(Integer idlotofacil) {
+        this.idlotofacil = idlotofacil;
+    }
+
+    public Integer getConcurso() {
+        return concurso;
+    }
+
+    public void setConcurso(Integer concurso) {
+        this.concurso = concurso;
+    }
+
+    public Date getDatasorteio() {
+        return datasorteio;
+    }
+
+    public void setDatasorteio(Date datasorteio) {
+        this.datasorteio = datasorteio;
+    }
+
+    public BigDecimal getArrecadacaototal() {
+        return arrecadacaototal;
+    }
+
+    public void setArrecadacaototal(BigDecimal arrecadacaototal) {
+        this.arrecadacaototal = arrecadacaototal;
+    }
+
+    public Integer getGanhadores15numeros() {
+        return ganhadores15numeros;
+    }
+
+    public void setGanhadores15numeros(Integer ganhadores15numeros) {
+        this.ganhadores15numeros = ganhadores15numeros;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public Integer getGanhadores14numeros() {
+        return ganhadores14numeros;
+    }
+
+    public void setGanhadores14numeros(Integer ganhadores14numeros) {
+        this.ganhadores14numeros = ganhadores14numeros;
+    }
+
+    public Integer getGanhadores13numeros() {
+        return ganhadores13numeros;
+    }
+
+    public void setGanhadores13numeros(Integer ganhadores13numeros) {
+        this.ganhadores13numeros = ganhadores13numeros;
+    }
+
+    public Integer getGanhadores12numeros() {
+        return ganhadores12numeros;
+    }
+
+    public void setGanhadores12numeros(Integer ganhadores12numeros) {
+        this.ganhadores12numeros = ganhadores12numeros;
+    }
+
+    public Integer getGanhadores11numeros() {
+        return ganhadores11numeros;
+    }
+
+    public void setGanhadores11numeros(Integer ganhadores11numeros) {
+        this.ganhadores11numeros = ganhadores11numeros;
+    }
+
+    public BigDecimal getValorrateio15numeros() {
+        return valorrateio15numeros;
+    }
+
+    public void setValorrateio15numeros(BigDecimal valorrateio15numeros) {
+        this.valorrateio15numeros = valorrateio15numeros;
+    }
+
+    public BigDecimal getValorrateio14numeros() {
+        return valorrateio14numeros;
+    }
+
+    public void setValorrateio14numeros(BigDecimal valorrateio14numeros) {
+        this.valorrateio14numeros = valorrateio14numeros;
+    }
+
+    public BigDecimal getValorrateio13numeros() {
+        return valorrateio13numeros;
+    }
+
+    public void setValorrateio13numeros(BigDecimal valorrateio13numeros) {
+        this.valorrateio13numeros = valorrateio13numeros;
+    }
+
+    public BigDecimal getValorrateio12numeros() {
+        return valorrateio12numeros;
+    }
+
+    public void setValorrateio12numeros(BigDecimal valorrateio12numeros) {
+        this.valorrateio12numeros = valorrateio12numeros;
+    }
+
+    public BigDecimal getValorrateio11numeros() {
+        return valorrateio11numeros;
+    }
+
+    public void setValorrateio11numeros(BigDecimal valorrateio11numeros) {
+        this.valorrateio11numeros = valorrateio11numeros;
+    }
+
+    public BigDecimal getAcumulado15numeros() {
+        return acumulado15numeros;
+    }
+
+    public void setAcumulado15numeros(BigDecimal acumulado15numeros) {
+        this.acumulado15numeros = acumulado15numeros;
+    }
+
+    public BigDecimal getEstimativapremio() {
+        return estimativapremio;
+    }
+
+    public void setEstimativapremio(BigDecimal estimativapremio) {
+        this.estimativapremio = estimativapremio;
+    }
+
+    public BigDecimal getValoracumuladoespecial() {
+        return valoracumuladoespecial;
+    }
+
+    public void setValoracumuladoespecial(BigDecimal valoracumuladoespecial) {
+        this.valoracumuladoespecial = valoracumuladoespecial;
+    }
+
+    @XmlTransient
+    public Collection<Numero> getNumeroCollection() {
+        return numeroCollection;
+    }
+
+    public void setNumeroCollection(Collection<Numero> numeroCollection) {
+        this.numeroCollection = numeroCollection;
+    }
+
+    @XmlTransient
+    public Collection<Palpite> getPalpiteCollection() {
+        return palpiteCollection;
+    }
+
+    public void setPalpiteCollection(Collection<Palpite> palpiteCollection) {
+        this.palpiteCollection = palpiteCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idlotofacil != null ? idlotofacil.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Lotofacil)) {
+            return false;
+        }
+        Lotofacil other = (Lotofacil) object;
+        if ((this.idlotofacil == null && other.idlotofacil != null) || (this.idlotofacil != null && !this.idlotofacil.equals(other.idlotofacil))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.Lotofacil[ idlotofacil=" + idlotofacil + " ]";
+    }
+    
 }

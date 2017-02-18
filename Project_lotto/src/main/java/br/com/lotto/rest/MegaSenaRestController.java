@@ -1,5 +1,8 @@
 package br.com.lotto.rest;
 
+import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.atrazoDTO;
+import br.com.lotto.dto.frequenciaDTO;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -12,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.lotto.dto.atrazoDTO;
-import br.com.lotto.dto.frequenciaDTO;
 import br.com.lotto.entity.Megasena;
 import br.com.lotto.service.MegaSenaService;
 
@@ -25,7 +26,7 @@ public class MegaSenaRestController {
 	private MegaSenaService mgaSenaService;
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Megasena>> listar() {
+	public ResponseEntity<Collection<MegaSenaDTO>> listar() {
 		return new ResponseEntity<>(mgaSenaService.buscartodos(), HttpStatus.OK);
 	}
 	

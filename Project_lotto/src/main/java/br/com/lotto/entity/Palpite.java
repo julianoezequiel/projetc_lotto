@@ -1,69 +1,113 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.com.lotto.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The persistent class for the palpite database table.
- * 
+ *
+ * @author Juliano
  */
 @Entity
-@NamedQuery(name="Palpite.findAll", query="SELECT p FROM Palpite p")
+@Table(name = "palpite")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Palpite.findAll", query = "SELECT p FROM Palpite p")
+    , @NamedQuery(name = "Palpite.findByIdpalpite", query = "SELECT p FROM Palpite p WHERE p.idpalpite = :idpalpite")})
 public class Palpite implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int idPalpite;
-	private Lotofacil lotofacil;
-	private Megasena megasena;
-	private Numero numero;
 
-	public Palpite() {
-	}
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idpalpite")
+    private Integer idpalpite;
+    @JoinColumn(name = "lotolacilidconcursolotofacil", referencedColumnName = "idlotofacil")
+    @ManyToOne
+    private Lotofacil lotolacilidconcursolotofacil;
+    @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")
+    @ManyToOne
+    private Megasena megasenaidconcurso;
+    @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")
+    @ManyToOne
+    private Numero numeroidnumero;
 
+    public Palpite() {
+    }
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	public int getIdPalpite() {
-		return this.idPalpite;
-	}
+    public Palpite(Integer idpalpite) {
+        this.idpalpite = idpalpite;
+    }
 
-	public void setIdPalpite(int idPalpite) {
-		this.idPalpite = idPalpite;
-	}
+    public Integer getIdpalpite() {
+        return idpalpite;
+    }
 
+    public void setIdpalpite(Integer idpalpite) {
+        this.idpalpite = idpalpite;
+    }
 
-	//bi-directional many-to-one association to Lotofacil
-	@ManyToOne
-	@JoinColumn(name="LotoFacil_idConcurso_Loto_Facil")
-	public Lotofacil getLotofacil() {
-		return this.lotofacil;
-	}
+    public Lotofacil getLotolacilidconcursolotofacil() {
+        return lotolacilidconcursolotofacil;
+    }
 
-	public void setLotofacil(Lotofacil lotofacil) {
-		this.lotofacil = lotofacil;
-	}
+    public void setLotolacilidconcursolotofacil(Lotofacil lotolacilidconcursolotofacil) {
+        this.lotolacilidconcursolotofacil = lotolacilidconcursolotofacil;
+    }
 
+    public Megasena getMegasenaidconcurso() {
+        return megasenaidconcurso;
+    }
 
-	//bi-directional many-to-one association to Megasena
-	@ManyToOne
-	public Megasena getMegasena() {
-		return this.megasena;
-	}
+    public void setMegasenaidconcurso(Megasena megasenaidconcurso) {
+        this.megasenaidconcurso = megasenaidconcurso;
+    }
 
-	public void setMegasena(Megasena megasena) {
-		this.megasena = megasena;
-	}
+    public Numero getNumeroidnumero() {
+        return numeroidnumero;
+    }
 
+    public void setNumeroidnumero(Numero numeroidnumero) {
+        this.numeroidnumero = numeroidnumero;
+    }
 
-	//bi-directional many-to-one association to Numero
-	@ManyToOne
-	@JoinColumn(name="Numero_idNumero")
-	public Numero getNumero() {
-		return this.numero;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idpalpite != null ? idpalpite.hashCode() : 0);
+        return hash;
+    }
 
-	public void setNumero(Numero numero) {
-		this.numero = numero;
-	}
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Palpite)) {
+            return false;
+        }
+        Palpite other = (Palpite) object;
+        if ((this.idpalpite == null && other.idpalpite != null) || (this.idpalpite != null && !this.idpalpite.equals(other.idpalpite))) {
+            return false;
+        }
+        return true;
+    }
 
+    @Override
+    public String toString() {
+        return "br.com.lotto.entity.Palpite[ idpalpite=" + idpalpite + " ]";
+    }
+    
 }
