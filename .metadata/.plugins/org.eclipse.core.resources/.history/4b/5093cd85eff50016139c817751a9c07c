@@ -1,0 +1,21 @@
+package br.com.lotto.service;
+
+import org.springframework.http.HttpStatus;
+
+public class ServiceException extends Exception{
+
+	private HttpStatus httpStatus = HttpStatus.PRECONDITION_FAILED;
+	
+	
+	
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
+	}
+	
+	public void setHttpStatus(HttpStatus httpStatus) {
+		this.httpStatus = httpStatus;
+	}
+	
+	
+	
+}

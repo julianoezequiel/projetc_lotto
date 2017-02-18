@@ -1,5 +1,0 @@
-package br.com.lotto.dao;
-
-public interface NumeroRepository {
-
-}

@@ -1,11 +1,13 @@
 package br.com.lotto.dto;
 
+import java.math.BigInteger;
+
 public class frequenciaDTO {
 
 	private Integer numero;
-	private Integer frequencia;
+	private BigInteger frequencia;
 
-	public frequenciaDTO(Integer numero, Integer frequencia) {
+	public frequenciaDTO(Integer numero, BigInteger frequencia) {
 		this.numero = numero;
 		this.frequencia = frequencia;
 	}
@@ -14,7 +16,7 @@ public class frequenciaDTO {
 		return numero;
 	}
 
-	public Integer getFrequencia() {
+	public BigInteger getFrequencia() {
 		return frequencia;
 	}
 }

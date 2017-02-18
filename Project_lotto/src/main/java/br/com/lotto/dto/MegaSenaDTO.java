@@ -21,7 +21,7 @@ public class MegaSenaDTO {
 	private BigDecimal valorAcumulado;
 	private BigDecimal estimativaPremio;
 	private BigDecimal acumuladoMegadaVirada;
-	private Collection<NumeroDTO> numeroCollection;
+	private Collection<NumeroDTO> numerosSorteados;
 	public Integer getConcurso() {
 		return concurso;
 	}
@@ -112,11 +112,11 @@ public class MegaSenaDTO {
 	public void setAcumuladoMegadaVirada(BigDecimal acumuladoMegadaVirada) {
 		this.acumuladoMegadaVirada = acumuladoMegadaVirada;
 	}
-	public Collection<NumeroDTO> getNumeroCollection() {
-		return numeroCollection;
+	public Collection<NumeroDTO> getNumerosSorteados() {
+		return numerosSorteados;
 	}
-	public void setNumeroCollection(Collection<NumeroDTO> numeroCollection) {
-		this.numeroCollection = numeroCollection;
+	public void setNumerosSorteados(Collection<NumeroDTO> numerosSorteados) {
+		this.numerosSorteados = numerosSorteados;
 	}
 	
 	

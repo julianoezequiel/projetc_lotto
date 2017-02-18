@@ -30,6 +30,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author Juliano
@@ -98,12 +100,16 @@ public class Megasena implements Serializable {
     private BigDecimal estimativapremio;
     @Column(name = "acumuladomegadavirada")
     private BigDecimal acumuladomegadavirada;
+    
     @JoinTable(name = "megasenanumero", joinColumns = {
         @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")}, inverseJoinColumns = {
         @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")})
     @ManyToMany
+    @JsonIgnore
     private Collection<Numero> numeroCollection;
+    
     @OneToMany(mappedBy = "megasenaidconcurso")
+    @JsonIgnore
     private Collection<Palpite> palpiteCollection;
 
     public Megasena() {
@@ -300,7 +306,7 @@ public class Megasena implements Serializable {
     	numeroCollection.stream().forEach(n->{
     		numeroDTOList.add(n.toNumeroDTO());
     	});
-    	dto.setNumeroCollection(numeroDTOList);
+    	dto.setNumerosSorteados(numeroDTOList);
     	dto.setRateioQuadra(rateioquadra);
     	dto.setRateioQuina(rateioquina);
     	dto.setRateioSena(rateiosena);

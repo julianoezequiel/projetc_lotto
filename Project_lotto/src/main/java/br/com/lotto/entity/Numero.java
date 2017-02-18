@@ -22,6 +22,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author Juliano
@@ -55,11 +57,17 @@ public class Numero implements Serializable {
     @Size(max = 200)
     @Column(name = "extenso")
     private String extenso;
+    
     @ManyToMany(mappedBy = "numeroCollection")
+    @JsonIgnore
     private Collection<Megasena> megasenaCollection;
+    
     @ManyToMany(mappedBy = "numeroCollection")
+    @JsonIgnore
     private Collection<Lotofacil> lotofacilCollection;
+    
     @OneToMany(mappedBy = "numeroidnumero")
+    @JsonIgnore
     private Collection<Palpite> palpiteCollection;
 
     public Numero() {

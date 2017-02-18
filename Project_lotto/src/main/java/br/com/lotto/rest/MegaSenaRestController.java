@@ -4,7 +4,6 @@ import br.com.lotto.dto.MegaSenaDTO;
 import br.com.lotto.dto.atrazoDTO;
 import br.com.lotto.dto.frequenciaDTO;
 import java.util.Collection;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.lotto.entity.Megasena;
 import br.com.lotto.service.MegaSenaService;
+import br.com.lotto.service.ServiceException;
 
 @RestController
 @RequestMapping(value = "/rest/megasena")
@@ -31,7 +30,7 @@ public class MegaSenaRestController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value="{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Megasena> buscarPorId(@PathVariable Integer id) {
+	public ResponseEntity<MegaSenaDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
 		return new ResponseEntity<>(mgaSenaService.buscarPorId(id), HttpStatus.OK);
 	}
 	

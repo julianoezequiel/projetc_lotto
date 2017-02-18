@@ -1,9 +1,0 @@
-package br.com.lotto.dao;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import br.com.lotto.entity.Numero;
-
-public interface NumeroRepository extends JpaRepository<Numero, Integer> {
-
-}
