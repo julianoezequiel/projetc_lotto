@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.lotto.dao.MegaSenaRepository;
+import br.com.lotto.dto.Jogos;
 import br.com.lotto.dto.MegaSenaDTO;
 import br.com.lotto.dto.atrazoDTO;
 import br.com.lotto.dto.frequenciaDTO;
@@ -44,6 +45,20 @@ public class MegaSenaService {
 		Collection<MegaSenaDTO> list = new ArrayList<>();
 		this.megaSenaRepository.findAll().stream().forEach(s -> {
 			list.add(s.toMegaSenaDTO());
+		});
+		return list;
+	}
+
+	/**
+	 * Lista todos os concursos
+	 * 
+	 * @return
+	 */
+	public Collection<Jogos> buscartodosConcursos() {
+		List<Jogos> list = new ArrayList<>();
+
+		this.megaSenaRepository.findAll().stream().forEach(s -> {
+			list.add(new Jogos(s.getConcurso(), s.getNumeroCollection()));
 		});
 		return list;
 	}
@@ -86,39 +101,38 @@ public class MegaSenaService {
 	}
 
 	/**
-	 * Calcula os atrazos das dezenas
+	 * Calcula os atrazos das dezenas noc concursos realizados
 	 * 
 	 * @return
 	 */
 	public Collection<atrazoDTO> buscarAtrazos() {
 
 		// Busca os numeros na base
-		Collection<Numero> listaNumeros = this.numeroService.buscarTodos();
+		Collection<Jogos> listaNumeros = this.buscartodosConcursos();
 
 		List<atrazoDTO> listaAtrazo = new ArrayList<>();
 
-		Long ultimoConcurso = this.megaSenaRepository.count();
-		// realiza a interacao com a lista para recuperar todos os concursos
-		// listaNumeros.stream().forEach(numero -> {
-		// List<Megasena> listaMega = new ArrayList<>();
-		// listaMega.addAll(numero.getMegasenas1());
-		// listaMega.addAll(numero.getMegasenas2());
-		// listaMega.addAll(numero.getMegasenas3());
-		// listaMega.addAll(numero.getMegasenas4());
-		// listaMega.addAll(numero.getMegasenas5());
-		// listaMega.addAll(numero.getMegasenas6());
-		// Busca o ultimo concurso que a dezena aparece
-		// Megasena megasena = listaMega.stream()
-		// .sorted(Comparator.comparing(Megasena::getIdConcurso).reversed())
-		// .findFirst().orElse(null);
-		// if (megasena!=null) {
-		// //Calcula a diferenca do ultimo concurso realizado para o ultimo em
-		// que o numero apareceu
-		// int qtdAtrazo = ultimoConcurso.intValue() - megasena.getConcurso();
-		// listaAtrazo.add(new atrazoDTO(numero.getIdNumero(), qtdAtrazo));
-		// }
-		// });
+		Integer ultimoConcurso = listaNumeros.size();
 
+		Collection<Numero> numeros = this.numeroService.buscarTodos();
+
+		numeros.stream().filter(n -> !n.getMegasenaCollection().isEmpty()).forEach(numero -> {
+			System.out.println("Comparador : " + numero.toString());
+			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
+					.filter(jogos -> {
+						boolean achou = jogos.getNumeros().contains(numero);
+						if (achou) {
+							System.out.println("Comparando : " + jogos.getNumeros());
+							System.out.println("Macth : " + jogos.getConcurso());
+						}
+						return achou;
+					}).findFirst().orElse(null);
+			if (j != null) {
+				int qtdAtrazo = ultimoConcurso.intValue() - j.getConcurso();
+				listaAtrazo.add(new atrazoDTO(numero.getIdnumero(), qtdAtrazo));
+			}
+		});
+		System.out.println("Total match : " + listaAtrazo.size());
 		// Retorna a lista ordenada pelo maior atrazo
 		return listaAtrazo.stream().sorted(Comparator.comparing(atrazoDTO::getAtrazo).reversed())
 				.collect(Collectors.toList());

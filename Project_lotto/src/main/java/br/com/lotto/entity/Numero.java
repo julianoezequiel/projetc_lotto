@@ -164,7 +164,7 @@ public class Numero implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.lotto.entity.Numero[ idnumero=" + idnumero + " ]";
+        return "Numero : " + idnumero;
     }
     
      public NumeroDTO toNumeroDTO(){
