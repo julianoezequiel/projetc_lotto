@@ -1,0 +1,5 @@
+package br.com.lotto.dto;
+
+public class Jogos {
+
+}

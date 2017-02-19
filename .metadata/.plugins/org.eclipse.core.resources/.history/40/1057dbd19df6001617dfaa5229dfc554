@@ -1,0 +1,26 @@
+package br.com.lotto.dto;
+
+import java.util.Collection;
+
+public class Jogos {
+
+	private Integer concurso;
+	private Collection<Integer> numeros;
+
+	public Integer getConcurso() {
+		return concurso;
+	}
+
+	public void setConcurso(Integer concurso) {
+		this.concurso = concurso;
+	}
+
+	public Collection<Integer> getNumeros() {
+		return numeros;
+	}
+
+	public void setNumeros(Collection<Integer> numeros) {
+		this.numeros = numeros;
+	}
+
+}
