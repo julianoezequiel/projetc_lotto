@@ -14,7 +14,4 @@ public interface MegaSenaRepository extends JpaRepository<Megasena,Integer>{
 
 	@Query(value = "select numeroidnumero , count(*)  from megasenanumero group by numeroidnumero order by numeroidnumero asc",nativeQuery=true)
 	public Object[] getFrequencia();
-	
-	@Query(value = "select * from megasenanumero limit=:plimit(select numeroidnumero , count(*)  from megasenanumero group by numeroidnumero order by numeroidnumero asc)",nativeQuery=true)
-	public Object[] getFrequencia(@Param(value = "plimit") Integer plimit);
 }

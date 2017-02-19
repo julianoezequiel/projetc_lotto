@@ -38,7 +38,7 @@ public class FrequenciaAnalizeService {
 
 		Collection<FrequenciaDTO> frequencias = new ArrayList<>();
 		int count = 0;
-		Object[] objFreq = this.megaSenaRepository.getFrequencia(1);
+		Object[] objFreq = this.megaSenaRepository.getFrequencia();
 
 		if (objFreq.length > 0) {
 			for (; count < objFreq.length; count++) {
