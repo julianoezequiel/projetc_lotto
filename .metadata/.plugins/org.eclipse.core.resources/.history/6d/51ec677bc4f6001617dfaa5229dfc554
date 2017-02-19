@@ -1,0 +1,7 @@
+package br.com.lotto.dto;
+
+public class JogosContext {
+
+	public ConfiguracoesDTO configuracoesDTO;
+	public Jogos jogos;
+}

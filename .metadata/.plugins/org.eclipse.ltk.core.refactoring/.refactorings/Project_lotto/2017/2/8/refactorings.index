@@ -1,0 +1,14 @@
+1487512180117	Delete element
+1487512541842	Rename type 'FrequenciaServiceAnalize'
+1487512988531	Rename type 'FrequenciaServiceValidacao'
+1487521166692	Rename type 'atrazoDTO'
+1487521183210	Rename type 'frequenciaDTO'
+1487523442858	Rename type 'ConfiguracoesDTO'
+1487523473800	Rename type 'JogosContext'
+1487535319499	Rename method 'getTopFrequecia'
+1487535344803	Rename field 'frequenciaList'
+1487535618164	Rename type 'FrequenciaValidacaoService'
+1487535700107	Copy compilation unit
+1487535797254	Rename field 'topFrequencia'
+1487536095357	Rename field 'qtdAtrazo'
+1487536111000	Rename field 'qtdFrequencia'

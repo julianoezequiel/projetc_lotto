@@ -1,0 +1,34 @@
+package br.com.lotto.dto;
+
+import br.com.lotto.service.validacoes.Validacao;
+
+public class RespostaValidacao {
+
+	private Validacao validacao;
+	private Boolean aprovado;
+	
+	
+	public RespostaValidacao(Boolean aprovado) {
+		super();
+		this.aprovado = aprovado;
+	}
+	public RespostaValidacao(Validacao validacao, Boolean aprovado) {
+		super();
+		this.validacao = validacao;
+		this.aprovado = aprovado;
+	}
+	public Validacao getValidacao() {
+		return validacao;
+	}
+	public void setValidacao(Validacao validacao) {
+		this.validacao = validacao;
+	}
+	public Boolean getAprovado() {
+		return aprovado;
+	}
+	public void setAprovado(Boolean aprovado) {
+		this.aprovado = aprovado;
+	}
+	
+	
+}

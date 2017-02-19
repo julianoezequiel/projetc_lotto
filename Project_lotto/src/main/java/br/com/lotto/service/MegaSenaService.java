@@ -3,13 +3,9 @@
  */
 package br.com.lotto.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +14,16 @@ import org.springframework.stereotype.Service;
 import br.com.lotto.dao.MegaSenaRepository;
 import br.com.lotto.dto.Jogos;
 import br.com.lotto.dto.MegaSenaDTO;
-import br.com.lotto.dto.atrazoDTO;
-import br.com.lotto.dto.frequenciaDTO;
+import br.com.lotto.dto.RespostaValidacao;
+import br.com.lotto.dto.AtrazoDTO;
+import br.com.lotto.dto.Configuracoes;
+import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.entity.Megasena;
 import br.com.lotto.entity.Numero;
+import br.com.lotto.service.analize.AtrazoAnalizeService;
+import br.com.lotto.service.analize.FrequenciaAnalizeService;
+import br.com.lotto.service.validacoes.MaisFrequenteValidacaoService;
+import br.com.lotto.service.validacoes.MenosFrequenteValidacaoService;
 
 /**
  * @author Juliano
@@ -34,7 +36,16 @@ public class MegaSenaService {
 	private MegaSenaRepository megaSenaRepository;
 
 	@Autowired
-	private NumeroService numeroService;
+	private FrequenciaAnalizeService frequenciaAnalizeService;
+
+	@Autowired
+	private AtrazoAnalizeService atrazoAnalizeservice;
+
+	@Autowired
+	private MaisFrequenteValidacaoService maisFrequenteValidacaoService;
+	
+	@Autowired
+	private MenosFrequenteValidacaoService menosFrequenteValidacaoService;
 
 	/**
 	 * Lista todos os concursos
@@ -83,21 +94,8 @@ public class MegaSenaService {
 	 * 
 	 * @return
 	 */
-	public Collection<frequenciaDTO> buscarFrequencias() {
-
-		Collection<frequenciaDTO> frequencias = new ArrayList<>();
-		int count = 0;
-		Object[] objFreq = this.megaSenaRepository.getFrequencia();
-
-		if (objFreq.length > 0) {
-			for (; count < objFreq.length; count++) {
-				Object[] itemFrequencia = (Object[]) objFreq[count];
-				frequencias.add(new frequenciaDTO((Integer) itemFrequencia[0], (BigInteger) itemFrequencia[1]));
-
-			}
-		}
-
-		return frequencias;
+	public Collection<FrequenciaDTO> buscarFrequencias() {
+		return frequenciaAnalizeService.buscarFrequencias();
 	}
 
 	/**
@@ -105,37 +103,15 @@ public class MegaSenaService {
 	 * 
 	 * @return
 	 */
-	public Collection<atrazoDTO> buscarAtrazos() {
+	public Collection<AtrazoDTO> buscarAtrazos() {
+		return this.atrazoAnalizeservice.buscarAtrazos();
+	}
 
-		// Busca os numeros na base
-		Collection<Jogos> listaNumeros = this.buscartodosConcursos();
-
-		List<atrazoDTO> listaAtrazo = new ArrayList<>();
-
-		Integer ultimoConcurso = listaNumeros.size();
-
-		Collection<Numero> numeros = this.numeroService.buscarTodos();
-
-		numeros.stream().filter(n -> !n.getMegasenaCollection().isEmpty()).forEach(numero -> {
-			System.out.println("Comparador : " + numero.toString());
-			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
-					.filter(jogos -> {
-						boolean achou = jogos.getNumeros().contains(numero);
-						if (achou) {
-							System.out.println("Comparando : " + jogos.getNumeros());
-							System.out.println("Macth : " + jogos.getConcurso());
-						}
-						return achou;
-					}).findFirst().orElse(null);
-			if (j != null) {
-				int qtdAtrazo = ultimoConcurso.intValue() - j.getConcurso();
-				listaAtrazo.add(new atrazoDTO(numero.getIdnumero(), qtdAtrazo));
-			}
-		});
-		System.out.println("Total match : " + listaAtrazo.size());
-		// Retorna a lista ordenada pelo maior atrazo
-		return listaAtrazo.stream().sorted(Comparator.comparing(atrazoDTO::getAtrazo).reversed())
-				.collect(Collectors.toList());
+	public Collection<RespostaValidacao> validarFrequencia(Jogos jogos,Configuracoes config) {
+		Collection<RespostaValidacao> validacoes = new ArrayList<>();
+		validacoes.add(this.maisFrequenteValidacaoService.validar(config, jogos));
+		validacoes.add(this.menosFrequenteValidacaoService.validar(config, jogos));
+		return validacoes;
 	}
 
 }

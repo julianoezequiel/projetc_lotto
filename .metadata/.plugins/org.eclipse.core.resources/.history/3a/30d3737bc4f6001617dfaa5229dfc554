@@ -1,0 +1,9 @@
+package br.com.lotto.service.validacoes;
+
+import br.com.lotto.dto.ConfiguracoesDTO;
+import br.com.lotto.dto.Jogos;
+
+public interface Validacao {
+
+	public Boolean validar(ConfiguracoesDTO config,Jogos jogos);
+}

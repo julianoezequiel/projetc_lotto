@@ -1,0 +1,8 @@
+package br.com.lotto.service.validacoes;
+
+import br.com.lotto.dto.Jogos;
+
+public interface Validacao {
+
+	public Boolean validar(Integer qtd,Jogos jogos);
+}
