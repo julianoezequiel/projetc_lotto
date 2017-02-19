@@ -1,11 +1,11 @@
 package br.com.lotto.dto;
 
-public class Configuracoes {
+public class Configuracoes implements Cloneable{
 
-	private Integer maisAtrazado;
-	private Integer maisFrequente;
-	private Integer menosAtrazado;
-	private Integer menosFrequente;
+	private Integer maisAtrazado = 0;
+	private Integer maisFrequente = 0;
+	private Integer menosAtrazado = 0;
+	private Integer menosFrequente = 0;
 
 	public Integer getMaisAtrazado() {
 		return maisAtrazado;
@@ -39,4 +39,26 @@ public class Configuracoes {
 		this.menosFrequente = menosFrequente;
 	}
 
+	@Override
+	public String toString() {
+		
+		return "maisAtrazado :" + maisAtrazado 
+				+ " maisFrequente :" + maisFrequente
+				+ " menosAtrazado : " + menosAtrazado
+				+ " menosFrequente:" + menosFrequente;
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+	
+	public Configuracoes newIntance(){
+		try {
+			return (Configuracoes) this.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 }

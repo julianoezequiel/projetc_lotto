@@ -39,7 +39,7 @@ public class MaisFrequenteValidacaoService implements Validacao {
 	@Override
 	public RespostaValidacao validar(Configuracoes config, Jogos jogos) {
 
-		this.topFrequencia = this.frequenciaAnalizeservice.getTopMaisFrequente(config.getMaisFrequente());
+		this.topFrequencia = this.frequenciaAnalizeservice.getMaisFrequente(config.getMaisFrequente());
 
 		AtomicBoolean valido = new AtomicBoolean(false);
 

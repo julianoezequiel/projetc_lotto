@@ -12,3 +12,5 @@
 1487535797254	Rename field 'topFrequencia'
 1487536095357	Rename field 'qtdAtrazo'
 1487536111000	Rename field 'qtdFrequencia'
+1487536794846	Rename method 'getTopMaisFrequente'
+1487536808203	Rename method 'getTopMenosFrequente'

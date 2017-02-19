@@ -63,7 +63,13 @@ public class FrequenciaAnalizeService {
 		return this.buscarFrequencias(null, true);
 	}
 
-	public Collection<FrequenciaDTO> getTopMaisFrequente(Integer qtd) {
+	/**
+	 * Busca os numeros mais ferquentes de acordo com a quantidade passada.
+	 * 
+	 * @param qtd
+	 * @return
+	 */
+	public Collection<FrequenciaDTO> getMaisFrequente(Integer qtd) {
 		if (this.maisFrequenteList == null || Utils.adicionaMin(ultimaAtualizacao, 1).before(new Date())) {
 			System.out.println("Atualiza lista de maior frequencia");
 			ultimaAtualizacao = new Date();
@@ -73,16 +79,21 @@ public class FrequenciaAnalizeService {
 				.skip(this.maisFrequenteList.size() - (qtd != null ? qtd : this.maisFrequenteList.size()))
 				.limit(this.maisFrequenteList.size()).collect(Collectors.toList());
 	}
-	
 
-	public Collection<FrequenciaDTO> getTopMenosFrequente(Integer qtd) {
+	/**
+	 * Busca os numeros menos ferquentes de acordo com a quantidade passada.
+	 * 
+	 * @param qtd
+	 * @return
+	 */
+	public Collection<FrequenciaDTO> getMenosFrequente(Integer qtd) {
 		if (this.menosfrequenteList == null || Utils.adicionaMin(ultimaAtualizacao, 1).before(new Date())) {
 			System.out.println("Atualiza lista de menor frequencia");
 			ultimaAtualizacao = new Date();
 			this.menosfrequenteList = this.buscarFrequencias(null, true);
 		}
 		return this.menosfrequenteList.stream().sorted(Comparator.comparing(FrequenciaDTO::getFrequencia).reversed())
-				.skip(this.menosfrequenteList.size() - (qtd != null ? qtd : this.menosfrequenteList.size()))
+				.skip(this.menosfrequenteList.size() - (qtd != null ? qtd  : this.menosfrequenteList.size()))
 				.limit(this.menosfrequenteList.size()).collect(Collectors.toList());
 	}
 

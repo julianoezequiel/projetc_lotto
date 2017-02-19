@@ -8,6 +8,7 @@ import br.com.lotto.dto.AtrazoDTO;
 import br.com.lotto.dto.Configuracoes;
 import br.com.lotto.dto.FrequenciaDTO;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,11 @@ public class MegaSenaRestController {
 	@RequestMapping(method = RequestMethod.POST, value="/validarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<RespostaValidacao>> teste(@RequestBody JogosDTO jogosDTO) {
 		return new ResponseEntity<>(mgaSenaService.validarFrequencia(jogosDTO.getJogos(),jogosDTO.getConfiguracoes()), HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<HashMap<Long, Configuracoes>> analizar() {
+		return new ResponseEntity<>(mgaSenaService.analizar(), HttpStatus.OK);
 	}
 
 }
