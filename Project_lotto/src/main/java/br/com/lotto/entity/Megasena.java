@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.CascadeType;
 
 /**
  *
@@ -58,6 +59,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
     , @NamedQuery(name = "Megasena.findByEstimativapremio", query = "SELECT m FROM Megasena m WHERE m.estimativapremio = :estimativapremio")
     , @NamedQuery(name = "Megasena.findByAcumuladomegadavirada", query = "SELECT m FROM Megasena m WHERE m.acumuladomegadavirada = :acumuladomegadavirada")})
 public class Megasena implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "megasena")
+    private Collection<Megasenanumero> megasenanumeroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -101,12 +105,7 @@ public class Megasena implements Serializable {
     @Column(name = "acumuladomegadavirada")
     private BigDecimal acumuladomegadavirada;
     
-    @JoinTable(name = "megasenanumero", joinColumns = {
-        @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")}, inverseJoinColumns = {
-        @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")})
-    @ManyToMany
-    @JsonIgnore
-    private Collection<Numero> numeroCollection;
+    
     
     @OneToMany(mappedBy = "megasenaidconcurso")
     @JsonIgnore
@@ -247,14 +246,7 @@ public class Megasena implements Serializable {
         this.acumuladomegadavirada = acumuladomegadavirada;
     }
 
-    @XmlTransient
-    public Collection<Numero> getNumeroCollection() {
-        return numeroCollection;
-    }
-
-    public void setNumeroCollection(Collection<Numero> numeroCollection) {
-        this.numeroCollection = numeroCollection;
-    }
+  
 
     @XmlTransient
     public Collection<Palpite> getPalpiteCollection() {
@@ -303,8 +295,8 @@ public class Megasena implements Serializable {
     	dto.setGanhadoresQuina(ganhadoresquina);
     	dto.setGanhadoresSena(ganhadoressena);
     	Collection<NumeroDTO> numeroDTOList = new ArrayList<>();
-    	numeroCollection.stream().forEach(n->{
-    		numeroDTOList.add(n.toNumeroDTO());
+    	megasenanumeroCollection.stream().forEach(n->{
+    		numeroDTOList.add(n.getNumero().toNumeroDTO());
     	});
     	dto.setNumerosSorteados(numeroDTOList);
     	dto.setRateioQuadra(rateioquadra);
@@ -314,5 +306,14 @@ public class Megasena implements Serializable {
     	dto.setValorAcumulado(valoracumulado);
     	return dto;		
     	
+    }
+
+    @XmlTransient
+    public Collection<Megasenanumero> getMegasenanumeroCollection() {
+        return megasenanumeroCollection;
+    }
+
+    public void setMegasenanumeroCollection(Collection<Megasenanumero> megasenanumeroCollection) {
+        this.megasenanumeroCollection = megasenanumeroCollection;
     }
 }

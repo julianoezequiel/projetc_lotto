@@ -2,22 +2,23 @@ package br.com.lotto.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import br.com.lotto.entity.Megasenanumero;
 import br.com.lotto.entity.Numero;
 
 public class Jogos {
 
 	private Integer concurso;
-	private Collection<Numero> numeros = new ArrayList<>();
+	private Collection<Megasenanumero> numeros = new ArrayList<>();
 
-	
-	public Jogos(Integer concurso, Collection<Numero> numeros) {
+	public Jogos(Integer concurso, Collection<Megasenanumero> numeros) {
 		super();
 		this.concurso = concurso;
 		this.numeros = numeros;
 	}
-	
-	public Jogos(Collection<Numero> numeros) {
+
+	public Jogos(Collection<Megasenanumero> numeros) {
 		super();
 		this.numeros = numeros;
 	}
@@ -34,12 +35,24 @@ public class Jogos {
 		this.concurso = concurso;
 	}
 
-	public Collection<Numero> getNumeros() {
+	public Collection<Megasenanumero> getNumeros() {
 		return numeros;
 	}
 
-	public void setNumeros(Collection<Numero> numeros) {
+	public void setNumeros(Collection<Megasenanumero> numeros) {
 		this.numeros = numeros;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		List<String> list = new ArrayList<>();
+		if (!this.numeros.isEmpty()) {
+			this.numeros.stream().forEach(n -> {
+				list.add(n.toString());
+			});
+		}
+		return "Concurso : " + this.getConcurso() + " - " + list.toString();
 	}
 
 }

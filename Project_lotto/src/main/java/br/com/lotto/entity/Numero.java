@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.CascadeType;
 
 /**
  *
@@ -38,6 +39,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
     , @NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num")
     , @NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso")})
 public class Numero implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+    private Collection<Megasenanumero> megasenanumeroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -57,10 +61,6 @@ public class Numero implements Serializable {
     @Size(max = 200)
     @Column(name = "extenso")
     private String extenso;
-    
-    @ManyToMany(mappedBy = "numeroCollection")
-    @JsonIgnore
-    private Collection<Megasena> megasenaCollection;
     
     @ManyToMany(mappedBy = "numeroCollection")
     @JsonIgnore
@@ -115,14 +115,6 @@ public class Numero implements Serializable {
         this.extenso = extenso;
     }
 
-    @XmlTransient
-    public Collection<Megasena> getMegasenaCollection() {
-        return megasenaCollection;
-    }
-
-    public void setMegasenaCollection(Collection<Megasena> megasenaCollection) {
-        this.megasenaCollection = megasenaCollection;
-    }
 
     @XmlTransient
     public Collection<Lotofacil> getLotofacilCollection() {
@@ -170,5 +162,14 @@ public class Numero implements Serializable {
      public NumeroDTO toNumeroDTO(){
         NumeroDTO dto = new NumeroDTO(this.idnumero);
         return dto;
+    }
+
+    @XmlTransient
+    public Collection<Megasenanumero> getMegasenanumeroCollection() {
+        return megasenanumeroCollection;
+    }
+
+    public void setMegasenanumeroCollection(Collection<Megasenanumero> megasenanumeroCollection) {
+        this.megasenanumeroCollection = megasenanumeroCollection;
     }
 }

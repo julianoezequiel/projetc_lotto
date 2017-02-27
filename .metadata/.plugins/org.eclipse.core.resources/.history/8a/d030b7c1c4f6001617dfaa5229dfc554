@@ -1,7 +1,0 @@
-package br.com.lotto.dto;
-
-public class JogosDTO {
-
-	public Configuracoes configuracoes;
-	public Jogos jogos;
-}

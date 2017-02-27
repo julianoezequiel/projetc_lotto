@@ -1,9 +1,0 @@
-1486689205238	Delete elements
-1486847020236	Delete elements
-1486847704120	Delete elements
-1486848351777	Rename type 'ConcursoMegaSenaRestController'
-1486848370910	Rename type 'ConcursoMegaSenaRepository'
-1486848393169	Rename type 'ConcursoMegaSenaService'
-1486848434473	Rename field 'concursoMegaSenaService'
-1486848497631	Rename field 'concursoMegaSenaRepository'
-1486851435620	Rename local variable 'l'

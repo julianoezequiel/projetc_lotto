@@ -1,6 +1,6 @@
 package br.com.lotto.dto;
 
-import br.com.lotto.service.validacoes.Validacao;
+import br.com.lotto.service.Validacao;
 
 public class RespostaValidacao {
 

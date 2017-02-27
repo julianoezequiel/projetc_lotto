@@ -1,8 +1,0 @@
-package br.com.lotto.service.analize;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public class AtrazoAnalizeService {
-
-}

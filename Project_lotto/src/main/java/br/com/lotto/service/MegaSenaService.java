@@ -9,25 +9,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.lotto.dao.MegaSenaRepository;
-import br.com.lotto.dto.Jogos;
-import br.com.lotto.dto.MegaSenaDTO;
-import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.dto.AtrazoDTO;
 import br.com.lotto.dto.Configuracoes;
 import br.com.lotto.dto.FrequenciaDTO;
+import br.com.lotto.dto.Jogos;
+import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.entity.Megasena;
-import br.com.lotto.entity.Numero;
-import br.com.lotto.service.analize.AtrazoAnalizeService;
-import br.com.lotto.service.analize.FrequenciaAnalizeService;
-import br.com.lotto.service.validacoes.MaisFrequenteValidacaoService;
-import br.com.lotto.service.validacoes.MenosFrequenteValidacaoService;
+import br.com.lotto.service.frequencia.FrequenciaService;
+import br.com.lotto.service.frequencia.analise.AnaliseAtrazo;
+import br.com.lotto.service.frequencia.validacao.ValidacaoMaisFrequente;
+import br.com.lotto.service.frequencia.validacao.ValidacaoMenosFrequente;
 
 /**
  * @author Juliano
@@ -40,16 +38,16 @@ public class MegaSenaService {
 	private MegaSenaRepository megaSenaRepository;
 
 	@Autowired
-	private FrequenciaAnalizeService frequenciaAnalizeService;
+	private FrequenciaService frequenciaService;
 
 	@Autowired
-	private AtrazoAnalizeService atrazoAnalizeservice;
+	private AnaliseAtrazo atrazoAnalizeservice;
 
 	@Autowired
-	private MaisFrequenteValidacaoService maisFrequenteValidacaoService;
+	private ValidacaoMaisFrequente maisFrequenteValidacaoService;
 
 	@Autowired
-	private MenosFrequenteValidacaoService menosFrequenteValidacaoService;
+	private ValidacaoMenosFrequente menosFrequenteValidacaoService;
 
 	/**
 	 * Lista todos os concursos
@@ -73,7 +71,16 @@ public class MegaSenaService {
 		List<Jogos> list = new ArrayList<>();
 
 		this.megaSenaRepository.findAll().stream().forEach(s -> {
-			list.add(new Jogos(s.getConcurso(), s.getNumeroCollection()));
+			list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
+		});
+		return list;
+	}
+
+	public Collection<Jogos> buscarMenorQueConcursos(Integer id) {
+		List<Jogos> list = new ArrayList<>();
+
+		this.megaSenaRepository.buscarMenorQue(id).stream().forEach(s -> {
+			list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
 		});
 		return list;
 	}
@@ -99,7 +106,7 @@ public class MegaSenaService {
 	 * @return
 	 */
 	public Collection<FrequenciaDTO> buscarFrequencias() {
-		return frequenciaAnalizeService.buscarFrequencias();
+		return frequenciaService.buscarFrequencias();
 	}
 
 	/**
@@ -123,35 +130,49 @@ public class MegaSenaService {
 	private int passo = 0;
 	private Long max = 0l;
 
-	public HashMap<Long, Configuracoes> analizar() {
+	public HashMap<Long, Configuracoes> iniciarAnalize() {
 		max = 0l;
 		totalTentativas = 1000;
 		passo = 0;
 		melhorConfig = new HashMap<>();
-		Collection<Jogos> jogos = this.buscartodosConcursos();
-		return analizar(jogos);
+
+		return analizar();
 	}
 
-	public HashMap<Long, Configuracoes> analizar(Collection<Jogos> jogos) {
-		Configuracoes config = getConfigDefault();
-		Collection<RespostaValidacao> validacoes = new ArrayList<>();
-		jogos.stream().forEach(jogo -> {
-			validacoes.add(this.maisFrequenteValidacaoService.validar(config, jogo));
-			validacoes.add(this.menosFrequenteValidacaoService.validar(config, jogo));
-		});
+	private Configuracoes config = new Configuracoes();
 
-		long subTotal = validacoes.stream().filter(f -> f.getAprovado().equals(true)).count();
+	public HashMap<Long, Configuracoes> analizar() {
 
-		if (subTotal > max) {
-			max = subTotal;
-			melhorConfig.clear();
-			melhorConfig.put(max, config.newIntance());
+		long totalJogos = this.megaSenaRepository.count();
+
+		while (totalJogos > 0) {
+			config = getConfigDefault();
+			Collection<Jogos> jogos = this.buscarMenorQueConcursos(config.getMaisFrequente());
+			Collection<RespostaValidacao> validacoes = new ArrayList<>();
+
+			jogos.stream().forEach(jogo -> {
+				System.out.println("Jogo : " + jogo.toString());
+				validacoes.add(this.maisFrequenteValidacaoService.validar(config, jogo));
+				validacoes.add(this.menosFrequenteValidacaoService.validar(config, jogo));
+			});
+
+			long subTotal = validacoes.stream().filter(f -> f.getAprovado().equals(true)).count();
+
+			if (subTotal > max) {
+
+				max = subTotal;
+				melhorConfig.put(max, config.newIntance());
+				System.out.println(melhorConfig.values().toArray());
+			}
+
+			totalJogos--;
+			System.out.println("Total de jogos : " + totalJogos);
 		}
 
 		if (config.getMaisFrequente() != 60 || config.getMenosFrequente() != 60) {
 			passo++;
 			System.out.println("Teste : " + passo + " validação : " + config.toString());
-			analizar(jogos);
+			analizar();
 		}
 
 		return melhorConfig;
@@ -164,9 +185,8 @@ public class MegaSenaService {
 
 		// configuracoes.setMaisAtrazado(getnumRand());
 		this.configuracoes.setMaisFrequente(
-				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60 
-					? this.configuracoes.getMaisFrequente() + 1 
-						: this.configuracoes.getMaisFrequente());
+				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
+						? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
 		// configuracoes.setMenosAtrazado(getnumRand());
 		this.configuracoes.setMenosFrequente(
 				this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);

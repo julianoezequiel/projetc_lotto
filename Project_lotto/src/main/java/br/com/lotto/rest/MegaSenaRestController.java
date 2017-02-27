@@ -57,7 +57,7 @@ public class MegaSenaRestController {
 	
 	@RequestMapping(method = RequestMethod.GET, value="/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<HashMap<Long, Configuracoes>> analizar() {
-		return new ResponseEntity<>(mgaSenaService.analizar(), HttpStatus.OK);
+		return new ResponseEntity<>(mgaSenaService.iniciarAnalize(), HttpStatus.OK);
 	}
 
 }

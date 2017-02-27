@@ -1,7 +1,0 @@
-package br.com.lotto.dto;
-
-import br.com.lotto.entity.Megasena;
-
-public class MegaSenaDTO extends Megasena{
-
-}
