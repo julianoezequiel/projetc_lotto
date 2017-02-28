@@ -20,44 +20,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lotto.service.MegaSenaResultadoSimples;
 import br.com.lotto.service.MegaSenaService;
 import br.com.lotto.service.ServiceException;
 
 @RestController
 @RequestMapping(value = "/rest/megasena")
 public class MegaSenaRestController {
-	
+
 	@Autowired
-	private MegaSenaService mgaSenaService;
-	
+	private MegaSenaService megaSenaService;
+
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<MegaSenaDTO>> listar() {
-		return new ResponseEntity<>(mgaSenaService.buscartodos(), HttpStatus.OK);
+		return new ResponseEntity<>(megaSenaService.buscartodos(), HttpStatus.OK);
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@RequestMapping(value = "simples", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Collection<MegaSenaResultadoSimples>> listarSimples() {
+		return new ResponseEntity<>(megaSenaService.buscartodosSimples(), HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MegaSenaDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
-		return new ResponseEntity<>(mgaSenaService.buscarPorId(id), HttpStatus.OK);
+		return new ResponseEntity<>(megaSenaService.buscarPorId(id), HttpStatus.OK);
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="/frequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@RequestMapping(method = RequestMethod.GET, value = "/frequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<FrequenciaDTO>> buscarFrequencias() {
-		return new ResponseEntity<>(mgaSenaService.buscarFrequencias(), HttpStatus.OK);
+		return new ResponseEntity<>(megaSenaService.buscarFrequencias(), HttpStatus.OK);
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="/atrazo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<AtrazoDTO> > buscarAtrazos() {
-		return new ResponseEntity<>(mgaSenaService.buscarAtrazos(), HttpStatus.OK);
+
+	@RequestMapping(method = RequestMethod.GET, value = "/atrazo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Collection<AtrazoDTO>> buscarAtrazos() {
+		return new ResponseEntity<>(megaSenaService.buscarAtrazos(), HttpStatus.OK);
 	}
-	
-	@RequestMapping(method = RequestMethod.POST, value="/validarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<RespostaValidacao>> teste(@RequestBody JogosDTO jogosDTO) {
-		return new ResponseEntity<>(mgaSenaService.validarFrequencia(jogosDTO.getJogos(),jogosDTO.getConfiguracoes()), HttpStatus.OK);
-	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	/**
+	 * Metodo para realizar a analise recursiva de frequencia dos numeros
+	 * sorteados, ojetivo sera conseguir uma configuracao mais apropriada para
+	 * utilizar na validacao. A cada sorteio realizado, devera verrificar qual
+	 * numero mais e menos frequante foram sorteados
+	 * 
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<HashMap<Long, Configuracoes>> analizar() {
-		return new ResponseEntity<>(mgaSenaService.iniciarAnalize(), HttpStatus.OK);
+		return new ResponseEntity<>(this.megaSenaService.iniciarAnalise(), HttpStatus.OK);
 	}
 
 }

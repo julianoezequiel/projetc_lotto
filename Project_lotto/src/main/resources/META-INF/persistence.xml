@@ -11,6 +11,8 @@
     <class>br.com.lotto.entity.Numeromegasena</class>
     <class>br.com.lotto.entity.NumeroHasMegasena</class>
     <class>br.com.lotto.entity.Megasenanumero</class>
+    <class>br.com.lotto.entity.Palpitenumero</class>
+    <class>br.com.lotto.entity.Lotofacilnumero</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/project_lotto_db?zeroDateTimeBehavior=convertToNull"/>

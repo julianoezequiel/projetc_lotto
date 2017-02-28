@@ -1,8 +1,4 @@
-1488213064254	Rename package 'br.com.lotto.service.frequencia.analize'
-1488213080908	Rename type 'AnalizeFrequencia'
-1488213102074	Rename type 'AtrazoAnalizeService'
-1488213124143	Rename type 'AtrazoAnalise'
-1488213166705	Rename type 'MaisFrequenteValidacaoService'
-1488213175954	Rename type 'MenosFrequenteValidacaoService'
-1488213213590	Rename type 'MaisFrequente'
-1488213223330	Rename type 'MenosFrequente'
+1488233882273	Rename field 'Sorteio'
+1488294673828	Rename local variable 'achou'
+1488295138945	Delete element
+1488295157105	Rename type 'ValidacaoMaisFrequente'

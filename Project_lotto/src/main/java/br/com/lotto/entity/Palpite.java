@@ -6,7 +6,9 @@
 package br.com.lotto.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,9 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,9 +46,10 @@ public class Palpite implements Serializable {
     @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")
     @ManyToOne
     private Megasena megasenaidconcurso;
-    @JoinColumn(name = "numeroidnumero", referencedColumnName = "idnumero")
-    @ManyToOne
-    private Numero numeroidnumero;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "palpite")
+    private Collection<Palpitenumero> palpitenumeroCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpalpite")
+    private Collection<Configuracoes> configuracoesCollection;
 
     public Palpite() {
     }
@@ -77,12 +82,22 @@ public class Palpite implements Serializable {
         this.megasenaidconcurso = megasenaidconcurso;
     }
 
-    public Numero getNumeroidnumero() {
-        return numeroidnumero;
+    @XmlTransient
+    public Collection<Palpitenumero> getPalpitenumeroCollection() {
+        return palpitenumeroCollection;
     }
 
-    public void setNumeroidnumero(Numero numeroidnumero) {
-        this.numeroidnumero = numeroidnumero;
+    public void setPalpitenumeroCollection(Collection<Palpitenumero> palpitenumeroCollection) {
+        this.palpitenumeroCollection = palpitenumeroCollection;
+    }
+
+    @XmlTransient
+    public Collection<Configuracoes> getConfiguracoesCollection() {
+        return configuracoesCollection;
+    }
+
+    public void setConfiguracoesCollection(Collection<Configuracoes> configuracoesCollection) {
+        this.configuracoesCollection = configuracoesCollection;
     }
 
     @Override

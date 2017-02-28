@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -56,6 +57,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Lotofacil.findByEstimativapremio", query = "SELECT l FROM Lotofacil l WHERE l.estimativapremio = :estimativapremio")
     , @NamedQuery(name = "Lotofacil.findByValoracumuladoespecial", query = "SELECT l FROM Lotofacil l WHERE l.valoracumuladoespecial = :valoracumuladoespecial")})
 public class Lotofacil implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lotofacil")
+    private Collection<Lotofacilnumero> lotofacilnumeroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -311,6 +315,15 @@ public class Lotofacil implements Serializable {
     @Override
     public String toString() {
         return "br.com.lotto.entity.Lotofacil[ idlotofacil=" + idlotofacil + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Lotofacilnumero> getLotofacilnumeroCollection() {
+        return lotofacilnumeroCollection;
+    }
+
+    public void setLotofacilnumeroCollection(Collection<Lotofacilnumero> lotofacilnumeroCollection) {
+        this.lotofacilnumeroCollection = lotofacilnumeroCollection;
     }
     
 }

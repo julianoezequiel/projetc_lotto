@@ -7,7 +7,6 @@ import br.com.lotto.dto.Configuracoes;
 import br.com.lotto.dto.Jogos;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.service.Validacao;
-import br.com.lotto.service.frequencia.analise.AnaliseAtrazo;
 
 @Service
 public class AtrazoValicacaoService implements Validacao{

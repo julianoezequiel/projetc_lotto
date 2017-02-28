@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -42,6 +44,10 @@ public class Numero implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
     private Collection<Megasenanumero> megasenanumeroCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+    private Collection<Palpitenumero> palpitenumeroCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+    private Collection<Lotofacilnumero> lotofacilnumeroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,14 +67,10 @@ public class Numero implements Serializable {
     @Size(max = 200)
     @Column(name = "extenso")
     private String extenso;
-    
+
     @ManyToMany(mappedBy = "numeroCollection")
     @JsonIgnore
     private Collection<Lotofacil> lotofacilCollection;
-    
-    @OneToMany(mappedBy = "numeroidnumero")
-    @JsonIgnore
-    private Collection<Palpite> palpiteCollection;
 
     public Numero() {
     }
@@ -115,7 +117,6 @@ public class Numero implements Serializable {
         this.extenso = extenso;
     }
 
-
     @XmlTransient
     public Collection<Lotofacil> getLotofacilCollection() {
         return lotofacilCollection;
@@ -123,15 +124,6 @@ public class Numero implements Serializable {
 
     public void setLotofacilCollection(Collection<Lotofacil> lotofacilCollection) {
         this.lotofacilCollection = lotofacilCollection;
-    }
-
-    @XmlTransient
-    public Collection<Palpite> getPalpiteCollection() {
-        return palpiteCollection;
-    }
-
-    public void setPalpiteCollection(Collection<Palpite> palpiteCollection) {
-        this.palpiteCollection = palpiteCollection;
     }
 
     @Override
@@ -158,8 +150,8 @@ public class Numero implements Serializable {
     public String toString() {
         return "Numero : " + idnumero;
     }
-    
-     public NumeroDTO toNumeroDTO(){
+
+    public NumeroDTO toNumeroDTO() {
         NumeroDTO dto = new NumeroDTO(this.idnumero);
         return dto;
     }
@@ -172,4 +164,23 @@ public class Numero implements Serializable {
     public void setMegasenanumeroCollection(Collection<Megasenanumero> megasenanumeroCollection) {
         this.megasenanumeroCollection = megasenanumeroCollection;
     }
+
+    @XmlTransient
+    public Collection<Palpitenumero> getPalpitenumeroCollection() {
+        return palpitenumeroCollection;
+    }
+
+    public void setPalpitenumeroCollection(Collection<Palpitenumero> palpitenumeroCollection) {
+        this.palpitenumeroCollection = palpitenumeroCollection;
+    }
+
+    @XmlTransient
+    public Collection<Lotofacilnumero> getLotofacilnumeroCollection() {
+        return lotofacilnumeroCollection;
+    }
+
+    public void setLotofacilnumeroCollection(Collection<Lotofacilnumero> lotofacilnumeroCollection) {
+        this.lotofacilnumeroCollection = lotofacilnumeroCollection;
+    }
+
 }

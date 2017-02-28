@@ -10,6 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,6 +29,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Configuracoes.findAll", query = "SELECT c FROM Configuracoes c")
     , @NamedQuery(name = "Configuracoes.findByIdconfiguracoes", query = "SELECT c FROM Configuracoes c WHERE c.idconfiguracoes = :idconfiguracoes")})
 public class Configuracoes implements Serializable {
+
+    @Column(name = "maisfrequente")
+    private Integer maisfrequente;
+    @Column(name = "menosfrequente")
+    private Integer menosfrequente;
+    @Column(name = "atrazo")
+    private Integer atrazo;
+    @JoinColumn(name = "idpalpite", referencedColumnName = "idpalpite")
+    @ManyToOne(optional = false)
+    private Palpite idpalpite;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -73,6 +85,38 @@ public class Configuracoes implements Serializable {
     @Override
     public String toString() {
         return "br.com.lotto.entity.Configuracoes[ idconfiguracoes=" + idconfiguracoes + " ]";
+    }
+
+    public Integer getMaisfrequente() {
+        return maisfrequente;
+    }
+
+    public void setMaisfrequente(Integer maisfrequente) {
+        this.maisfrequente = maisfrequente;
+    }
+
+    public Integer getMenosfrequente() {
+        return menosfrequente;
+    }
+
+    public void setMenosfrequente(Integer menosfrequente) {
+        this.menosfrequente = menosfrequente;
+    }
+
+    public Integer getAtrazo() {
+        return atrazo;
+    }
+
+    public void setAtrazo(Integer atrazo) {
+        this.atrazo = atrazo;
+    }
+
+    public Palpite getIdpalpite() {
+        return idpalpite;
+    }
+
+    public void setIdpalpite(Palpite idpalpite) {
+        this.idpalpite = idpalpite;
     }
     
 }

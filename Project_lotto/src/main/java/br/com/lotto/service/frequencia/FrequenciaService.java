@@ -43,7 +43,7 @@ public class FrequenciaService {
 
 		// for (int i = 1; i <= 60; i++) {
 
-		List<Object[]> list = this.megaSenaRepository.getFrequencia(config.getMaisFrequente());
+		Collection<Object[]> list = this.megaSenaRepository.getFrequencia(config.getMaisFrequente());
 
 		if (!list.isEmpty()) {
 			list.stream().forEach(o -> {
@@ -65,7 +65,19 @@ public class FrequenciaService {
 	}
 
 	public Collection<FrequenciaDTO> buscarFrequencias() {
-		return this.buscarFrequencias(null, true, new Configuracoes());
+		Collection<FrequenciaDTO> frequencias = new ArrayList<>();
+		Long total = this.megaSenaRepository.count();
+		Collection<Object[]> list = this.megaSenaRepository.getFrequencia(total.intValue());
+
+		if (!list.isEmpty()) {
+			list.stream().forEach(o -> {
+				Object[] itemFrequencia = (Object[]) o;
+				BigInteger media = new BigInteger(total.toString()).divide(((BigInteger) itemFrequencia[1]));
+				frequencias.add(new FrequenciaDTO((Integer) itemFrequencia[0], (BigInteger) itemFrequencia[1], media));
+			});
+		}
+		return frequencias.stream().sorted(Comparator.comparing(FrequenciaDTO::getMedia).reversed())
+				.collect(Collectors.toList());
 	}
 
 	/**
