@@ -18,10 +18,16 @@ import javax.validation.constraints.NotNull;
 @Embeddable
 public class PalpitenumeroPK implements Serializable {
 
-    @Basic(optional = false)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Basic(optional = false)
     @NotNull
     @Column(name = "idpalpite")
     private int idpalpite;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "idnumero")

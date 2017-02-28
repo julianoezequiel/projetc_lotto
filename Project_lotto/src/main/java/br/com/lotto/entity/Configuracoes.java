@@ -32,15 +32,19 @@ public class Configuracoes implements Serializable {
 
     @Column(name = "maisfrequente")
     private Integer maisfrequente;
+    
     @Column(name = "menosfrequente")
     private Integer menosfrequente;
-    @Column(name = "atrazo")
-    private Integer atrazo;
+    
+    @Column(name = "atraso")
+    private Integer atraso;
+    
     @JoinColumn(name = "idpalpite", referencedColumnName = "idpalpite")
     @ManyToOne(optional = false)
     private Palpite idpalpite;
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
@@ -103,12 +107,12 @@ public class Configuracoes implements Serializable {
         this.menosfrequente = menosfrequente;
     }
 
-    public Integer getAtrazo() {
-        return atrazo;
+    public Integer getAtraso() {
+        return atraso;
     }
 
-    public void setAtrazo(Integer atrazo) {
-        this.atrazo = atrazo;
+    public void setAtrassssso(Integer atraso) {
+        this.atraso = atraso;
     }
 
     public Palpite getIdpalpite() {

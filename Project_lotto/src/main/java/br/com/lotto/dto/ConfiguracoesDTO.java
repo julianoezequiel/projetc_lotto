@@ -1,6 +1,6 @@
 package br.com.lotto.dto;
 
-public class Configuracoes implements Cloneable{
+public class ConfiguracoesDTO implements Cloneable{
 
 	private Integer maisAtrazado = 0;
 	private Integer maisFrequente = 0;
@@ -54,9 +54,9 @@ public class Configuracoes implements Cloneable{
 		return super.clone();
 	}
 	
-	public Configuracoes newIntance(){
+	public ConfiguracoesDTO newIntance(){
 		try {
-			return (Configuracoes) this.clone();
+			return (ConfiguracoesDTO) this.clone();
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}

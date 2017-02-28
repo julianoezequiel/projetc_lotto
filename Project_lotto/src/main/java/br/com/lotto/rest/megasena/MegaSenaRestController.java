@@ -1,4 +1,4 @@
-package br.com.lotto.rest;
+package br.com.lotto.rest.megasena;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.lotto.dto.AtrazoDTO;
-import br.com.lotto.dto.Configuracoes;
+import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.MegaSenaDTO;
-import br.com.lotto.service.MegaSenaResultadoSimples;
-import br.com.lotto.service.MegaSenaService;
+import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.service.ServiceException;
+import br.com.lotto.service.megasena.MegaSenaService;
 
 @RestController
 @RequestMapping(value = "/rest/megasena")
@@ -61,7 +61,7 @@ public class MegaSenaRestController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<HashMap<Long, Configuracoes>> analizar() {
+	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analizar() {
 		return new ResponseEntity<>(this.megaSenaService.iniciarAnalise(), HttpStatus.OK);
 	}
 

@@ -2,12 +2,12 @@ package br.com.lotto.dto;
 
 public class JogosDTO {
 
-	private Configuracoes configuracoes;
+	private ConfiguracoesDTO configuracoes;
 	private Jogos jogos;
-	public Configuracoes getConfiguracoes() {
+	public ConfiguracoesDTO getConfiguracoes() {
 		return configuracoes;
 	}
-	public void setConfiguracoes(Configuracoes configuracoes) {
+	public void setConfiguracoes(ConfiguracoesDTO configuracoes) {
 		this.configuracoes = configuracoes;
 	}
 	public Jogos getJogos() {

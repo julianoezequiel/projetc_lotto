@@ -1,4 +1,4 @@
-package br.com.lotto.service.atrazo;
+package br.com.lotto.service.megasena.atraso.analise;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import br.com.lotto.dto.AtrazoDTO;
 import br.com.lotto.dto.Jogos;
 import br.com.lotto.entity.Numero;
-import br.com.lotto.service.MegaSenaService;
-import br.com.lotto.service.NumeroService;
+import br.com.lotto.service.megasena.MegaSenaService;
+import br.com.lotto.service.numero.NumeroService;
 
 @Service
-public class AnaliseAtrazo {
+public class AnaliseAtraso {
 
 	@Autowired
 	private NumeroService numeroService;

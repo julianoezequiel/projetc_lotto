@@ -1,4 +1,4 @@
-package br.com.lotto.service;
+package br.com.lotto.dto;
 
 public class MegaSenaResultadoSimples {
 

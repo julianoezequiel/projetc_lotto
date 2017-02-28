@@ -1,4 +1,4 @@
-package br.com.lotto.service.frequencia.analise;
+package br.com.lotto.service.megasena.frequencia.analise;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -7,21 +7,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.lotto.dao.MegaSenaRepository;
-import br.com.lotto.dto.Configuracoes;
-import br.com.lotto.entity.Megasena;
 import br.com.lotto.service.Analize;
 
 @Service
 public class AnaliseFrequencia implements Analize {
-
-	private Configuracoes configuracoes = new Configuracoes();
 
 	@Autowired
 	private MegaSenaRepository megaSenaRepository;

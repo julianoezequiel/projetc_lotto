@@ -1,7 +1,7 @@
 /**
  *
  */
-package br.com.lotto.service;
+package br.com.lotto.service.megasena;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,16 +16,18 @@ import org.springframework.stereotype.Service;
 
 import br.com.lotto.dao.MegaSenaRepository;
 import br.com.lotto.dto.AtrazoDTO;
-import br.com.lotto.dto.Configuracoes;
+import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.Jogos;
 import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.entity.Megasena;
-import br.com.lotto.service.atrazo.AnaliseAtrazo;
-import br.com.lotto.service.frequencia.FrequenciaService;
-import br.com.lotto.service.frequencia.analise.AnaliseFrequencia;
-import br.com.lotto.service.frequencia.validacao.ValidacaoFrequente;
+import br.com.lotto.service.ServiceException;
+import br.com.lotto.service.megasena.atraso.analise.AnaliseAtraso;
+import br.com.lotto.service.megasena.frequencia.FrequenciaService;
+import br.com.lotto.service.megasena.frequencia.analise.AnaliseFrequencia;
+import br.com.lotto.service.megasena.frequencia.validacao.ValidacaoFrequente;
 
 /**
  * @author Juliano
@@ -41,7 +43,7 @@ public class MegaSenaService {
     private FrequenciaService frequenciaService;
 
     @Autowired
-    private AnaliseAtrazo atrazoAnalizeservice;
+    private AnaliseAtraso atrazoAnalizeservice;
 
     @Autowired
     private AnaliseFrequencia analiseFrequencia;
@@ -135,12 +137,12 @@ public class MegaSenaService {
         return this.atrazoAnalizeservice.buscarAtrazos();
     }
 
-    private HashMap<Long, Configuracoes> melhorConfig = new HashMap<>();
+    private HashMap<Long, ConfiguracoesDTO> melhorConfig = new HashMap<>();
     private int totalTentativas = 1000;
     private int passo = 0;
     private Long max = 0l;
 
-    public HashMap<Long, Configuracoes> iniciarAnalise() {
+    public HashMap<Long, ConfiguracoesDTO> iniciarAnalise() {
         max = 0l;
         totalTentativas = 1000;
         passo = 0;
@@ -149,9 +151,9 @@ public class MegaSenaService {
         return analizar();
     }
 
-    private Configuracoes config = new Configuracoes();
+    private ConfiguracoesDTO config = new ConfiguracoesDTO();
 
-    public HashMap<Long, Configuracoes> analizar() {
+    public HashMap<Long, ConfiguracoesDTO> analizar() {
 
         analiseFrequencia.init();
 
@@ -196,9 +198,9 @@ public class MegaSenaService {
 
     }
 
-    Configuracoes configuracoes = new Configuracoes();
+    ConfiguracoesDTO configuracoes = new ConfiguracoesDTO();
 
-    public Configuracoes getConfigDefault() {
+    public ConfiguracoesDTO getConfigDefault() {
 
         // configuracoes.setMaisAtrazado(getnumRand());
         this.configuracoes.setMaisFrequente(

@@ -1,5 +1,6 @@
-package br.com.lotto.entity;
+package br.com.lotto.dto;
 
+import br.com.lotto.entity.Configuracoes;
 import br.com.lotto.service.Validacao;
 
 public class ResultadoAnalize {

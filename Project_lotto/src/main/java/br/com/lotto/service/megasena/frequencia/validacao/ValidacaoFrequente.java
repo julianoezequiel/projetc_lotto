@@ -1,4 +1,4 @@
-package br.com.lotto.service.frequencia.validacao;
+package br.com.lotto.service.megasena.frequencia.validacao;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -6,18 +6,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.lotto.dto.Configuracoes;
+import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
-import br.com.lotto.dto.Jogos;
+import br.com.lotto.dto.PalpiteDTO;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.service.Validacao;
-import br.com.lotto.service.frequencia.FrequenciaService;
-import br.com.lotto.service.frequencia.analise.AnaliseFrequencia;
+import br.com.lotto.service.megasena.frequencia.FrequenciaService;
 
 /**
- * Classe de validação de frequencia de numeros sorteados.Esta validacao utiliza
- * a analize de frequencia para determinar se um jogo(palpite) contem x dos
- * mumereros mais ou menos sorteados
+ * Classe de validação de frequencia de numeros sorteados.Esta validacao a
+ * configuração passa como referencia para determinar se o palpite é valido
  * 
  * @author Juliano
  *
@@ -28,7 +26,7 @@ public class ValidacaoFrequente implements Validacao {
 	@Autowired
 	private FrequenciaService frequenciaService;
 
-	private Collection<FrequenciaDTO> topFrequencia;
+	private Collection<FrequenciaDTO> frequenciaList;
 
 	/**
 	 * Realiza a validacao de um jogo, onde deve-se passar a quantidade numeros
@@ -39,16 +37,16 @@ public class ValidacaoFrequente implements Validacao {
 	 * @return
 	 */
 	@Override
-	public RespostaValidacao validar(Configuracoes config, Jogos jogos) {
+	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
 
-		this.topFrequencia = this.frequenciaService.getMaisFrequente(config);
+		this.frequenciaList = this.frequenciaService.buscarFrequencias();
 
 		AtomicBoolean valido = new AtomicBoolean(false);
 
-		this.topFrequencia.stream().map(fr -> fr.getNumero()).forEach(fre -> {
+		this.frequenciaList.stream().map(fr -> fr.getNumero()).forEach(fre -> {
 
-			jogos.getNumeros().stream().forEach(jo -> {
-				if (jo.getNumero().equals(fre) && !valido.get()) {
+			palpiteDTO.getNumeroCollection().stream().forEach(jo -> {
+				if (jo.getIdNumero().equals(fre) && !valido.get()) {
 					valido.set(true);
 				}
 			});
@@ -60,7 +58,7 @@ public class ValidacaoFrequente implements Validacao {
 
 	@Override
 	public String toString() {
-		return "Mais frequente";
+		return "validação de frequência ";
 	}
 
 }

@@ -31,13 +31,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Palpitenumero implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @EmbeddedId
     protected PalpitenumeroPK palpitenumeroPK;
+    
     @Column(name = "ordemsorteio")
     private Integer ordemsorteio;
+    
     @JoinColumn(name = "idnumero", referencedColumnName = "idnumero", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Numero numero;
+    
     @JoinColumn(name = "idpalpite", referencedColumnName = "idpalpite", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Palpite palpite;

@@ -35,19 +35,24 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Palpite implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "idpalpite")
     private Integer idpalpite;
+    
     @JoinColumn(name = "lotolacilidconcursolotofacil", referencedColumnName = "idlotofacil")
     @ManyToOne
     private Lotofacil lotolacilidconcursolotofacil;
+    
     @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")
     @ManyToOne
     private Megasena megasenaidconcurso;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "palpite")
     private Collection<Palpitenumero> palpitenumeroCollection;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpalpite")
     private Collection<Configuracoes> configuracoesCollection;
 
