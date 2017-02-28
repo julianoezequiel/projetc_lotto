@@ -1,12 +1,5 @@
 package br.com.lotto.rest;
 
-import br.com.lotto.dto.Jogos;
-import br.com.lotto.dto.JogosDTO;
-import br.com.lotto.dto.MegaSenaDTO;
-import br.com.lotto.dto.RespostaValidacao;
-import br.com.lotto.dto.AtrazoDTO;
-import br.com.lotto.dto.Configuracoes;
-import br.com.lotto.dto.FrequenciaDTO;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -15,11 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lotto.dto.AtrazoDTO;
+import br.com.lotto.dto.Configuracoes;
+import br.com.lotto.dto.FrequenciaDTO;
+import br.com.lotto.dto.MegaSenaDTO;
 import br.com.lotto.service.MegaSenaResultadoSimples;
 import br.com.lotto.service.MegaSenaService;
 import br.com.lotto.service.ServiceException;
