@@ -1,6 +1,8 @@
-package br.com.lotto.service.megasena.frequencia;
+package br.com.lotto.service.ms.frequencia;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,8 +19,8 @@ public class FrequenciaService {
 
 	@Autowired
 	private MegaSenaRepository megaSenaRepository;
-	
-	//Busca a lista completa de numeros e sua frequencias
+
+	// Busca a lista completa de numeros e sua frequencias
 	public Collection<FrequenciaDTO> buscarFrequencias() {
 		Collection<FrequenciaDTO> frequencias = new ArrayList<>();
 		Long total = this.megaSenaRepository.count();
@@ -27,8 +29,13 @@ public class FrequenciaService {
 		if (!list.isEmpty()) {
 			list.stream().forEach(o -> {
 				Object[] itemFrequencia = (Object[]) o;
-				BigInteger media = new BigInteger(total.toString()).divide(((BigInteger) itemFrequencia[1]));
-				frequencias.add(new FrequenciaDTO((Integer) itemFrequencia[0], (BigInteger) itemFrequencia[1], media));
+				BigInteger freq = (BigInteger) itemFrequencia[1];
+				// BigInteger media = new
+				// BigInteger(total.toString()).divide(((BigInteger)
+				// itemFrequencia[1]));
+				BigDecimal media = new BigDecimal(freq.intValue() * 100 / total).setScale(2, RoundingMode.HALF_UP);
+				BigDecimal frequencia = new BigDecimal(freq).setScale(2, RoundingMode.HALF_UP);
+				frequencias.add(new FrequenciaDTO((Integer) itemFrequencia[0], frequencia, media));
 			});
 		}
 		return frequencias.stream().sorted(Comparator.comparing(FrequenciaDTO::getMedia).reversed())

@@ -1,4 +1,4 @@
-package br.com.lotto.service.megasena.atraso.validacao;
+package br.com.lotto.service.ms.atraso.validacao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.PalpiteDTO;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.service.Validacao;
-import br.com.lotto.service.megasena.atraso.analise.AnaliseAtraso;
+import br.com.lotto.service.ms.atraso.analise.AnaliseAtraso;
 
 @Service
 public class AtrasoValicacao implements Validacao {

@@ -1,7 +1,7 @@
 /**
  *
  */
-package br.com.lotto.service.megasena;
+package br.com.lotto.service.ms;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.lotto.dao.MegaSenaRepository;
-import br.com.lotto.dto.AtrazoDTO;
+import br.com.lotto.dto.AtrasoDTO;
 import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.Jogos;
@@ -24,27 +24,24 @@ import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.entity.Megasena;
 import br.com.lotto.service.ServiceException;
-import br.com.lotto.service.megasena.atraso.analise.AnaliseAtraso;
-import br.com.lotto.service.megasena.frequencia.FrequenciaService;
-import br.com.lotto.service.megasena.frequencia.analise.AnaliseFrequencia;
-import br.com.lotto.service.megasena.frequencia.validacao.ValidacaoFrequente;
+import br.com.lotto.service.ms.atraso.analise.AnaliseAtraso;
+import br.com.lotto.service.ms.frequencia.FrequenciaService;
+import br.com.lotto.service.ms.frequencia.analise.AnaliseFrequencia;
+import br.com.lotto.service.ms.frequencia.validacao.ValidacaoFrequente;
 
 /**
  * @author Juliano
  *
  */
 @Service
-public class MegaSenaService {
+public class MSService {
 
     @Autowired
     private MegaSenaRepository megaSenaRepository;
-
     @Autowired
     private FrequenciaService frequenciaService;
-
     @Autowired
     private AnaliseAtraso atrazoAnalizeservice;
-
     @Autowired
     private AnaliseFrequencia analiseFrequencia;
 
@@ -133,8 +130,8 @@ public class MegaSenaService {
      *
      * @return
      */
-    public Collection<AtrazoDTO> buscarAtrazos() {
-        return this.atrazoAnalizeservice.buscarAtrazos();
+    public Collection<AtrasoDTO> buscarAtrazos() {
+        return this.atrazoAnalizeservice.buscarAtrasos();
     }
 
     private HashMap<Long, ConfiguracoesDTO> melhorConfig = new HashMap<>();
@@ -148,14 +145,33 @@ public class MegaSenaService {
         passo = 0;
         melhorConfig = new HashMap<>();
 
-        return analizar();
+        return analisar();
     }
 
     private ConfiguracoesDTO config = new ConfiguracoesDTO();
-
-    public HashMap<Long, ConfiguracoesDTO> analizar() {
-
-        analiseFrequencia.init();
+    
+    public  HashMap<Long, ConfiguracoesDTO> analisarFrequencia(){
+    	HashMap<Object, Object> params = new HashMap<>();
+    	params.put("Inicio", 1);
+    	params.put("numFilter", 0);
+        analiseFrequencia.init(params);
+        return melhorConfig;
+    }
+    
+    public  HashMap<Long, ConfiguracoesDTO> analisarAtraso(){
+    	HashMap<Object, Object> params = new HashMap<>();
+    	params.put("Inicio", 1);
+    	params.put("numFilter", 0);
+        analiseFrequencia.init(params);
+        return melhorConfig;
+    }
+    
+    public HashMap<Long, ConfiguracoesDTO> analisar() {
+    	
+    	HashMap<Object, Object> params = new HashMap<>();
+    	params.put("Inicio", 1);
+    	params.put("numFilter", 0);
+        analiseFrequencia.init(params);
 
         // long totalJogos = this.megaSenaRepository.count();
         //

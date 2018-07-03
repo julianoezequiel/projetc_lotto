@@ -1,4 +1,4 @@
-package br.com.lotto.service.megasena.atraso.analise;
+package br.com.lotto.service.ms.atraso.analise;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.lotto.dto.AtrazoDTO;
+import br.com.lotto.dto.AtrasoDTO;
 import br.com.lotto.dto.Jogos;
 import br.com.lotto.entity.Numero;
-import br.com.lotto.service.megasena.MegaSenaService;
+import br.com.lotto.service.ms.MSService;
 import br.com.lotto.service.numero.NumeroService;
 
 @Service
@@ -22,20 +22,20 @@ public class AnaliseAtraso {
 	private NumeroService numeroService;
 
 	@Autowired
-	private MegaSenaService megaSenaservice;
+	private MSService msService;
 
 	/**
-	 * Calcula os atrazos das dezenas nos concursos realizados,
+	 * Calcula os atrasos das dezenas nos concursos realizados,
 	 * corrigido 28/02/2017, alterado para Megasenanumero
 	 * 
 	 * @return
 	 */
-	public Collection<AtrazoDTO> buscarAtrazos() {
+	public Collection<AtrasoDTO> buscarAtrasos() {
 
 		// Busca os numeros na base
-		Collection<Jogos> listaNumeros = this.megaSenaservice.buscartodosConcursos();
+		Collection<Jogos> listaNumeros = this.msService.buscartodosConcursos();
 
-		List<AtrazoDTO> listaAtrazo = new ArrayList<>();
+		List<AtrasoDTO> listaAtraso = new ArrayList<>();
 
 		Integer ultimoConcurso = listaNumeros.size();
 
@@ -54,13 +54,13 @@ public class AnaliseAtraso {
 						return exite;
 					}).findFirst().orElse(null);
 			if (j != null) {
-				int qtdAtrazo = ultimoConcurso.intValue() - j.getConcurso();
-				listaAtrazo.add(new AtrazoDTO(numero.getIdnumero(), qtdAtrazo));
+				int qtdAtraso = ultimoConcurso.intValue() - j.getConcurso();
+				listaAtraso.add(new AtrasoDTO(numero.getIdnumero(), qtdAtraso));
 			}
 		});
-		System.out.println("Total match : " + listaAtrazo.size());
+		System.out.println("Total match : " + listaAtraso.size());
 		// Retorna a lista ordenada pelo maior atrazo
-		return listaAtrazo.stream().sorted(Comparator.comparing(AtrazoDTO::getAtrazo).reversed())
+		return listaAtraso.stream().sorted(Comparator.comparing(AtrasoDTO::getAtraso).reversed())
 				.collect(Collectors.toList());
 	}
 
@@ -71,8 +71,8 @@ public class AnaliseAtraso {
 	 * @param qtd
 	 * @return
 	 */
-	public Collection<AtrazoDTO> getTopAtrazo(Integer qtd) {
-		Collection<AtrazoDTO> list = this.buscarAtrazos();
+	public Collection<AtrasoDTO> getTopAtraso(Integer qtd) {
+		Collection<AtrasoDTO> list = this.buscarAtrasos();
 		return list.stream().skip(list.size() - qtd).limit(list.size()).collect(Collectors.toList());
 	}
 

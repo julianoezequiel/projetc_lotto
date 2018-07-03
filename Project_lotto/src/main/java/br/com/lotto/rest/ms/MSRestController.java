@@ -1,4 +1,4 @@
-package br.com.lotto.rest.megasena;
+package br.com.lotto.rest.ms;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,44 +12,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.lotto.dto.AtrazoDTO;
+import br.com.lotto.dto.AtrasoDTO;
 import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.MegaSenaDTO;
 import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.service.ServiceException;
-import br.com.lotto.service.megasena.MegaSenaService;
+import br.com.lotto.service.ms.MSService;
 
 @RestController
-@RequestMapping(value = "/rest/megasena")
-public class MegaSenaRestController {
+@RequestMapping(value = "/rest/ms")
+public class MSRestController {
 
 	@Autowired
-	private MegaSenaService megaSenaService;
+	private MSService msService;
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<MegaSenaDTO>> listar() {
-		return new ResponseEntity<>(megaSenaService.buscartodos(), HttpStatus.OK);
+		return new ResponseEntity<>(msService.buscartodos(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "simples", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<MegaSenaResultadoSimples>> listarSimples() {
-		return new ResponseEntity<>(megaSenaService.buscartodosSimples(), HttpStatus.OK);
+		return new ResponseEntity<>(msService.buscartodosSimples(), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MegaSenaDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
-		return new ResponseEntity<>(megaSenaService.buscarPorId(id), HttpStatus.OK);
+		return new ResponseEntity<>(msService.buscarPorId(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/frequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<FrequenciaDTO>> buscarFrequencias() {
-		return new ResponseEntity<>(megaSenaService.buscarFrequencias(), HttpStatus.OK);
+		return new ResponseEntity<>(msService.buscarFrequencias(), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/atrazo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<AtrazoDTO>> buscarAtrazos() {
-		return new ResponseEntity<>(megaSenaService.buscarAtrazos(), HttpStatus.OK);
+	public ResponseEntity<Collection<AtrasoDTO>> buscarAtrazos() {
+		return new ResponseEntity<>(msService.buscarAtrazos(), HttpStatus.OK);
 	}
 
 	/**
@@ -60,9 +60,9 @@ public class MegaSenaRestController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/analizarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analizar() {
-		return new ResponseEntity<>(this.megaSenaService.iniciarAnalise(), HttpStatus.OK);
+	@RequestMapping(method = RequestMethod.GET, value = "/analisarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analisar() {
+		return new ResponseEntity<>(this.msService.analisarFrequencia(), HttpStatus.OK);
 	}
 
 }

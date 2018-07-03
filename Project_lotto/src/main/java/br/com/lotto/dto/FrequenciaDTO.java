@@ -1,21 +1,22 @@
 package br.com.lotto.dto;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class FrequenciaDTO {
 
 	private Integer numero;
-	private BigInteger frequencia;
-	private BigInteger media;
+	private BigDecimal frequencia;
+	private BigDecimal media;
 
-	public FrequenciaDTO(Integer numero, BigInteger frequencia) {
+	public FrequenciaDTO(Integer numero, BigDecimal frequencia) {
 		this.numero = numero;
 		this.frequencia = frequencia;
 	}
 	
 	
 
-	public FrequenciaDTO(Integer numero, BigInteger frequencia, BigInteger media) {
+	public FrequenciaDTO(Integer numero, BigDecimal frequencia, BigDecimal media) {
 		super();
 		this.numero = numero;
 		this.frequencia = frequencia;
@@ -28,11 +29,11 @@ public class FrequenciaDTO {
 		return numero;
 	}
 
-	public BigInteger getFrequencia() {
+	public BigDecimal getFrequencia() {
 		return frequencia;
 	}
 
-	public BigInteger getMedia() {
+	public BigDecimal getMedia() {
 		return media;
 	}
 }

@@ -1,4 +1,4 @@
-package br.com.lotto.service.megasena.frequencia.validacao;
+package br.com.lotto.service.ms.frequencia.validacao;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,7 +11,7 @@ import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.PalpiteDTO;
 import br.com.lotto.dto.RespostaValidacao;
 import br.com.lotto.service.Validacao;
-import br.com.lotto.service.megasena.frequencia.FrequenciaService;
+import br.com.lotto.service.ms.frequencia.FrequenciaService;
 
 /**
  * Classe de validação de frequencia de numeros sorteados.Esta validacao a
