@@ -5,10 +5,11 @@
  */
 package br.com.lotto.entity;
 
-import br.com.lotto.dto.NumeroDTO;
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,9 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import br.com.lotto.dto.NumeroDTO;
 
 /**
  *
@@ -34,153 +34,160 @@ import javax.persistence.ManyToOne;
 @Entity
 @Table(name = "numero")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Numero.findAll", query = "SELECT n FROM Numero n")
-    , @NamedQuery(name = "Numero.findByIdnumero", query = "SELECT n FROM Numero n WHERE n.idnumero = :idnumero")
-    , @NamedQuery(name = "Numero.findByDescricao", query = "SELECT n FROM Numero n WHERE n.descricao = :descricao")
-    , @NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num")
-    , @NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso")})
+@NamedQueries({ @NamedQuery(name = "Numero.findAll", query = "SELECT n FROM Numero n"),
+		@NamedQuery(name = "Numero.findByIdnumero", query = "SELECT n FROM Numero n WHERE n.idnumero = :idnumero"),
+		@NamedQuery(name = "Numero.findByDescricao", query = "SELECT n FROM Numero n WHERE n.descricao = :descricao"),
+		@NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num"),
+		@NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso") })
 public class Numero implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
-    private Collection<Megasenanumero> megasenanumeroCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
-    private Collection<Palpitenumero> palpitenumeroCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
-    private Collection<Lotofacilnumero> lotofacilnumeroCollection;
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "idnumero")
-    private Integer idnumero;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "descricao")
-    private String descricao;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "num")
-    private int num;
-    @Size(max = 200)
-    @Column(name = "extenso")
-    private String extenso;
+	@Id
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "idnumero")
+	private Integer idnumero;
 
-    @ManyToMany(mappedBy = "numeroCollection")
-    @JsonIgnore
-    private Collection<Lotofacil> lotofacilCollection;
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 45)
+	@Column(name = "descricao")
+	private String descricao;
 
-    public Numero() {
-    }
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "num")
+	private int num;
 
-    public Numero(Integer idnumero) {
-        this.idnumero = idnumero;
-    }
+	@Size(max = 200)
+	@Column(name = "extenso")
+	private String extenso;
 
-    public Numero(Integer idnumero, String descricao, int num) {
-        this.idnumero = idnumero;
-        this.descricao = descricao;
-        this.num = num;
-    }
+	@ManyToMany(mappedBy = "numeroCollection")
+	@JsonIgnore
+	private Collection<Lotofacil> lotofacilCollection;
 
-    public Integer getIdnumero() {
-        return idnumero;
-    }
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+	private Collection<Megasenanumero> megasenanumeroCollection;
 
-    public void setIdnumero(Integer idnumero) {
-        this.idnumero = idnumero;
-    }
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+	private Collection<Palpitenumero> palpitenumeroCollection;
 
-    public String getDescricao() {
-        return descricao;
-    }
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
+	private Collection<Lotofacilnumero> lotofacilnumeroCollection;
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+	public Numero() {
+	}
 
-    public int getNum() {
-        return num;
-    }
+	public Numero(Integer idnumero) {
+		this.idnumero = idnumero;
+	}
 
-    public void setNum(int num) {
-        this.num = num;
-    }
+	public Numero(Integer idnumero, String descricao, int num) {
+		this.idnumero = idnumero;
+		this.descricao = descricao;
+		this.num = num;
+	}
 
-    public String getExtenso() {
-        return extenso;
-    }
+	public Integer getIdnumero() {
+		return idnumero;
+	}
 
-    public void setExtenso(String extenso) {
-        this.extenso = extenso;
-    }
+	public void setIdnumero(Integer idnumero) {
+		this.idnumero = idnumero;
+	}
 
-    @XmlTransient
-    public Collection<Lotofacil> getLotofacilCollection() {
-        return lotofacilCollection;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public void setLotofacilCollection(Collection<Lotofacil> lotofacilCollection) {
-        this.lotofacilCollection = lotofacilCollection;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idnumero != null ? idnumero.hashCode() : 0);
-        return hash;
-    }
+	public int getNum() {
+		return num;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Numero)) {
-            return false;
-        }
-        Numero other = (Numero) object;
-        if ((this.idnumero == null && other.idnumero != null) || (this.idnumero != null && !this.idnumero.equals(other.idnumero))) {
-            return false;
-        }
-        return true;
-    }
+	public void setNum(int num) {
+		this.num = num;
+	}
 
-    @Override
-    public String toString() {
-        return "Numero : " + idnumero;
-    }
+	public String getExtenso() {
+		return extenso;
+	}
 
-    public NumeroDTO toNumeroDTO() {
-        NumeroDTO dto = new NumeroDTO(this.idnumero);
-        return dto;
-    }
+	public void setExtenso(String extenso) {
+		this.extenso = extenso;
+	}
 
-    @XmlTransient
-    public Collection<Megasenanumero> getMegasenanumeroCollection() {
-        return megasenanumeroCollection;
-    }
+	@XmlTransient
+	public Collection<Lotofacil> getLotofacilCollection() {
+		return lotofacilCollection;
+	}
 
-    public void setMegasenanumeroCollection(Collection<Megasenanumero> megasenanumeroCollection) {
-        this.megasenanumeroCollection = megasenanumeroCollection;
-    }
+	public void setLotofacilCollection(Collection<Lotofacil> lotofacilCollection) {
+		this.lotofacilCollection = lotofacilCollection;
+	}
 
-    @XmlTransient
-    public Collection<Palpitenumero> getPalpitenumeroCollection() {
-        return palpitenumeroCollection;
-    }
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (idnumero != null ? idnumero.hashCode() : 0);
+		return hash;
+	}
 
-    public void setPalpitenumeroCollection(Collection<Palpitenumero> palpitenumeroCollection) {
-        this.palpitenumeroCollection = palpitenumeroCollection;
-    }
+	@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are
+		// not set
+		if (!(object instanceof Numero)) {
+			return false;
+		}
+		Numero other = (Numero) object;
+		if ((this.idnumero == null && other.idnumero != null)
+				|| (this.idnumero != null && !this.idnumero.equals(other.idnumero))) {
+			return false;
+		}
+		return true;
+	}
 
-    @XmlTransient
-    public Collection<Lotofacilnumero> getLotofacilnumeroCollection() {
-        return lotofacilnumeroCollection;
-    }
+	@Override
+	public String toString() {
+		return "Numero : " + idnumero;
+	}
 
-    public void setLotofacilnumeroCollection(Collection<Lotofacilnumero> lotofacilnumeroCollection) {
-        this.lotofacilnumeroCollection = lotofacilnumeroCollection;
-    }
+	public NumeroDTO toNumeroDTO() {
+		NumeroDTO dto = new NumeroDTO(this.idnumero);
+		return dto;
+	}
+
+	@XmlTransient
+	public Collection<Megasenanumero> getMegasenanumeroCollection() {
+		return megasenanumeroCollection;
+	}
+
+	public void setMegasenanumeroCollection(Collection<Megasenanumero> megasenanumeroCollection) {
+		this.megasenanumeroCollection = megasenanumeroCollection;
+	}
+
+	@XmlTransient
+	public Collection<Palpitenumero> getPalpitenumeroCollection() {
+		return palpitenumeroCollection;
+	}
+
+	public void setPalpitenumeroCollection(Collection<Palpitenumero> palpitenumeroCollection) {
+		this.palpitenumeroCollection = palpitenumeroCollection;
+	}
+
+	@XmlTransient
+	public Collection<Lotofacilnumero> getLotofacilnumeroCollection() {
+		return lotofacilnumeroCollection;
+	}
+
+	public void setLotofacilnumeroCollection(Collection<Lotofacilnumero> lotofacilnumeroCollection) {
+		this.lotofacilnumeroCollection = lotofacilnumeroCollection;
+	}
 
 }

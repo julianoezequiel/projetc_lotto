@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.lotto.dao.MegaSenaRepository;
+import br.com.lotto.dao.MSRepository;
 import br.com.lotto.dto.FrequenciaDTO;
 
 @Service
 public class FrequenciaService {
 
 	@Autowired
-	private MegaSenaRepository megaSenaRepository;
+	private MSRepository megaSenaRepository;
 
 	// Busca a lista completa de numeros e sua frequencias
 	public Collection<FrequenciaDTO> buscarFrequencias() {

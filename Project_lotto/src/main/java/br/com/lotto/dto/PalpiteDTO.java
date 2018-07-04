@@ -3,7 +3,7 @@ package br.com.lotto.dto;
 import java.util.Collection;
 
 import br.com.lotto.entity.Lotofacil;
-import br.com.lotto.entity.Megasena;
+import br.com.lotto.entity.MS;
 
 public class PalpiteDTO {
 
@@ -11,7 +11,7 @@ public class PalpiteDTO {
 
 	private Lotofacil lotolacilidconcursolotofacil;
 
-	private Megasena megasenaidconcurso;
+	private MS megasenaidconcurso;
 
 	private Collection<NumeroDTO> numeroCollection;
 
@@ -33,11 +33,11 @@ public class PalpiteDTO {
 		this.lotolacilidconcursolotofacil = lotolacilidconcursolotofacil;
 	}
 
-	public Megasena getMegasenaidconcurso() {
+	public MS getMegasenaidconcurso() {
 		return megasenaidconcurso;
 	}
 
-	public void setMegasenaidconcurso(Megasena megasenaidconcurso) {
+	public void setMegasenaidconcurso(MS megasenaidconcurso) {
 		this.megasenaidconcurso = megasenaidconcurso;
 	}
 

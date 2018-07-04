@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.lotto.dao.MegaSenaRepository;
+import br.com.lotto.dao.MSRepository;
 import br.com.lotto.service.Analize;
 
 @Service
@@ -25,7 +25,7 @@ public class AnaliseFrequencia implements Analize {
 	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnaliseFrequencia.class.getName());
 
 	@Autowired
-	private MegaSenaRepository megaSenaRepository;
+	private MSRepository megaSenaRepository;
 
 	// analize das frequencias dos numeros de forma retroativa. Iniciando no
 	// primeiro resultado ao ultimo

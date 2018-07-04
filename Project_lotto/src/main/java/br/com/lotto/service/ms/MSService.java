@@ -10,21 +10,28 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import br.com.lotto.dao.MegaSenaRepository;
+import br.com.lotto.dao.MSRepository;
 import br.com.lotto.dto.AtrasoDTO;
 import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
 import br.com.lotto.dto.Jogos;
-import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.MSDTO;
 import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.dto.RespostaValidacao;
-import br.com.lotto.entity.Megasena;
+import br.com.lotto.entity.MS;
 import br.com.lotto.service.ServiceException;
 import br.com.lotto.service.ms.atraso.analise.AnaliseAtraso;
+import br.com.lotto.service.ms.combinacoes.CombinacoesServices;
+import br.com.lotto.service.ms.combinacoes.validacao.ListaA;
+import br.com.lotto.service.ms.combinacoes.validacao.ListaB;
+import br.com.lotto.service.ms.combinacoes.validacao.ListaC;
+import br.com.lotto.service.ms.combinacoes.validacao.ListaD;
 import br.com.lotto.service.ms.frequencia.FrequenciaService;
 import br.com.lotto.service.ms.frequencia.analise.AnaliseFrequencia;
 import br.com.lotto.service.ms.frequencia.validacao.ValidacaoFrequente;
@@ -37,22 +44,24 @@ import br.com.lotto.service.ms.frequencia.validacao.ValidacaoFrequente;
 public class MSService {
 
     @Autowired
-    private MegaSenaRepository megaSenaRepository;
+    private MSRepository msRepository;
     @Autowired
     private FrequenciaService frequenciaService;
     @Autowired
     private AnaliseAtraso atrazoAnalizeservice;
     @Autowired
     private AnaliseFrequencia analiseFrequencia;
+    @Autowired
+    private CombinacoesServices combinacoesServices;
 
     /**
      * Lista todos os concursos
      *
      * @return
      */
-    public Collection<MegaSenaDTO> buscartodos() {
-        Collection<MegaSenaDTO> list = new ArrayList<>();
-        this.megaSenaRepository.findAll().stream().forEach(s -> {
+    public Collection<MSDTO> buscartodos() {
+        Collection<MSDTO> list = new ArrayList<>();
+        this.msRepository.findAll().stream().forEach(s -> {
             list.add(s.toMegaSenaDTO());
         });
         return list;
@@ -67,7 +76,7 @@ public class MSService {
      */
     public Collection<MegaSenaResultadoSimples> buscartodosSimples() {
         Collection<MegaSenaResultadoSimples> list = new ArrayList<>();
-        this.megaSenaRepository.findAll().stream().forEach(s -> {
+        this.msRepository.findAll().stream().forEach(s -> {
             sorteados = "";
             s.getMegasenanumeroCollection().stream().forEach(n -> {
                 sorteados = sorteados + n.getNumero().getDescricao() + " - ";
@@ -86,7 +95,7 @@ public class MSService {
     public Collection<Jogos> buscartodosConcursos() {
         List<Jogos> list = new ArrayList<>();
 
-        this.megaSenaRepository.findAll().stream().forEach(s -> {
+        this.msRepository.findAll().stream().forEach(s -> {
             list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
         });
         return list;
@@ -95,7 +104,7 @@ public class MSService {
     public Collection<Jogos> buscarMenorQueConcursos(Integer id) {
         List<Jogos> list = new ArrayList<>();
 
-        this.megaSenaRepository.buscarMenorQue(id).stream().forEach(s -> {
+        this.msRepository.buscarMenorQue(id).stream().forEach(s -> {
             list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
         });
         return list;
@@ -107,10 +116,10 @@ public class MSService {
      * @param id
      * @return
      */
-    public MegaSenaDTO buscarPorId(Integer id) throws ServiceException {
-        Megasena megasena = this.megaSenaRepository.findOne(id);
-        if (megasena != null) {
-            return megasena.toMegaSenaDTO();
+    public MSDTO buscarPorId(Integer id) throws ServiceException {
+        MS mS = this.msRepository.findOne(id);
+        if (mS != null) {
+            return mS.toMegaSenaDTO();
         } else {
             throw new ServiceException(HttpStatus.NO_CONTENT, "Concurso não encontrado");
         }
@@ -231,8 +240,20 @@ public class MSService {
     Random rand = new Random();
 
     private int getnumRand() {
-
         return ThreadLocalRandom.current().nextInt(1, 60);
     }
+    
+    @PostConstruct
+    public void verificarListas(){
+    	
+    	List<MS> list = this.msRepository.findAll();
+    	
+    	List<JGDerivadoValidacao> listaA = ListaA.ListaA;
+    	List<JGDerivadoValidacao> listaB = ListaB.ListaB;
+    	List<JGDerivadoValidacao> listaC = ListaC.ListaC;
+    	List<JGDerivadoValidacao> listaD = ListaD.ListaD;
+    	
+    }
+    
 
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.lotto.dto.AtrasoDTO;
 import br.com.lotto.dto.ConfiguracoesDTO;
 import br.com.lotto.dto.FrequenciaDTO;
-import br.com.lotto.dto.MegaSenaDTO;
+import br.com.lotto.dto.MSDTO;
 import br.com.lotto.dto.MegaSenaResultadoSimples;
 import br.com.lotto.service.ServiceException;
 import br.com.lotto.service.ms.MSService;
@@ -28,7 +28,7 @@ public class MSRestController {
 	private MSService msService;
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<MegaSenaDTO>> listar() {
+	public ResponseEntity<Collection<MSDTO>> listar() {
 		return new ResponseEntity<>(msService.buscartodos(), HttpStatus.OK);
 	}
 
@@ -38,7 +38,7 @@ public class MSRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<MegaSenaDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
+	public ResponseEntity<MSDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
 		return new ResponseEntity<>(msService.buscarPorId(id), HttpStatus.OK);
 	}
 
@@ -47,7 +47,7 @@ public class MSRestController {
 		return new ResponseEntity<>(msService.buscarFrequencias(), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/atrazo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/atraso", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<AtrasoDTO>> buscarAtrazos() {
 		return new ResponseEntity<>(msService.buscarAtrazos(), HttpStatus.OK);
 	}
@@ -55,7 +55,7 @@ public class MSRestController {
 	/**
 	 * Metodo para realizar a analise recursiva de frequencia dos numeros
 	 * sorteados, ojetivo sera conseguir uma configuracao mais apropriada para
-	 * utilizar na validacao. A cada sorteio realizado, devera verrificar qual
+	 * utilizar na validacao. A cada sorteio realizado, devera verificar qual
 	 * numero mais e menos frequante foram sorteados
 	 * 
 	 * @return

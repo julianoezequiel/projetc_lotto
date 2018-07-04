@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -40,6 +42,7 @@ public class Palpite implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "idpalpite")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idpalpite;
     
     @JoinColumn(name = "lotolacilidconcursolotofacil", referencedColumnName = "idlotofacil")
@@ -48,7 +51,7 @@ public class Palpite implements Serializable {
     
     @JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso")
     @ManyToOne
-    private Megasena megasenaidconcurso;
+    private MS megasenaidconcurso;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "palpite")
     private Collection<Palpitenumero> palpitenumeroCollection;
@@ -79,11 +82,11 @@ public class Palpite implements Serializable {
         this.lotolacilidconcursolotofacil = lotolacilidconcursolotofacil;
     }
 
-    public Megasena getMegasenaidconcurso() {
+    public MS getMegasenaidconcurso() {
         return megasenaidconcurso;
     }
 
-    public void setMegasenaidconcurso(Megasena megasenaidconcurso) {
+    public void setMegasenaidconcurso(MS megasenaidconcurso) {
         this.megasenaidconcurso = megasenaidconcurso;
     }
 

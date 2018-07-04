@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import br.com.lotto.entity.Megasena;
+import br.com.lotto.entity.MS;
 
 @Repository
-public interface MegaSenaRepository extends JpaRepository<Megasena, Integer> {
+public interface MSRepository extends JpaRepository<MS, Integer> {
 
 	@Query(value = "select numeroidnumero , count(*)  from megasenanumero group by numeroidnumero order by numeroidnumero asc", nativeQuery = true)
 	public Object[] getFrequencia();
@@ -19,9 +19,9 @@ public interface MegaSenaRepository extends JpaRepository<Megasena, Integer> {
 	@Query(value = "SELECT numeroidnumero, count(*) FROM Megasenanumero  WHERE Megasenanumero.megasenaidconcurso <= :megasenaidconcurso group by numeroidnumero order by numeroidnumero asc", nativeQuery = true)
 	public Collection<Object[]> getFrequencia(@Param(value = "megasenaidconcurso") Integer ultimo);
 
-	@Query(value = "select m from Megasena m where m.idconcurso <= :idmega")
-	public Collection<Megasena> buscarMenorQue(@Param("idmega") Integer id);
+	@Query(value = "select m from MS m where m.idconcurso <= :idmega")
+	public Collection<MS> buscarMenorQue(@Param("idmega") Integer id);
 	
-	@Query(value = "select m from Megasena m where m.idconcurso = :idmega")
-	public Megasena getMegaSena(@Param("idmega") Integer id);
+	@Query(value = "select m from MS m where m.idconcurso = :idmega")
+	public MS getMegaSena(@Param("idmega") Integer id);
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
-public class MegaSenaDTO {
+public class MSDTO {
 
 	private Integer concurso;
 	private Date dataSorteio;
