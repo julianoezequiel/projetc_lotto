@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import br.com.ottol.dao.MSRepository;
@@ -15,7 +16,7 @@ import br.com.ottol.entity.MS;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
 
-@Service
+@Component
 public class ListaA implements Validacao {
 
 	public static List<JGDerivadoValidacao> ListaA = new ArrayList<>();

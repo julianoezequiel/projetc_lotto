@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
@@ -13,6 +14,7 @@ import br.com.ottol.entity.MS;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
 
+@Component
 public class ListaD implements Validacao {
 
 	public static List<JGDerivadoValidacao> ListaD = new ArrayList<>();

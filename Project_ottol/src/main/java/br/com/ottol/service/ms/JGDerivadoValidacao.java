@@ -1,6 +1,8 @@
 package br.com.ottol.service.ms;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.ottol.entity.MS;
@@ -38,12 +40,18 @@ public class JGDerivadoValidacao {
 		return numeros;
 	}
 
-	public void setNumeros(Collection<Numero> numeros) {
+	public void setNumeros(List<Numero> numeros) {
 		this.numeros = numeros;
 	}
 
 	public void setNumerosFromMs(Collection<Megasenanumero> megasenanumeros) {
 		this.numeros = megasenanumeros.stream().map(m -> m.getNumero()).collect(Collectors.toList());
+	}
+
+	@Override
+	public String toString() {
+		String s = this.numeros != null ? Arrays.toString(this.numeros.toArray()) : "";
+		return "Concurso : " + this.concurso + "  - Números : " + s;
 	}
 
 }

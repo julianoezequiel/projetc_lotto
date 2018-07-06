@@ -248,6 +248,8 @@ public class MSService {
     	
     	List<MS> list = this.msRepository.findAll();
     	
+    	this.combinacoesServices.carregarLista(list);
+    	
     	List<JGDerivadoValidacao> listaA = ListaA.ListaA;
     	List<JGDerivadoValidacao> listaB = ListaB.ListaB;
     	List<JGDerivadoValidacao> listaC = ListaC.ListaC;

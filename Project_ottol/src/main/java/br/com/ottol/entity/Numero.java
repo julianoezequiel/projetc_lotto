@@ -39,7 +39,7 @@ import br.com.ottol.dto.NumeroDTO;
 		@NamedQuery(name = "Numero.findByDescricao", query = "SELECT n FROM Numero n WHERE n.descricao = :descricao"),
 		@NamedQuery(name = "Numero.findByNum", query = "SELECT n FROM Numero n WHERE n.num = :num"),
 		@NamedQuery(name = "Numero.findByExtenso", query = "SELECT n FROM Numero n WHERE n.extenso = :extenso") })
-public class Numero implements Serializable {
+public class Numero implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -188,6 +188,15 @@ public class Numero implements Serializable {
 
 	public void setLotofacilnumeroCollection(Collection<Lotofacilnumero> lotofacilnumeroCollection) {
 		this.lotofacilnumeroCollection = lotofacilnumeroCollection;
+	}
+
+	@Override
+	public Numero clone() {
+		try {
+			return (Numero) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 }
