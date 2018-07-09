@@ -31,11 +31,11 @@ public class ListaC implements Validacao {
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
-		list.stream().forEach(ms -> criarTipoListaB(ms));
+		list.stream().forEach(ms -> criarTipoListaC(ms));
 		System.out.println("Lista c criada");
 	}
 
-	private void criarTipoListaB(MS ms) {
+	private void criarTipoListaC(MS ms) {
 
 		List<Numero> list = ms.getMegasenanumeroCollection().stream().map(m -> m.getNumero())
 				.collect(Collectors.toList());
@@ -48,16 +48,15 @@ public class ListaC implements Validacao {
 			Numero n1 = list.get(index1);
 			Numero n2 = list.get(index2);
 
-			criarSubListB1(ms.getConcurso(), list.stream().map(m -> m.clone()).collect(Collectors.toList()), n1, n2);
+			criarSubListB1(ms.getConcurso(), list.stream()
+					.map(m -> m.clone())
+					.collect(Collectors.toList()), n1, n2);
 
 			if (index2 == 0) {
 				index1--;
-				index2 = list.size() - 1;
+				index2 = index1 - 1;
 			} else {
 				index2--;
-				if (index2 == index1) {
-					index2--;
-				}
 			}
 
 		}
