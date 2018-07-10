@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
@@ -15,10 +15,10 @@ import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
-
+	
 @Component
 public class ListaA implements Validacao {
-
+	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ListaA.class.getName());
 	public static List<JGDerivadoValidacao> LISTA_A = new ArrayList<>();
 
 	@Autowired
@@ -35,7 +35,7 @@ public class ListaA implements Validacao {
 		LISTA_A = list.stream().map(m -> {
 			return criarTipoListaA(m);
 		}).collect(Collectors.toList());
-		System.out.println("Lista A carregada");
+		LOGGER.debug("Lista A criada");
 	}
 
 	private JGDerivadoValidacao criarTipoListaA(MS ms) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import br.com.ottol.service.ms.JGDerivadoValidacao;
 @Component
 public class ListaC implements Validacao {
 
+	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ListaC.class.getName());
 	public static List<JGDerivadoValidacao> LISTA_C = new ArrayList<>();
 
 	@Autowired
@@ -32,7 +34,7 @@ public class ListaC implements Validacao {
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		list.stream().forEach(ms -> criarTipoListaC(ms));
-		System.out.println("Lista c criada");
+		LOGGER.debug("Lista C criada");
 	}
 
 	private void criarTipoListaC(MS ms) {
