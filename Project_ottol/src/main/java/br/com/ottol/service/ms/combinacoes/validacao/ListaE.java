@@ -1,7 +1,6 @@
 package br.com.ottol.service.ms.combinacoes.validacao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,14 +24,14 @@ import br.com.ottol.utils.DEZ;
 import br.com.ottol.utils.Utils;
 
 @Component
-public class ListaD implements Validacao {
-	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ListaD.class.getName());
-	public static List<JGDerivadoValidacao> LISTA_D = new ArrayList<>();
+public class ListaE implements Validacao {
+	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ListaE.class.getName());
+	public static List<JGDerivadoValidacao> LISTA_E = new ArrayList<>();
 
 	public static HashMap<String, List<DEZ>> map;
 
-	public ListaD() {
-		ListaD.map = Utils.MONTAR_LISTA_D();
+	public ListaE() {
+		ListaE.map = Utils.MONTAR_LISTA_E();
 	}
 
 	@Autowired
@@ -46,7 +45,7 @@ public class ListaD implements Validacao {
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		list.stream().forEach(ms -> criarTipoListaB(ms));
-		LOGGER.debug("Lista D criada");
+		LOGGER.debug("Lista E criada");
 	}
 
 	private void criarTipoListaB(MS ms) {
@@ -77,12 +76,12 @@ public class ListaD implements Validacao {
 		JGDerivadoValidacao jgDerivadoValidacao = new JGDerivadoValidacao();
 		jgDerivadoValidacao.setConcurso(concurso);
 		jgDerivadoValidacao.setNumeros(list.stream().map(m -> m.clone()).collect(Collectors.toList()));
-		LISTA_D.add(jgDerivadoValidacao);
+		LISTA_E.add(jgDerivadoValidacao);
 	}
 	
 
 	public Map<String, Long> frequencia() {
-		Map<String, Long> collect = LISTA_D.stream()
+		Map<String, Long> collect = LISTA_E.stream()
 				.collect(Collectors.groupingBy(p -> p.getNum(), Collectors.counting()));
 		return collect.entrySet().stream()
 				.sorted((e2, e1) -> Long.compare(e1.getValue().longValue(), e2.getValue().longValue()))

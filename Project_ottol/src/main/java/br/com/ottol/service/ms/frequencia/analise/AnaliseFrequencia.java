@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ottol.dao.MSRepository;
-import br.com.ottol.service.Analize;
+import br.com.ottol.service.Analise;
 
 @Service
-public class AnaliseFrequencia implements Analize {
+public class AnaliseFrequencia implements Analise {
 
 	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnaliseFrequencia.class.getName());
 

@@ -1,7 +1,10 @@
 package br.com.ottol.service.ms.combinacoes.validacao;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
@@ -72,5 +75,15 @@ public class ListaC implements Validacao {
 		jgDerivadoValidacao.setNumeros(list);
 		LISTA_C.add(jgDerivadoValidacao);
 	}
+	
+
+	public Map<String, Long> frequencia() {
+		Map<String, Long> collect = LISTA_C.stream()
+				.collect(Collectors.groupingBy(p -> p.getNum(), Collectors.counting()));
+		return collect.entrySet().stream()
+				.sorted((e2, e1) -> Long.compare(e1.getValue().longValue(), e2.getValue().longValue()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+	}
+
 
 }

@@ -28,6 +28,7 @@ import br.com.ottol.entity.MS;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.ms.atraso.analise.AnaliseAtraso;
 import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
+import br.com.ottol.service.ms.combinacoes.analise.AnaliseCombinacoes;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
@@ -53,6 +54,8 @@ public class MSService {
     private AnaliseFrequencia analiseFrequencia;
     @Autowired
     private CombinacoesServices combinacoesServices;
+    @Autowired
+    private AnaliseCombinacoes analiseCombinacoes;
 
     /**
      * Lista todos os concursos
@@ -243,7 +246,7 @@ public class MSService {
         return ThreadLocalRandom.current().nextInt(1, 60);
     }
     
-    @PostConstruct
+   
     public void verificarListas(){
     	
     	List<MS> list = this.msRepository.findAll();
@@ -255,6 +258,12 @@ public class MSService {
     	List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
     	List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
     	
+    }
+    
+    @PostConstruct
+    public void iniciarAnaliseCombinacoes(){
+    	HashMap<Object, Object> params = new HashMap<>();
+    	this.analiseCombinacoes.init(params);
     }
     
 
