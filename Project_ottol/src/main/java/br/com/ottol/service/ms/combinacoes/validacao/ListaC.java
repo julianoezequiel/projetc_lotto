@@ -19,7 +19,7 @@ import br.com.ottol.service.ms.JGDerivadoValidacao;
 @Component
 public class ListaC implements Validacao {
 
-	public static List<JGDerivadoValidacao> ListaC = new ArrayList<>();
+	public static List<JGDerivadoValidacao> LISTA_C = new ArrayList<>();
 
 	@Autowired
 	private MSRepository msRepository;
@@ -68,7 +68,7 @@ public class ListaC implements Validacao {
 		list.remove(n1);
 		list.remove(n2);
 		jgDerivadoValidacao.setNumeros(list);
-		ListaC.add(jgDerivadoValidacao);
+		LISTA_C.add(jgDerivadoValidacao);
 	}
 
 }

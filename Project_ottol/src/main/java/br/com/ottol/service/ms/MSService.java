@@ -250,10 +250,10 @@ public class MSService {
     	
     	this.combinacoesServices.carregarLista(list);
     	
-    	List<JGDerivadoValidacao> listaA = ListaA.ListaA;
-    	List<JGDerivadoValidacao> listaB = ListaB.ListaB;
-    	List<JGDerivadoValidacao> listaC = ListaC.ListaC;
-    	List<JGDerivadoValidacao> listaD = ListaD.ListaD;
+    	List<JGDerivadoValidacao> listaA = ListaA.LISTA_A;
+    	List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
+    	List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
+    	List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
     	
     }
     

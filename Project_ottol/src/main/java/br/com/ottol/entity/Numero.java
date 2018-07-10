@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.ottol.dto.NumeroDTO;
+import br.com.ottol.utils.DEZ;
 
 /**
  *
@@ -76,6 +78,9 @@ public class Numero implements Serializable, Cloneable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "numero")
 	private Collection<Lotofacilnumero> lotofacilnumeroCollection;
+
+	@Transient
+	private DEZ posisao;
 
 	public Numero() {
 	}
@@ -129,6 +134,14 @@ public class Numero implements Serializable, Cloneable {
 
 	public void setLotofacilCollection(Collection<Lotofacil> lotofacilCollection) {
 		this.lotofacilCollection = lotofacilCollection;
+	}
+
+	public DEZ getPosisao() {
+		return posisao;
+	}
+
+	public void setPosisao(DEZ posisao) {
+		this.posisao = posisao;
 	}
 
 	@Override

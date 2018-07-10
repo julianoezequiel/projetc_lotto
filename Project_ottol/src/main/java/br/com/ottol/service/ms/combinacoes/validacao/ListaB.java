@@ -21,7 +21,7 @@ import br.com.ottol.service.ms.JGDerivadoValidacao;
 @Component
 public class ListaB implements Validacao {
 
-	public static List<JGDerivadoValidacao> ListaB = new ArrayList<>();
+	public static List<JGDerivadoValidacao> LISTA_B = new ArrayList<>();
 
 	@Autowired
 	private MSRepository msRepository;
@@ -51,7 +51,7 @@ public class ListaB implements Validacao {
 		jgDerivadoValidacao.setConcurso(concurso);
 		list.remove(n);
 		jgDerivadoValidacao.setNumeros(list);
-		ListaB.add(jgDerivadoValidacao);
+		LISTA_B.add(jgDerivadoValidacao);
 	}
 
 }

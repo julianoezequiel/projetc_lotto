@@ -1,0 +1,72 @@
+  public class Combinacoes{   
+       
+    Integer  numeros[] = new Integer[61];
+    private int quantidade = 6;   
+    private int resultado[] = new int[60];   
+    int count2 = 0;
+    private long count = 0;   
+   
+    Integer ent[] = {55,56,57,58,59,60};
+    
+    private void busca(int inicio,int fim, int profundidade){   
+  
+        for(int i=0; i<60;i++){
+            numeros[i]= i+1;
+        }
+        
+        if ( (profundidade + 1) >= quantidade)   
+        for(int x = inicio; x <= fim; x++){   
+            resultado[profundidade] = numeros[x];    
+            count++;
+            count2=0;
+            for(int i=0;i<6;i++){
+                for(int z=0;z<60;z++){
+                    if(ent[i]==(resultado[z])){
+                        count2++;
+                    }
+                }
+                }
+            if(count2==6){           
+            System.out.println(resultado[0] + " , " + resultado[1] + " , " +
+                        resultado[2] + " , " + resultado[3] + " , " 
+                        + resultado[4] + " , " + resultado[5] + "--> " + count);   
+        }  
+        }
+    else  
+        for(int x = inicio; x <= fim; x++){   
+            resultado[profundidade] = numeros[x];   
+            busca(x + 1,fim + 1,profundidade + 1);   
+        }   
+    }   
+  
+    public static void main(String args[]){   
+  
+        Combinacoes comb = new Combinacoes();   
+        comb.busca(0, (60-6), 0);   
+        System.out.println("Total de combinacoes: " + comb.count);   
+  
+    }   
+} 
+
+
+		public static double calculaFatorial(int n){
+        double fat = 1;        
+        for (int i=2; i<=n; i++)            
+            fat = fat * i;        
+        return fat;    
+        }
+        
+        public static void fatorial(int n){
+            double fat = calculaFatorial(n);
+            System.out.println(fat);
+          }
+        
+        public static double combinacao(int n, Integer k){
+            double fatn = calculaFatorial(n);
+            double fatk = calculaFatorial(k);
+            double fatnk = calculaFatorial(n-k);
+            Double resultado = fatn/(fatk*fatnk);
+            
+            System.out.println(resultado.intValue());
+            return resultado;
+        }

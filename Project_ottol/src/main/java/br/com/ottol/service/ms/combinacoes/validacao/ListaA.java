@@ -19,7 +19,7 @@ import br.com.ottol.service.ms.JGDerivadoValidacao;
 @Component
 public class ListaA implements Validacao {
 
-	public static List<JGDerivadoValidacao> ListaA = new ArrayList<>();
+	public static List<JGDerivadoValidacao> LISTA_A = new ArrayList<>();
 
 	@Autowired
 	private MSRepository msRepository;
@@ -32,7 +32,7 @@ public class ListaA implements Validacao {
 
 	
 	public void carregarListaEmMemoria(List<MS> list) {		
-		ListaA = list.stream().map(m -> {
+		LISTA_A = list.stream().map(m -> {
 			return criarTipoListaA(m);
 		}).collect(Collectors.toList());
 		System.out.println("Lista A carregada");

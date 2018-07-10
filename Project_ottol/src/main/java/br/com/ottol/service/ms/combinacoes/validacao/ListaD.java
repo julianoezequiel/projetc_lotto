@@ -1,7 +1,10 @@
 package br.com.ottol.service.ms.combinacoes.validacao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,19 @@ import br.com.ottol.entity.MS;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
+import br.com.ottol.utils.DEZ;
+import br.com.ottol.utils.Utils;
 
 @Component
 public class ListaD implements Validacao {
 
-	public static List<JGDerivadoValidacao> ListaD = new ArrayList<>();
+	public static List<JGDerivadoValidacao> LISTA_D = new ArrayList<>();
+
+	public static HashMap<String, List<DEZ>> map;
+
+	public ListaD() {
+		ListaD.map = Utils.MONTAR_LISTA_D();
+	}
 
 	@Autowired
 	private MSRepository msRepository;
@@ -37,42 +48,25 @@ public class ListaD implements Validacao {
 
 	private void criarTipoListaB(MS ms) {
 
-		List<Numero> list = ms.getMegasenanumeroCollection().stream().map(m -> m.getNumero())
-				.collect(Collectors.toList());
+		AtomicInteger posisao = new AtomicInteger(1);
 
-		int index1 = list.size() - 1;
-		int index2 = index1 - 1;
-		int index3 = index2 - 1;
+		List<Numero> list = ms.getMegasenanumeroCollection().stream().map(m -> {
+			m.getNumero().setPosisao(DEZ.fromInt(posisao.getAndIncrement()));
+			return m.getNumero();
+		}).collect(Collectors.toList());
 
-		while (index1 != 1 || index2 != 0 || index3 != 0) {
+		map.entrySet().stream().forEach(f -> {
+			criarSubListD(ms.getConcurso(),
+					list.stream().filter(n -> f.getValue().contains(n.getPosisao())).collect(Collectors.toList()));
+		});
 
-			Numero n1 = list.get(index1);
-			Numero n2 = list.get(index2);
-			Numero n3 = list.get(index3);
-
-			criarSubListD(ms.getConcurso(), list.stream().map(m -> m.clone()).collect(Collectors.toList()), n1, n2, n3);
-
-			if (index3 == 0) {
-				index2--;
-				index3 = index2 - 1;
-			} else if (index2 == 0) {
-				index1--;
-				index2 = index1 - 1;
-			} else {
-				index3--;
-			}
-
-		}
 	}
 
-	private void criarSubListD(Integer concurso, List<Numero> list, Numero n1, Numero n2, Numero n3) {
+	private void criarSubListD(Integer concurso, List<Numero> list) {
 		JGDerivadoValidacao jgDerivadoValidacao = new JGDerivadoValidacao();
 		jgDerivadoValidacao.setConcurso(concurso);
-		list.remove(n1);
-		list.remove(n2);
-		list.remove(n3);
 		jgDerivadoValidacao.setNumeros(list);
-		ListaD.add(jgDerivadoValidacao);
+		LISTA_D.add(jgDerivadoValidacao);
 	}
 
 }
