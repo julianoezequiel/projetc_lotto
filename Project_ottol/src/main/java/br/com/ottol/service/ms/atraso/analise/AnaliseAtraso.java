@@ -30,17 +30,17 @@ public class AnaliseAtraso {
 	 * 
 	 * @return
 	 */
-	public Collection<AtrasoDTO> buscarAtrasos() {
-
+	public Collection<AtrasoDTO> buscarAtrasos(Integer maxConc) {
+		
 		// Busca os numeros na base
-		Collection<Jogos> listaNumeros = this.msService.buscartodosConcursos();
+		Collection<Jogos> listaNumeros = this.msService.buscarMenorQueConcursos(maxConc);
 
 		List<AtrasoDTO> listaAtraso = new ArrayList<>();
 
 		Integer ultimoConcurso = listaNumeros.size();
 
 		Collection<Numero> numeros = this.numeroService.buscarTodos();
-
+		
 		numeros.stream().filter(n -> !n.getMegasenanumeroCollection().isEmpty()).forEach(numero -> {
 			System.out.println("Comparador : " + numero.toString());
 			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
@@ -49,7 +49,7 @@ public class AnaliseAtraso {
 								.anyMatch(s -> s.equals(numero));
 						if (exite) {
 							System.out.println("Comparando : " + jogos.getNumeros());
-							System.out.println("Macth : " + jogos.getConcurso());
+							System.out.println("Match : " + jogos.getConcurso());
 						}
 						return exite;
 					}).findFirst().orElse(null);
@@ -60,7 +60,41 @@ public class AnaliseAtraso {
 		});
 		System.out.println("Total match : " + listaAtraso.size());
 		// Retorna a lista ordenada pelo maior atrazo
-		return listaAtraso.stream().sorted(Comparator.comparing(AtrasoDTO::getAtraso).reversed())
+		return listaAtraso.stream().sorted(Comparator.comparing(AtrasoDTO::getAtual).reversed())
+				.collect(Collectors.toList());
+	}
+	
+	public Collection<AtrasoDTO> buscarAtrasosAvancado() {
+
+		// Busca os numeros na base
+		Collection<Jogos> listaNumeros = this.msService.buscartodosConcursos();
+
+		List<AtrasoDTO> listaAtraso = new ArrayList<>();
+
+		Integer ultimoConcurso = listaNumeros.size();
+
+		Collection<Numero> numeros = this.numeroService.buscarTodos();
+		
+		numeros.stream().filter(n -> !n.getMegasenanumeroCollection().isEmpty()).forEach(numero -> {
+			System.out.println("Comparador : " + numero.toString());
+			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
+					.filter(jogos -> {
+						boolean exite = jogos.getNumeros().stream().map(r -> r.getNumero())
+								.anyMatch(s -> s.equals(numero));
+						if (exite) {
+							System.out.println("Comparando : " + jogos.getNumeros());
+							System.out.println("Match : " + jogos.getConcurso());
+						}
+						return exite;
+					}).findFirst().orElse(null);
+			if (j != null) {
+				int qtdAtraso = ultimoConcurso.intValue() - j.getConcurso();
+				listaAtraso.add(new AtrasoDTO(numero.getIdnumero(), qtdAtraso));
+			}
+		});
+		System.out.println("Total match : " + listaAtraso.size());
+		// Retorna a lista ordenada pelo maior atrazo
+		return listaAtraso.stream().sorted(Comparator.comparing(AtrasoDTO::getAtual).reversed())
 				.collect(Collectors.toList());
 	}
 
@@ -74,6 +108,11 @@ public class AnaliseAtraso {
 	public Collection<AtrasoDTO> getTopAtraso(Integer qtd) {
 		Collection<AtrasoDTO> list = this.buscarAtrasos();
 		return list.stream().skip(list.size() - qtd).limit(list.size()).collect(Collectors.toList());
+	}
+
+	private Collection<AtrasoDTO> buscarAtrasos() {
+		long maxConc = this.msService.total();
+		return null;
 	}
 
 }

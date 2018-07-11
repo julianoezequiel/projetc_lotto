@@ -142,8 +142,8 @@ public class MSService {
      *
      * @return
      */
-    public Collection<AtrasoDTO> buscarAtrazos() {
-        return this.atrazoAnalizeservice.buscarAtrasos();
+    public Collection<AtrasoDTO> buscarAtrazos(Integer maxConc) {
+        return this.atrazoAnalizeservice.buscarAtrasos(maxConc);
     }
 
     private HashMap<Long, ConfiguracoesDTO> melhorConfig = new HashMap<>();
@@ -264,6 +264,10 @@ public class MSService {
     public void iniciarAnaliseCombinacoes(){
     	HashMap<Object, Object> params = new HashMap<>();
     	this.analiseCombinacoes.init(params);
+    }
+    
+    public long total(){
+    	return this.msRepository.count();
     }
     
 
