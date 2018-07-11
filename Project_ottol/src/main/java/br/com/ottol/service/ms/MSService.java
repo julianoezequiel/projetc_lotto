@@ -145,6 +145,10 @@ public class MSService {
     public Collection<AtrasoDTO> buscarAtrazos(Integer maxConc) {
         return this.atrazoAnalizeservice.buscarAtrasos(maxConc);
     }
+    
+    public Collection<AtrasoDTO> buscarAtrazos() {
+        return this.atrazoAnalizeservice.buscarAtrasos((int) this.total());
+    }
 
     private HashMap<Long, ConfiguracoesDTO> melhorConfig = new HashMap<>();
     private int totalTentativas = 1000;
