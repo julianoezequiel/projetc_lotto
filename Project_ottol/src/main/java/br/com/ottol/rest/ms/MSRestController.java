@@ -61,8 +61,13 @@ public class MSRestController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/analisarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analisar() {
+	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analisarFrequencia() {
 		return new ResponseEntity<>(this.msService.analisarFrequencia(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/analisarAtraso", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analisarAtraso() {
+		return new ResponseEntity<>(this.msService.analisarAtraso(), HttpStatus.OK);
 	}
 
 }

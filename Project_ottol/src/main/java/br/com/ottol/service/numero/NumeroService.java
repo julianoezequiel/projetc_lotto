@@ -10,7 +10,6 @@ import br.com.ottol.entity.Numero;
 
 @Service
 public class NumeroService {
-
 	
 	@Autowired
 	private NumeroRepository numeroRepository;
@@ -18,4 +17,5 @@ public class NumeroService {
 	public Collection<Numero> buscarTodos(){
 		return this.numeroRepository.findAll();
 	}
+	
 }

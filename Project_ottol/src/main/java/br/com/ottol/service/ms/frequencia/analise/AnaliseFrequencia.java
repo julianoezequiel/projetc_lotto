@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.service.Analise;
+import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
 public class AnaliseFrequencia implements Analise {
@@ -33,12 +34,11 @@ public class AnaliseFrequencia implements Analise {
 	// o resultado é dado pela repetição da media. Quanto maior fator de
 	// repetição da media da frquencia maior
 	// as chances da dezena
-	@Override
-	public void init(HashMap<Object, Object> params) {
+	public void init(HashMap<PARAM, Object> params) {
 		//define a partir de qual concurso irá começar a validação
-		Integer inicio = (Integer) params.get("Inicio");
+		Integer inicio = (Integer) params.get(PARAM.PARAM_INICIO);
 		//define se é para validar somente um numero ou todos
-		Integer numeroFiltro =  (Integer) params.get("numFilter");
+		Integer numeroFiltro =  (Integer) params.get(PARAM.PARAM_NUMERO);
 
 		Long countSorteio = this.megaSenaRepository.count();
 		AtomicInteger i = new AtomicInteger(inicio);
@@ -104,5 +104,6 @@ public class AnaliseFrequencia implements Analise {
 		}
 
 	}
+
 
 }

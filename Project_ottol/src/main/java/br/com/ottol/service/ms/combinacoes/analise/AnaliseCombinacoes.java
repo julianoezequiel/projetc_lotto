@@ -14,6 +14,7 @@ import br.com.ottol.entity.MS;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Analise;
 import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
+import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
 public class AnaliseCombinacoes implements Analise{
@@ -26,7 +27,7 @@ public class AnaliseCombinacoes implements Analise{
     private MSRepository msRepository;
 	
 	@Override
-	public void init(HashMap<Object, Object> params) {
+	public void init(HashMap<PARAM, Object> params) {
 		 this.combinacoesServices.limparListas();		 
 		 List<MS> list = this.msRepository.findAll();
 		 this.combinacoesServices.carregarLista(list);

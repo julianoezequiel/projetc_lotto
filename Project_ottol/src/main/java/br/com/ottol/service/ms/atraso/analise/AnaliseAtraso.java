@@ -3,6 +3,7 @@ package br.com.ottol.service.ms.atraso.analise;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Service;
 import br.com.ottol.dto.AtrasoDTO;
 import br.com.ottol.dto.Jogos;
 import br.com.ottol.entity.Numero;
+import br.com.ottol.service.Analise;
 import br.com.ottol.service.ms.MSService;
 import br.com.ottol.service.numero.NumeroService;
+import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
-public class AnaliseAtraso {
+public class AnaliseAtraso implements Analise {
 
 	@Autowired
 	private NumeroService numeroService;
@@ -25,22 +28,25 @@ public class AnaliseAtraso {
 	private MSService msService;
 
 	/**
-	 * Calcula os atrasos das dezenas nos concursos realizados,
-	 * corrigido 28/02/2017, alterado para Megasenanumero
+	 * Calcula os atrasos das dezenas nos concursos realizados, corrigido
+	 * 28/02/2017, alterado para Megasenanumero
 	 * 
 	 * @return
 	 */
-	public Collection<AtrasoDTO> buscarAtrasos(Integer maxConc) {
-		
+	public Collection<AtrasoDTO> buscarAtrasos(Long maxConc, Integer numeroFiltro) {
 		// Busca os numeros na base
 		Collection<Jogos> listaNumeros = this.msService.buscarMenorQueConcursos(maxConc);
-
-		List<AtrasoDTO> listaAtraso = new ArrayList<>();
-
-		Integer ultimoConcurso = listaNumeros.size();
-
 		Collection<Numero> numeros = this.numeroService.buscarTodos();
-		
+		if (numeroFiltro != 0) {
+			numeros = numeros.stream().filter(f -> f.getIdnumero() == numeroFiltro).collect(Collectors.toList());
+		}
+
+		return calculaAtraso(listaNumeros, numeros);
+	}
+
+	public Collection<AtrasoDTO> calculaAtraso(Collection<Jogos> listaNumeros, Collection<Numero> numeros) {
+		Integer ultimoConcurso = listaNumeros.size();
+		List<AtrasoDTO> listaAtraso = new ArrayList<>();
 		numeros.stream().filter(n -> !n.getMegasenanumeroCollection().isEmpty()).forEach(numero -> {
 			System.out.println("Comparador : " + numero.toString());
 			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
@@ -63,7 +69,7 @@ public class AnaliseAtraso {
 		return listaAtraso.stream().sorted(Comparator.comparing(AtrasoDTO::getAtual).reversed())
 				.collect(Collectors.toList());
 	}
-	
+
 	public Collection<AtrasoDTO> buscarAtrasosAvancado() {
 
 		// Busca os numeros na base
@@ -74,7 +80,7 @@ public class AnaliseAtraso {
 		Integer ultimoConcurso = listaNumeros.size();
 
 		Collection<Numero> numeros = this.numeroService.buscarTodos();
-		
+
 		numeros.stream().filter(n -> !n.getMegasenanumeroCollection().isEmpty()).forEach(numero -> {
 			System.out.println("Comparador : " + numero.toString());
 			Jogos j = listaNumeros.stream().sorted(Comparator.comparing(Jogos::getConcurso).reversed())
@@ -112,7 +118,16 @@ public class AnaliseAtraso {
 
 	private Collection<AtrasoDTO> buscarAtrasos() {
 		long maxConc = this.msService.total();
-		return null;
+		return buscarAtrasos(maxConc, 0);
+	}
+
+	public void init(HashMap<PARAM, Object> params) {
+		// define a partir de qual concurso irá começar a validação
+		Integer inicio = (Integer) params.get(PARAM.PARAM_INICIO);
+		// define se é para validar somente um numero ou todos
+		Integer numeroFiltro = (Integer) params.get(PARAM.PARAM_NUMERO);
+
+		buscarAtrasos(inicio.longValue(), numeroFiltro);
 	}
 
 }
