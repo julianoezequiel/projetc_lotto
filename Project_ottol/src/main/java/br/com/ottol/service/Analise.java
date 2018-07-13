@@ -6,6 +6,6 @@ import br.com.ottol.utils.CONSTANTES.PARAM;
 
 public interface Analise {
 
-	public void init(HashMap<PARAM,Object> params);
-	
+	public HashMap<Object, Object> init(HashMap<PARAM, Object> params);
+
 }

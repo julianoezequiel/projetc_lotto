@@ -7,7 +7,7 @@ public class FrequenciaDTO {
 
 	private Integer numero;
 	private BigDecimal frequencia;
-	private BigDecimal media;
+	private Double media;
 
 	public FrequenciaDTO(Integer numero, BigDecimal frequencia) {
 		this.numero = numero;
@@ -16,7 +16,7 @@ public class FrequenciaDTO {
 	
 	
 
-	public FrequenciaDTO(Integer numero, BigDecimal frequencia, BigDecimal media) {
+	public FrequenciaDTO(Integer numero, BigDecimal frequencia, Double media) {
 		super();
 		this.numero = numero;
 		this.frequencia = frequencia;
@@ -33,7 +33,7 @@ public class FrequenciaDTO {
 		return frequencia;
 	}
 
-	public BigDecimal getMedia() {
+	public Double getMedia() {
 		return media;
 	}
 }

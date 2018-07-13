@@ -34,7 +34,8 @@ public class AnaliseFrequencia implements Analise {
 	// o resultado é dado pela repetição da media. Quanto maior fator de
 	// repetição da media da frquencia maior
 	// as chances da dezena
-	public void init(HashMap<PARAM, Object> params) {
+	@Override
+	public HashMap<Object,Object> init(HashMap<PARAM, Object> params) {
 		//define a partir de qual concurso irá começar a validação
 		Integer inicio = (Integer) params.get(PARAM.PARAM_INICIO);
 		//define se é para validar somente um numero ou todos
@@ -70,12 +71,14 @@ public class AnaliseFrequencia implements Analise {
 		Map<Double, Long> result = listaResultado.stream()
 				.collect(Collectors.groupingBy(AnaliseFreqResult::getMedia, Collectors.counting()));
 
-		Map<Double, Long> finalMap = new LinkedHashMap<>();
+		HashMap<Object, Object> finalMap = new LinkedHashMap<>();
 		// ordena e adiciona ao map final
 		result.entrySet().stream().sorted(Map.Entry.<Double, Long>comparingByValue().reversed())
 				.forEachOrdered(e -> finalMap.put(e.getKey(), e.getValue()));
 
 		LOGGER.info(finalMap.toString());
+		
+		return finalMap;
 	}
 
 	/**

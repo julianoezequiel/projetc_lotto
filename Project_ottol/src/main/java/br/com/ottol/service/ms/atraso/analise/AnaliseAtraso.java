@@ -121,13 +121,16 @@ public class AnaliseAtraso implements Analise {
 		return buscarAtrasos(maxConc, 0);
 	}
 
-	public void init(HashMap<PARAM, Object> params) {
+	@Override
+	public HashMap<Object, Object> init(HashMap<PARAM, Object> params) {
 		// define a partir de qual concurso irá começar a validação
+		HashMap<Object, Object> map = new HashMap<>();
 		Integer inicio = (Integer) params.get(PARAM.PARAM_INICIO);
 		// define se é para validar somente um numero ou todos
 		Integer numeroFiltro = (Integer) params.get(PARAM.PARAM_NUMERO);
-
-		buscarAtrasos(inicio.longValue(), numeroFiltro);
+		Collection<AtrasoDTO> list = buscarAtrasos(inicio.longValue(), numeroFiltro);
+		map.put(PARAM.RESULT, list);
+		return map;
 	}
 
 }
