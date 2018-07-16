@@ -38,6 +38,12 @@ public class MSRestController {
 		return new ResponseEntity<>(this.msService.buscarUltimo(), HttpStatus.OK);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "sincronizar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> sincronizar() throws ServiceException {
+		this.msService.sincronizar();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MSDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
 		return new ResponseEntity<>(this.msService.buscarPorId(id), HttpStatus.OK);

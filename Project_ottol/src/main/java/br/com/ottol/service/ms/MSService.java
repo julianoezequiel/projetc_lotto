@@ -3,15 +3,27 @@
  */
 package br.com.ottol.service.ms;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
@@ -19,12 +31,14 @@ import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.entity.MS;
+import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaD;
+import br.com.ottol.service.ms.dto.MSSincronizarDTO;
 import br.com.ottol.service.ms.frequencia.FrequenciaService;
 
 /**
@@ -34,12 +48,16 @@ import br.com.ottol.service.ms.frequencia.FrequenciaService;
 @Service
 public class MSService {
 
+	public final static Logger LOGGER = LoggerFactory.getLogger(MSService.class.getName());
+
 	@Autowired
 	private MSRepository msRepository;
 	@Autowired
 	private FrequenciaService frequenciaService;
 	@Autowired
 	private CombinacoesServices combinacoesServices;
+	@Autowired
+	private RestTemplateProxy restTemplateProxy;
 
 	/**
 	 * Lista todos os concursos
@@ -156,6 +174,24 @@ public class MSService {
 
 	public long total() {
 		return this.msRepository.count();
+	}
+
+	@PostConstruct
+	public void sincronizar() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+		HttpEntity<MSSincronizarDTO> httpEntity = new HttpEntity<>(headers);
+		RestTemplate restTemplateAuth = this.restTemplateProxy.restTemplate();
+
+		// envia a solicitacao
+		ResponseEntity<MSSincronizarDTO> responseAuth = restTemplateAuth.exchange(
+				URI.create("http://lotodicas.com.br/api/mega-sena/1000"), HttpMethod.GET, httpEntity,
+				MSSincronizarDTO.class);
+
+		if (responseAuth.getStatusCode().equals(HttpStatus.OK)) {
+			MSSincronizarDTO result = responseAuth.getBody();
+			LOGGER.debug(Arrays.toString(result.getSorteio()));
+		}
 	}
 
 }
