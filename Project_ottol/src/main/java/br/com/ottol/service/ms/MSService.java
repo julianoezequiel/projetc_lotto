@@ -3,39 +3,43 @@
  */
 package br.com.ottol.service.ms;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.ottol.dao.MSRepository;
-import br.com.ottol.dto.AtrasoDTO;
 import br.com.ottol.dto.ConfiguracoesDTO;
-import br.com.ottol.dto.FrequenciaDTO;
 import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
-import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
+import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
-import br.com.ottol.service.ms.atraso.analise.AnaliseAtraso;
 import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
-import br.com.ottol.service.ms.combinacoes.analise.AnaliseCombinacoes;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaD;
+import br.com.ottol.service.ms.dto.MSSincronizarDTO;
 import br.com.ottol.service.ms.frequencia.FrequenciaService;
-import br.com.ottol.service.ms.frequencia.analise.AnaliseFrequencia;
-import br.com.ottol.service.ms.frequencia.validacao.ValidacaoFrequente;
 
 /**
  * @author Juliano
@@ -44,227 +48,150 @@ import br.com.ottol.service.ms.frequencia.validacao.ValidacaoFrequente;
 @Service
 public class MSService {
 
-    @Autowired
-    private MSRepository msRepository;
-    @Autowired
-    private FrequenciaService frequenciaService;
-    @Autowired
-    private AnaliseAtraso atrazoAnalizeservice;
-    @Autowired
-    private AnaliseFrequencia analiseFrequencia;
-    @Autowired
-    private CombinacoesServices combinacoesServices;
-    @Autowired
-    private AnaliseCombinacoes analiseCombinacoes;
+	public final static Logger LOGGER = LoggerFactory.getLogger(MSService.class.getName());
 
-    /**
-     * Lista todos os concursos
-     *
-     * @return
-     */
-    public Collection<MSDTO> buscartodos() {
-        Collection<MSDTO> list = new ArrayList<>();
-        this.msRepository.findAll().stream().forEach(s -> {
-            list.add(s.toMegaSenaDTO());
-        });
-        return list;
-    }
+	@Autowired
+	private MSRepository msRepository;
+	@Autowired
+	private FrequenciaService frequenciaService;
+	@Autowired
+	private CombinacoesServices combinacoesServices;
+	@Autowired
+	private RestTemplateProxy restTemplateProxy;
 
-    private String sorteados;
+	/**
+	 * Lista todos os concursos
+	 *
+	 * @return
+	 */
+	public Collection<MSDTO> buscartodos() {
+		Collection<MSDTO> list = new ArrayList<>();
+		this.msRepository.findAll().stream().forEach(s -> {
+			list.add(s.toMegaSenaDTO());
+		});
+		return list;
+	}
 
-    /**
-     * Lista todos os concursos resultados Simples
-     *
-     * @return
-     */
-    public Collection<MegaSenaResultadoSimples> buscartodosSimples() {
-        Collection<MegaSenaResultadoSimples> list = new ArrayList<>();
-        this.msRepository.findAll().stream().forEach(s -> {
-            sorteados = "";
-            s.getMegasenanumeroCollection().stream().forEach(n -> {
-                sorteados = sorteados + n.getNumero().getDescricao() + " - ";
-            });
-            sorteados = sorteados.substring(0, sorteados.lastIndexOf(" -"));
-            list.add(new MegaSenaResultadoSimples(s.getConcurso(), sorteados));
-        });
-        return list;
-    }
+	private String sorteados;
 
-    /**
-     * Lista todos os concursos
-     *
-     * @return
-     */
-    public Collection<Jogos> buscartodosConcursos() {
-        List<Jogos> list = new ArrayList<>();
+	/**
+	 * Lista todos os concursos resultados Simples
+	 *
+	 * @return
+	 */
+	public Collection<MegaSenaResultadoSimples> buscartodosSimples() {
+		Collection<MegaSenaResultadoSimples> list = new ArrayList<>();
+		this.msRepository.findAll().stream().forEach(s -> {
+			sorteados = "";
+			s.getMegasenanumeroCollection().stream().forEach(n -> {
+				sorteados = sorteados + n.getNumero().getDescricao() + " - ";
+			});
+			sorteados = sorteados.substring(0, sorteados.lastIndexOf(" -"));
+			list.add(new MegaSenaResultadoSimples(s.getConcurso(), sorteados));
+		});
+		return list;
+	}
 
-        this.msRepository.findAll().stream().forEach(s -> {
-            list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
-        });
-        return list;
-    }
+	/**
+	 * Lista todos os concursos
+	 *
+	 * @return
+	 */
+	public Collection<Jogos> buscartodosConcursos() {
+		List<Jogos> list = new ArrayList<>();
 
-    public Collection<Jogos> buscarMenorQueConcursos(Integer id) {
-        List<Jogos> list = new ArrayList<>();
+		this.msRepository.findAll().stream().forEach(s -> {
+			list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
+		});
+		return list;
+	}
 
-        this.msRepository.buscarMenorQue(id).stream().forEach(s -> {
-            list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
-        });
-        return list;
-    }
+	public Collection<Jogos> buscarMenorQueConcursos(Long id) {
+		List<Jogos> list = new ArrayList<>();
 
-    /**
-     * Busca o concurso pelo id do concuso
-     *
-     * @param id
-     * @return
-     */
-    public MSDTO buscarPorId(Integer id) throws ServiceException {
-        MS mS = this.msRepository.findOne(id);
-        if (mS != null) {
-            return mS.toMegaSenaDTO();
-        } else {
-            throw new ServiceException(HttpStatus.NO_CONTENT, "Concurso não encontrado");
-        }
-    }
+		this.msRepository.buscarMenorQue(id.intValue()).stream().forEach(s -> {
+			list.add(new Jogos(s.getConcurso(), s.getMegasenanumeroCollection()));
+		});
+		return list;
+	}
 
-    /**
-     * Calcula quantas vezes cada dezena ja foi sorteada
-     *
-     * @return
-     */
-    public Collection<FrequenciaDTO> buscarFrequencias() {
-        return frequenciaService.buscarFrequencias();
-    }
+	/**
+	 * Busca o concurso pelo id do concuso
+	 *
+	 * @param id
+	 * @return
+	 */
+	public MSDTO buscarPorId(Integer id) throws ServiceException {
+		MS mS = this.msRepository.findOne(id);
+		if (mS != null) {
+			return mS.toMegaSenaDTO();
+		} else {
+			throw new ServiceException(HttpStatus.NO_CONTENT, "Concurso não encontrado");
+		}
+	}
 
-    /**
-     * Calcula os atrazos das dezenas noc concursos realizados
-     *
-     * @return
-     */
-    public Collection<AtrasoDTO> buscarAtrazos() {
-        return this.atrazoAnalizeservice.buscarAtrasos();
-    }
+	public MSDTO buscarUltimo() throws ServiceException {
+		MS mS = this.msRepository.getUltimoConcurso();
+		if (mS != null) {
+			return mS.toMegaSenaDTO();
+		} else {
+			throw new ServiceException(HttpStatus.NO_CONTENT, "Concurso não encontrado");
+		}
+	}
 
-    private HashMap<Long, ConfiguracoesDTO> melhorConfig = new HashMap<>();
-    private int totalTentativas = 1000;
-    private int passo = 0;
-    private Long max = 0l;
+	ConfiguracoesDTO configuracoes = new ConfiguracoesDTO();
 
-    public HashMap<Long, ConfiguracoesDTO> iniciarAnalise() {
-        max = 0l;
-        totalTentativas = 1000;
-        passo = 0;
-        melhorConfig = new HashMap<>();
+	public ConfiguracoesDTO getConfigDefault() {
 
-        return analisar();
-    }
+		// configuracoes.setMaisAtrazado(getnumRand());
+		this.configuracoes.setMaisFrequente(
+				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
+						? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
+		// configuracoes.setMenosAtrazado(getnumRand());
+		this.configuracoes.setMenosFrequente(
+				this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);
+		return configuracoes;
+	}
 
-    private ConfiguracoesDTO config = new ConfiguracoesDTO();
-    
-    public  HashMap<Long, ConfiguracoesDTO> analisarFrequencia(){
-    	HashMap<Object, Object> params = new HashMap<>();
-    	params.put("Inicio", 1);
-    	params.put("numFilter", 0);
-        analiseFrequencia.init(params);
-        return melhorConfig;
-    }
-    
-    public  HashMap<Long, ConfiguracoesDTO> analisarAtraso(){
-    	HashMap<Object, Object> params = new HashMap<>();
-    	params.put("Inicio", 1);
-    	params.put("numFilter", 0);
-        analiseFrequencia.init(params);
-        return melhorConfig;
-    }
-    
-    public HashMap<Long, ConfiguracoesDTO> analisar() {
-    	
-    	HashMap<Object, Object> params = new HashMap<>();
-    	params.put("Inicio", 1);
-    	params.put("numFilter", 0);
-        analiseFrequencia.init(params);
+	Random rand = new Random();
 
-        // long totalJogos = this.megaSenaRepository.count();
-        //
-        // while (totalJogos > 0) {
-        // config = getConfigDefault();
-        // Collection<Jogos> jogos =
-        // this.buscarMenorQueConcursos(config.getMaisFrequente());
-        // Collection<RespostaValidacao> validacoes = new ArrayList<>();
-        //
-        // jogos.stream().forEach(jogo -> {
-        // System.out.println("Jogo : " + jogo.toString());
-        // validacoes.add(this.maisFrequenteValidacaoService.validar(config,
-        // jogo));
-        // validacoes.add(this.menosFrequenteValidacaoService.validar(config,
-        // jogo));
-        // });
-        //
-        // long subTotal = validacoes.stream().filter(f ->
-        // f.getAprovado().equals(true)).count();
-        //
-        // if (subTotal > max) {
-        //
-        // max = subTotal;
-        // melhorConfig.put(max, config.newIntance());
-        // System.out.println(melhorConfig.values().toArray());
-        // }
-        //
-        // totalJogos--;
-        // System.out.println("Total de jogos : " + totalJogos);
-        // }
-        //
-        // if (config.getMaisFrequente() != 60 || config.getMenosFrequente() !=
-        // 60) {
-        // passo++;
-        // System.out.println("Teste : " + passo + " validação : " +
-        // config.toString());
-        // analizar();
-        // }
-        return melhorConfig;
+	private int getnumRand() {
+		return ThreadLocalRandom.current().nextInt(1, 60);
+	}
 
-    }
+	public void verificarListas() {
 
-    ConfiguracoesDTO configuracoes = new ConfiguracoesDTO();
+		List<MS> list = this.msRepository.findAll();
 
-    public ConfiguracoesDTO getConfigDefault() {
+		this.combinacoesServices.carregarLista(list);
 
-        // configuracoes.setMaisAtrazado(getnumRand());
-        this.configuracoes.setMaisFrequente(
-                this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
-                ? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
-        // configuracoes.setMenosAtrazado(getnumRand());
-        this.configuracoes.setMenosFrequente(
-                this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);
-        return configuracoes;
-    }
+		List<JGDerivadoValidacao> listaA = ListaA.LISTA_A;
+		List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
+		List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
+		List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
 
-    Random rand = new Random();
+	}
 
-    private int getnumRand() {
-        return ThreadLocalRandom.current().nextInt(1, 60);
-    }
-    
-   
-    public void verificarListas(){
-    	
-    	List<MS> list = this.msRepository.findAll();
-    	
-    	this.combinacoesServices.carregarLista(list);
-    	
-    	List<JGDerivadoValidacao> listaA = ListaA.LISTA_A;
-    	List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
-    	List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
-    	List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
-    	
-    }
-    
-    @PostConstruct
-    public void iniciarAnaliseCombinacoes(){
-    	HashMap<Object, Object> params = new HashMap<>();
-    	this.analiseCombinacoes.init(params);
-    }
-    
+	public long total() {
+		return this.msRepository.count();
+	}
+
+	@PostConstruct
+	public void sincronizar() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+		HttpEntity<MSSincronizarDTO> httpEntity = new HttpEntity<>(headers);
+		RestTemplate restTemplateAuth = this.restTemplateProxy.restTemplate();
+
+		// envia a solicitacao
+		ResponseEntity<MSSincronizarDTO> responseAuth = restTemplateAuth.exchange(
+				URI.create("http://lotodicas.com.br/api/mega-sena/1000"), HttpMethod.GET, httpEntity,
+				MSSincronizarDTO.class);
+
+		if (responseAuth.getStatusCode().equals(HttpStatus.OK)) {
+			MSSincronizarDTO result = responseAuth.getBody();
+			LOGGER.debug(Arrays.toString(result.getSorteio()));
+		}
+	}
 
 }

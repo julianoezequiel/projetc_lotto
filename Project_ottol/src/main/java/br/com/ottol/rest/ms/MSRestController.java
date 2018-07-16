@@ -1,7 +1,6 @@
 package br.com.ottol.rest.ms;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ottol.dto.AtrasoDTO;
-import br.com.ottol.dto.ConfiguracoesDTO;
-import br.com.ottol.dto.FrequenciaDTO;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.service.ServiceException;
@@ -29,40 +25,28 @@ public class MSRestController {
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<MSDTO>> listar() {
-		return new ResponseEntity<>(msService.buscartodos(), HttpStatus.OK);
+		return new ResponseEntity<>(this.msService.buscartodos(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "simples", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "resumido", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<MegaSenaResultadoSimples>> listarSimples() {
-		return new ResponseEntity<>(msService.buscartodosSimples(), HttpStatus.OK);
+		return new ResponseEntity<>(this.msService.buscartodosSimples(), HttpStatus.OK);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "ultimo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<MSDTO> buscarUltimo() throws ServiceException {
+		return new ResponseEntity<>(this.msService.buscarUltimo(), HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "sincronizar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> sincronizar() throws ServiceException {
+		this.msService.sincronizar();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MSDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
-		return new ResponseEntity<>(msService.buscarPorId(id), HttpStatus.OK);
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/frequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<FrequenciaDTO>> buscarFrequencias() {
-		return new ResponseEntity<>(msService.buscarFrequencias(), HttpStatus.OK);
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/atraso", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<AtrasoDTO>> buscarAtrazos() {
-		return new ResponseEntity<>(msService.buscarAtrazos(), HttpStatus.OK);
-	}
-
-	/**
-	 * Metodo para realizar a analise recursiva de frequencia dos numeros
-	 * sorteados, ojetivo sera conseguir uma configuracao mais apropriada para
-	 * utilizar na validacao. A cada sorteio realizado, devera verificar qual
-	 * numero mais e menos frequante foram sorteados
-	 * 
-	 * @return
-	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/analisarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<HashMap<Long, ConfiguracoesDTO>> analisar() {
-		return new ResponseEntity<>(this.msService.analisarFrequencia(), HttpStatus.OK);
+		return new ResponseEntity<>(this.msService.buscarPorId(id), HttpStatus.OK);
 	}
 
 }

@@ -108,6 +108,13 @@
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version><!--$NO-MVN-MAN-VER$-->
+			<type>jar</type>
+		</dependency>
+		
     </dependencies>
 
     <build>

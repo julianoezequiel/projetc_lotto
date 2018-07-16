@@ -8,15 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ottol.entity.MS;
+import br.com.ottol.service.ms.combinacoes.analise.AnaliseCombinacoes;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaD;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaE;
+import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
 public class CombinacoesServices {
 
+	@Autowired
+	private AnaliseCombinacoes analiseCombinacoes;
 	@Autowired
 	private ListaA listaA;
 	@Autowired
@@ -52,6 +56,11 @@ public class CombinacoesServices {
 		map.put("D", this.listaD.frequencia());
 		map.put("E", this.listaE.frequencia());
 		return map;
+	}
+
+	public HashMap<Object, Object> analiseCombinacoes() {
+		HashMap<PARAM, Object> params = new HashMap<>();
+		return this.analiseCombinacoes.init(params);
 	}
 
 }

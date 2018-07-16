@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.service.Analise;
+import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
 public class AnaliseFrequencia implements Analise {
@@ -34,11 +35,11 @@ public class AnaliseFrequencia implements Analise {
 	// repetição da media da frquencia maior
 	// as chances da dezena
 	@Override
-	public void init(HashMap<Object, Object> params) {
+	public HashMap<Object,Object> init(HashMap<PARAM, Object> params) {
 		//define a partir de qual concurso irá começar a validação
-		Integer inicio = (Integer) params.get("Inicio");
+		Integer inicio = (Integer) params.get(PARAM.PARAM_INICIO);
 		//define se é para validar somente um numero ou todos
-		Integer numeroFiltro =  (Integer) params.get("numFilter");
+		Integer numeroFiltro =  (Integer) params.get(PARAM.PARAM_NUMERO);
 
 		Long countSorteio = this.megaSenaRepository.count();
 		AtomicInteger i = new AtomicInteger(inicio);
@@ -70,12 +71,14 @@ public class AnaliseFrequencia implements Analise {
 		Map<Double, Long> result = listaResultado.stream()
 				.collect(Collectors.groupingBy(AnaliseFreqResult::getMedia, Collectors.counting()));
 
-		Map<Double, Long> finalMap = new LinkedHashMap<>();
+		HashMap<Object, Object> finalMap = new LinkedHashMap<>();
 		// ordena e adiciona ao map final
 		result.entrySet().stream().sorted(Map.Entry.<Double, Long>comparingByValue().reversed())
 				.forEachOrdered(e -> finalMap.put(e.getKey(), e.getValue()));
 
 		LOGGER.info(finalMap.toString());
+		
+		return finalMap;
 	}
 
 	/**
@@ -104,5 +107,6 @@ public class AnaliseFrequencia implements Analise {
 		}
 
 	}
+
 
 }
