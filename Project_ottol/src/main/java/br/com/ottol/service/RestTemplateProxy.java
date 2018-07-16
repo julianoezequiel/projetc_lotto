@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class RestTemplateProxy {
-	
+
 	@Value("${proxy.user}")
 	private String username;
 	@Value("${proxy.password}")
@@ -24,28 +24,34 @@ public class RestTemplateProxy {
 	private String proxyUrl;
 	@Value("${proxy.port}")
 	private Integer port;
-	
+	@Value("${proxy.enabled}")
+	private Boolean enabled;
+
 	public RestTemplate restTemplate() {
 
-		CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+		if (enabled == true) {
+			CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 
-		credentialsProvider.setCredentials(AuthScope.ANY, new NTCredentials(this.username, this.password, null, null));
-		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+			credentialsProvider.setCredentials(AuthScope.ANY,
+					new NTCredentials(this.username, this.password, null, null));
+			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 
-		clientBuilder.useSystemProperties();
-		clientBuilder.setProxy(new HttpHost(this.proxyUrl, this.port));
-		clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-		clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
+			clientBuilder.useSystemProperties();
+			clientBuilder.setProxy(new HttpHost(this.proxyUrl, this.port));
+			clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+			clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
 
-		CloseableHttpClient client = clientBuilder.build();
+			CloseableHttpClient client = clientBuilder.build();
 
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setHttpClient(client);
-		factory.setConnectTimeout(3000);
-		factory.setReadTimeout(5000);
-		factory.setConnectionRequestTimeout(3000);
+			HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+			factory.setHttpClient(client);
+			factory.setConnectTimeout(3000);
+			factory.setReadTimeout(5000);
+			factory.setConnectionRequestTimeout(3000);
 
-		return new RestTemplate(factory);
-
+			return new RestTemplate(factory);
+		} else {
+			return new RestTemplate();
+		}
 	}
 }

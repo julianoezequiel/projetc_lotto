@@ -21,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -146,7 +147,8 @@ public class MSService {
 		// configuracoes.setMaisAtrazado(getnumRand());
 		this.configuracoes.setMaisFrequente(
 				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
-						? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
+						? this.configuracoes.getMaisFrequente() + 1
+						: this.configuracoes.getMaisFrequente());
 		// configuracoes.setMenosAtrazado(getnumRand());
 		this.configuracoes.setMenosFrequente(
 				this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);
@@ -179,18 +181,50 @@ public class MSService {
 	@PostConstruct
 	public void sincronizar() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-		HttpEntity<MSSincronizarDTO> httpEntity = new HttpEntity<>(headers);
-		RestTemplate restTemplateAuth = this.restTemplateProxy.restTemplate();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		headers.add("Accept", "application/json");
+		headers.add("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
+		HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
+		RestTemplate restTemplateAuth = new RestTemplate();
+		String url = "http://lotodicas.com.br/api/mega-sena/1000";
 		// envia a solicitacao
-		ResponseEntity<MSSincronizarDTO> responseAuth = restTemplateAuth.exchange(
-				URI.create("http://lotodicas.com.br/api/mega-sena/1000"), HttpMethod.GET, httpEntity,
-				MSSincronizarDTO.class);
+		ResponseEntity<String> responseAuth = restTemplateAuth.exchange(URI.create(url), HttpMethod.GET, httpEntity,
+				String.class);
 
-		if (responseAuth.getStatusCode().equals(HttpStatus.OK)) {
-			MSSincronizarDTO result = responseAuth.getBody();
-			LOGGER.debug(Arrays.toString(result.getSorteio()));
+		HttpHeaders httpHeaders = responseAuth.getHeaders();
+		HttpStatus statusCode = responseAuth.getStatusCode();
+
+		if (statusCode.equals(HttpStatus.MOVED_PERMANENTLY) || statusCode.equals(HttpStatus.FOUND)
+				|| statusCode.equals(HttpStatus.SEE_OTHER)) {
+			if (httpHeaders.getLocation() != null) {
+				String saida = perFormRestCall(httpHeaders.getLocation().toString());
+				LOGGER.debug(saida);
+			} else {
+				throw new RuntimeException();
+			}
+		}
+	}
+
+	private String perFormRestCall(String url) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+			headers.add("Accept", "application/json");
+			headers.add("user-agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+			HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
+			RestTemplate restTemplateAuth = new RestTemplate();
+			ResponseEntity<String> responseAuth = restTemplateAuth.exchange(URI.create(url), HttpMethod.GET, httpEntity,
+					String.class);
+
+			return responseAuth.getBody();
+		} catch (Exception ex) {
+			throw new RuntimeException();
 		}
 	}
 
