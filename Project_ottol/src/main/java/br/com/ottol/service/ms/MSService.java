@@ -147,8 +147,7 @@ public class MSService {
 		// configuracoes.setMaisAtrazado(getnumRand());
 		this.configuracoes.setMaisFrequente(
 				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
-						? this.configuracoes.getMaisFrequente() + 1
-						: this.configuracoes.getMaisFrequente());
+						? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
 		// configuracoes.setMenosAtrazado(getnumRand());
 		this.configuracoes.setMenosFrequente(
 				this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);
@@ -188,7 +187,7 @@ public class MSService {
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
 		HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
-		RestTemplate restTemplateAuth = new RestTemplate();
+		RestTemplate restTemplateAuth = this.restTemplateProxy.restTemplate();
 		String url = "http://lotodicas.com.br/api/mega-sena/1000";
 		// envia a solicitacao
 		ResponseEntity<String> responseAuth = restTemplateAuth.exchange(URI.create(url), HttpMethod.GET, httpEntity,
@@ -205,6 +204,9 @@ public class MSService {
 			} else {
 				throw new RuntimeException();
 			}
+		} else if (statusCode.equals(HttpStatus.OK)) {
+			String saida = responseAuth.getBody();
+			LOGGER.debug(saida);
 		}
 	}
 
