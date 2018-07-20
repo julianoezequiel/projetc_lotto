@@ -26,6 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.Jogos;
@@ -59,6 +62,8 @@ public class MSService {
 	private CombinacoesServices combinacoesServices;
 	@Autowired
 	private RestTemplateProxy restTemplateProxy;
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Lista todos os concursos
@@ -188,10 +193,10 @@ public class MSService {
 
 		HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
 		RestTemplate restTemplateAuth = this.restTemplateProxy.restTemplate();
-		String url = "http://lotodicas.com.br/api/mega-sena/1000";
+		String url = "https://confiraloterias.com.br/api/json/?loteria=megasena&lista=true&token=6aSWlYrZz0H64s4";
 		// envia a solicitacao
-		ResponseEntity<String> responseAuth = restTemplateAuth.exchange(URI.create(url), HttpMethod.GET, httpEntity,
-				String.class);
+		ResponseEntity<JsonNode> responseAuth = restTemplateAuth.exchange(URI.create(url), HttpMethod.GET, httpEntity,
+				JsonNode.class);
 
 		HttpHeaders httpHeaders = responseAuth.getHeaders();
 		HttpStatus statusCode = responseAuth.getStatusCode();
@@ -205,8 +210,9 @@ public class MSService {
 				throw new RuntimeException();
 			}
 		} else if (statusCode.equals(HttpStatus.OK)) {
-			String saida = responseAuth.getBody();
-			LOGGER.debug(saida);
+			JsonNode saida = responseAuth.getBody();
+			int i = saida.size();
+			LOGGER.debug(saida.toString());
 		}
 	}
 
