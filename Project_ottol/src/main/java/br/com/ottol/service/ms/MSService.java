@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -128,9 +129,9 @@ public class MSService {
 	 * @return
 	 */
 	public MSDTO buscarPorId(Integer id) throws ServiceException {
-		MS mS = this.msRepository.findOne(id);
-		if (mS != null) {
-			return mS.toMegaSenaDTO();
+		Optional<MS> mS = this.msRepository.findById(id);
+		if (mS.isPresent()) {
+			return mS.get().toMegaSenaDTO();
 		} else {
 			throw new ServiceException(HttpStatus.NO_CONTENT, "Concurso não encontrado");
 		}
@@ -182,7 +183,7 @@ public class MSService {
 		return this.msRepository.count();
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	public void sincronizar() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);

@@ -3,8 +3,6 @@ package br.com.ottol.dao;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -37,7 +35,7 @@ public interface MSRepository extends JpaRepository<MS, Integer> {
 	}
 
 	default Sort orderBy() {
-		return new Sort(Sort.Direction.DESC, "concurso");
+		return Sort.by(Sort.Direction.DESC, "concurso");
 	}
 
 }

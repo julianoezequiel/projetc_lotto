@@ -61,8 +61,8 @@ public class AnaliseFrequencia implements Analise {
 
 				listaResultado.add(new AnaliseFreqResult(i.get(), ((Integer) freq[0]).intValue(),
 						((BigInteger) freq[1]).intValue(), media));
-//				LOGGER.info("Sorteio : " + i.get() + " - Número : " + freq[0] + " - Frequência : " + freq[1]
-//						+ " ---- Cálculo média : " + media);
+				LOGGER.info("S : " + i.get() + " - N : " + freq[0] + " - F : " + freq[1]
+						+ " ---- CM  : " + media);
 
 			});
 

@@ -108,7 +108,7 @@ public class MS implements Serializable {
 	@Column(name = "rateioquadra")
 	private BigDecimal rateioquadra;
 
-	@Column(name = "acumulado")
+	@Column(name = "acumulado",columnDefinition = "TINYINT", length = 1)
 	private Boolean acumulado;
 
 	@Column(name = "valoracumulado")
