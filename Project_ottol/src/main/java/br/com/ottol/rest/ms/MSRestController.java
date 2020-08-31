@@ -48,5 +48,11 @@ public class MSRestController {
 	public ResponseEntity<MSDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
 		return new ResponseEntity<>(this.msService.buscarPorId(id), HttpStatus.OK);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "carregar-listas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<MSDTO> carregarListas() throws ServiceException {
+		this.msService.carregarListas();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
 }

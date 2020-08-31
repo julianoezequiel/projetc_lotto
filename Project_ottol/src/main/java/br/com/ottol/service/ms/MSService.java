@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -168,14 +169,18 @@ public class MSService {
 
 	public void verificarListas() {
 
-		List<MS> list = this.msRepository.findAll();
-
-		this.combinacoesServices.carregarLista(list);
-
-		List<JGDerivadoValidacao> listaA = ListaA.LISTA_A;
-		List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
-		List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
-		List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
+//		List<MS> list = this.msRepository.findAll();
+//
+//		this.combinacoesServices.carregarLista(list);
+//
+//		List<JGDerivadoValidacao> listaA = ListaA.LISTA_A;
+//		List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
+//		List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
+//		List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
+		
+		HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+		
+		System.out.println("Carregado");
 
 	}
 
@@ -235,6 +240,11 @@ public class MSService {
 		} catch (Exception ex) {
 			throw new RuntimeException();
 		}
+	}
+
+	public void carregarListas() {
+		this.verificarListas();
+		
 	}
 
 }
