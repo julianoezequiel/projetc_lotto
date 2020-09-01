@@ -2,10 +2,12 @@ package br.com.ottol.service.ms.combinacoes.validacao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
+import br.com.ottol.dto.NumeroDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
@@ -31,8 +34,22 @@ public class ListaA implements Validacao {
 
 	@Override
 	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		LOGGER.debug("LISTA A");
+		AtomicInteger repetido = new AtomicInteger(0);
+
+		LISTA_A.stream().forEach(p -> {
+			List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
+					.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
+					.collect(Collectors.toList());
+
+			boolean equals = collect.equals(p.getNumeros());
+			if (Boolean.TRUE.equals(equals)) {
+				repetido.getAndIncrement();
+				Integer concurso = p.getConcurso();
+				System.out.println("LISTA A Integer c " + concurso + " - N:" + collect);
+			}
+		});
+		return new RespostaValidacao("Lista B", repetido.get() == 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
@@ -55,6 +72,12 @@ public class ListaA implements Validacao {
 		return collect.entrySet().stream()
 				.sorted((e2, e1) -> Long.compare(e1.getValue().longValue(), e2.getValue().longValue()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+	}
+
+	public RespostaValidacao validar(PalpiteDTO palpiteDTO) {
+		return this.validar(palpiteDTO.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
+				palpiteDTO);
+
 	}
 
 }

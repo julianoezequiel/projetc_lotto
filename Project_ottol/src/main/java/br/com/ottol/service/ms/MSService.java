@@ -36,9 +36,12 @@ import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
+import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
+import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
@@ -154,7 +157,8 @@ public class MSService {
 		// configuracoes.setMaisAtrazado(getnumRand());
 		this.configuracoes.setMaisFrequente(
 				this.configuracoes.getMaisFrequente() <= 60 && this.configuracoes.getMenosFrequente() == 60
-						? this.configuracoes.getMaisFrequente() + 1 : this.configuracoes.getMaisFrequente());
+						? this.configuracoes.getMaisFrequente() + 1
+						: this.configuracoes.getMaisFrequente());
 		// configuracoes.setMenosAtrazado(getnumRand());
 		this.configuracoes.setMenosFrequente(
 				this.configuracoes.getMenosFrequente() < 60 ? this.configuracoes.getMenosFrequente() + 1 : 1);
@@ -177,9 +181,9 @@ public class MSService {
 //		List<JGDerivadoValidacao> listaB = ListaB.LISTA_B;
 //		List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
 //		List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
-		
+
 		HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
-		
+
 		System.out.println("Carregado");
 
 	}
@@ -244,7 +248,13 @@ public class MSService {
 
 	public void carregarListas() {
 		this.verificarListas();
-		
+
+	}
+
+	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
+		HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+		List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
+		return validar;
 	}
 
 }

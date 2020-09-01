@@ -17,7 +17,7 @@ import br.com.ottol.utils.CONSTANTES.PARAM;
 @Service
 public class AnaliseCombinacoes implements Analise {
 
-	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnaliseCombinacoes.class.getName());
+	public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnaliseCombinacoes.class.getName());
 
 	@Autowired
 	private CombinacoesServices combinacoesServices;

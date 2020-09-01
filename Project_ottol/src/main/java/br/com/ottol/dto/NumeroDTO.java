@@ -2,6 +2,8 @@ package br.com.ottol.dto;
 
 public class NumeroDTO {
 
+	public NumeroDTO() {
+	}
 	private Integer idNumero;
 
 	public NumeroDTO(Integer idNumero) {

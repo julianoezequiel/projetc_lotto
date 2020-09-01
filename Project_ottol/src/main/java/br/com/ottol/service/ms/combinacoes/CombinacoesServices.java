@@ -1,5 +1,6 @@
 package br.com.ottol.service.ms.combinacoes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ottol.dto.ConfiguracoesDTO;
+import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
+import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.combinacoes.analise.AnaliseCombinacoes;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
 import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
@@ -61,6 +66,15 @@ public class CombinacoesServices {
 	public HashMap<Object, Object> analiseCombinacoes() {
 		HashMap<PARAM, Object> params = new HashMap<>();
 		return this.analiseCombinacoes.init(params);
+	}
+
+	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
+		List<RespostaValidacao> validacaos = new ArrayList<>();
+		validacaos.add(this.listaA.validar(palpiteDTO));
+		validacaos.add(this.listaB.validar(palpiteDTO));
+		validacaos.add(this.listaC.validar(palpiteDTO));
+		validacaos.add(this.listaD.validar(palpiteDTO));
+		return validacaos;
 	}
 
 }

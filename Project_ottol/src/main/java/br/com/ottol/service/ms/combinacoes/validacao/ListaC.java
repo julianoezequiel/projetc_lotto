@@ -2,9 +2,13 @@ package br.com.ottol.service.ms.combinacoes.validacao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
@@ -13,9 +17,11 @@ import org.springframework.stereotype.Component;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
+import br.com.ottol.dto.NumeroDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
+import br.com.ottol.entity.Megasenanumero;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
@@ -31,19 +37,38 @@ public class ListaC implements Validacao {
 
 	@Override
 	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		LOGGER.debug("LISTA C");
+		List<JGDerivadoValidacao> listaRet = new ArrayList<>();
+		List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
+				.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
+				.collect(Collectors.toList());
+
+		criarTipoListaC(palpiteDTO.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), listaRet);
+		AtomicInteger repetido = new AtomicInteger(0);
+		LISTA_C.stream().forEach(o -> {
+			listaRet.stream().forEach(palpite -> {
+				Collection<Numero> numeros = o.getNumeros();
+				boolean equals = numeros.equals(palpite.getNumeros());
+				if (Boolean.TRUE.equals(equals)) {
+					repetido.incrementAndGet();
+					Integer concurso = o.getConcurso();
+					System.out.println("LISTA C Integer c " + concurso + " - N:" + numeros);
+				}
+			});
+		});
+		return new RespostaValidacao("Lista C", repetido.get() == 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
-		list.stream().forEach(ms -> criarTipoListaC(ms));
+
+		list.stream().forEach(ms -> criarTipoListaC(ms.getIdconcurso(),
+				ms.getMegasenanumeroCollection().stream().map(Megasenanumero::getNumero).collect(Collectors.toList()),
+				LISTA_C));
+
 		LOGGER.debug("Lista C criada");
 	}
 
-	private void criarTipoListaC(MS ms) {
-
-		List<Numero> list = ms.getMegasenanumeroCollection().stream().map(m -> m.getNumero())
-				.collect(Collectors.toList());
+	private void criarTipoListaC(Integer idConcurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {
 
 		int index1 = list.size() - 1;
 		int index2 = index1 - 1;
@@ -53,9 +78,8 @@ public class ListaC implements Validacao {
 			Numero n1 = list.get(index1);
 			Numero n2 = list.get(index2);
 
-			criarSubListB1(ms.getConcurso(), list.stream()
-					.map(m -> m.clone())
-					.collect(Collectors.toList()), n1, n2);
+			criarSubListB1(idConcurso, list.stream().map(m -> m.clone()).collect(Collectors.toList()), n1, n2,
+					listaRet);
 
 			if (index2 == 0) {
 				index1--;
@@ -67,15 +91,15 @@ public class ListaC implements Validacao {
 		}
 	}
 
-	private void criarSubListB1(Integer concurso, List<Numero> list, Numero n1, Numero n2) {
+	private void criarSubListB1(Integer concurso, List<Numero> list, Numero n1, Numero n2,
+			List<JGDerivadoValidacao> listaRet) {
 		JGDerivadoValidacao jgDerivadoValidacao = new JGDerivadoValidacao();
 		jgDerivadoValidacao.setConcurso(concurso);
 		list.remove(n1);
 		list.remove(n2);
 		jgDerivadoValidacao.setNumeros(list);
-		LISTA_C.add(jgDerivadoValidacao);
+		listaRet.add(jgDerivadoValidacao);
 	}
-	
 
 	public Map<String, Long> frequencia() {
 		Map<String, Long> collect = LISTA_C.stream()
@@ -85,5 +109,9 @@ public class ListaC implements Validacao {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
+	public RespostaValidacao validar(PalpiteDTO palpiteDTO) {
+		return this.validar(palpiteDTO.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
+				palpiteDTO);
+	}
 
 }

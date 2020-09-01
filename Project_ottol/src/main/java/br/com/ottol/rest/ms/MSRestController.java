@@ -1,19 +1,25 @@
 package br.com.ottol.rest.ms;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
+import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.service.ServiceException;
+import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.MSService;
 
 @RestController
@@ -43,16 +49,21 @@ public class MSRestController {
 		this.msService.sincronizar();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MSDTO> buscarPorId(@PathVariable Integer id) throws ServiceException {
 		return new ResponseEntity<>(this.msService.buscarPorId(id), HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "carregar-listas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<MSDTO> carregarListas() throws ServiceException {
 		this.msService.carregarListas();
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "validar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody PalpiteDTO palpiteDTO) throws ServiceException {
+		return new ResponseEntity<>(this.msService.validar(palpiteDTO), HttpStatus.OK);
 	}
 
 }
