@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.combinacoes.validacao;
+package br.com.ottol.service.ms.comb.validacao;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,10 +34,12 @@ public class ListaA implements Validacao {
 
 	@Override
 	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-		LOGGER.debug("LISTA A");
+//		LOGGER.debug("LISTA A");
 		AtomicInteger repetido = new AtomicInteger(0);
-
-		LISTA_A.stream().forEach(p -> {
+		
+		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_A);
+		
+		newList.stream().forEach(p -> {
 			List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
 					.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
 					.collect(Collectors.toList());
@@ -45,8 +47,8 @@ public class ListaA implements Validacao {
 			boolean equals = collect.equals(p.getNumeros());
 			if (Boolean.TRUE.equals(equals)) {
 				repetido.getAndIncrement();
-				Integer concurso = p.getConcurso();
-				System.out.println("LISTA A Integer c " + concurso + " - N:" + collect);
+//				Integer concurso = p.getConcurso();
+//				System.out.println("LISTA A Integer c " + concurso + " - N:" + collect);
 			}
 		});
 		return new RespostaValidacao("Lista B", repetido.get() == 0, repetido.get());

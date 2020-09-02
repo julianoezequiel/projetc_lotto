@@ -1,5 +1,6 @@
 package br.com.ottol.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import br.com.ottol.entity.Lotofacil;
@@ -15,7 +16,7 @@ public class PalpiteDTO {
 
 	private Collection<NumeroDTO> numeroCollection;
 
-	private Collection<ConfiguracoesDTO> configuracoesCollection;
+	private Collection<ConfiguracoesDTO> configuracoesCollection = new ArrayList<>();
 
 	public Integer getIdpalpite() {
 		return idpalpite;

@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.combinacoes.analise;
+package br.com.ottol.service.ms.comb.analise;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.Analise;
-import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
+import br.com.ottol.service.ms.comb.CombinacoesServices;
 import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
@@ -40,5 +40,8 @@ public class AnaliseCombinacoes implements Analise {
 		LOGGER.debug("Frequencias");
 		return map;
 	}
-
+	
+	public void analiseCompleta() {
+		
+	}
 }

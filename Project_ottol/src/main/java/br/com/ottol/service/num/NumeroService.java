@@ -1,4 +1,4 @@
-package br.com.ottol.service.numero;
+package br.com.ottol.service.num;
 
 import java.util.Collection;
 

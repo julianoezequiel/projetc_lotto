@@ -1,12 +1,15 @@
 package br.com.ottol.rest.ms;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
+import br.com.ottol.dto.ResultadoDTO;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.MSService;
@@ -62,8 +66,13 @@ public class MSRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "validar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody PalpiteDTO palpiteDTO) throws ServiceException {
+	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody PalpiteDTO palpiteDTO)
+			throws ServiceException {
 		return new ResponseEntity<>(this.msService.validar(palpiteDTO), HttpStatus.OK);
 	}
 
+	@GetMapping(value = "gerar/{qtd}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<ResultadoDTO>> gerar(@PathVariable Integer qtd) throws ServiceException {
+		return new ResponseEntity<>(this.msService.gerar(qtd), HttpStatus.OK);
+	}
 }

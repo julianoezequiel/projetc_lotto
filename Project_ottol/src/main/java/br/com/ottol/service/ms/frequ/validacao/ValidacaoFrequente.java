@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.frequencia.validacao;
+package br.com.ottol.service.ms.frequ.validacao;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,7 +11,7 @@ import br.com.ottol.dto.FrequenciaDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.service.Validacao;
-import br.com.ottol.service.ms.frequencia.FrequenciaService;
+import br.com.ottol.service.ms.frequ.FrequenciaService;
 
 /**
  * Classe de validação de frequencia de numeros sorteados.Esta validacao a

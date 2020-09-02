@@ -1,6 +1,8 @@
-package br.com.ottol.service.ms.combinacoes.validacao;
+package br.com.ottol.service.ms.comb.validacao;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Component;
 
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
+import br.com.ottol.dto.NumeroDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
+import br.com.ottol.entity.Megasenanumero;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.JGDerivadoValidacao;
@@ -39,29 +43,52 @@ public class ListaE implements Validacao {
 
 	@Override
 	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		LOGGER.debug("LISTA E");
+		List<JGDerivadoValidacao> listaRet = new ArrayList<>();
+		List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
+				.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
+				.collect(Collectors.toList());
+
+		criarTipoListaB(palpiteDTO.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), listaRet);
+		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_E);
+		AtomicInteger repetido = new AtomicInteger(0);
+		newList.stream().forEach(o -> {
+			listaRet.stream().forEach(palpite -> {
+				Collection<Numero> numeros = o.getNumeros();
+
+				boolean equals = numeros.equals(palpite.getNumeros());
+				if (Boolean.TRUE.equals(equals)) {
+					repetido.getAndIncrement();
+					Integer concurso = o.getConcurso();
+//					System.out.println("LISTA D Integer c " + concurso + " - N:" + numeros);
+				}
+
+			});
+		});
+		return new RespostaValidacao("Lista E", repetido.get() > 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
-		list.stream().forEach(ms -> criarTipoListaB(ms));
+		list.stream().forEach(ms -> criarTipoListaB(ms.getIdconcurso(),
+				ms.getMegasenanumeroCollection().stream().map(Megasenanumero::getNumero).collect(Collectors.toList()),
+				LISTA_E));
 		LOGGER.debug("Lista E criada");
 	}
 
-	private void criarTipoListaB(MS ms) {
+	private synchronized void criarTipoListaB(Integer idConcurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {
 
 		AtomicInteger posisao = new AtomicInteger(1);
 
 		// adiciona as posições corretas
-		List<Numero> list = ms.getMegasenanumeroCollection().stream().map(m -> {
-			m.getNumero().setPosisao(DEZ.fromInt(posisao.getAndIncrement()));
-			return m.getNumero();
-		}).collect(Collectors.toList());
+		list.stream().forEach(m -> {
+			m.setPosisao(DEZ.fromInt(posisao.getAndIncrement()));
+		});
 
 		// compara os itens dos mapas do tipo com a lista de resultado
 		map.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(f -> {
-			criarSubListD(ms.getConcurso(),
-					list.stream().filter(n -> f.getValue().contains(n.getPosisao())).collect(Collectors.toList()));
+			criarSubListD(idConcurso,
+					list.stream().filter(n -> f.getValue().contains(n.getPosisao())).collect(Collectors.toList()),
+					listaRet);
 		});
 
 	}
@@ -72,13 +99,12 @@ public class ListaE implements Validacao {
 	 * @param concurso
 	 * @param list
 	 */
-	private void criarSubListD(Integer concurso, List<Numero> list) {
+	private synchronized void criarSubListD(Integer concurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {
 		JGDerivadoValidacao jgDerivadoValidacao = new JGDerivadoValidacao();
 		jgDerivadoValidacao.setConcurso(concurso);
 		jgDerivadoValidacao.setNumeros(list.stream().map(m -> m.clone()).collect(Collectors.toList()));
-		LISTA_E.add(jgDerivadoValidacao);
+		listaRet.add(jgDerivadoValidacao);
 	}
-	
 
 	public Map<String, Long> frequencia() {
 		Map<String, Long> collect = LISTA_E.stream()
@@ -88,5 +114,9 @@ public class ListaE implements Validacao {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
+	public RespostaValidacao validar(PalpiteDTO palpiteDTO) {
+		return this.validar(palpiteDTO.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
+				palpiteDTO);
+	}
 
 }

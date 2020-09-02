@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottol.dto.FrequenciaDTO;
-import br.com.ottol.service.ms.frequencia.FrequenciaService;
+import br.com.ottol.service.ms.frequ.FrequenciaService;
 
 @RestController
 @RequestMapping(value = "/rest/ms/frequencia")

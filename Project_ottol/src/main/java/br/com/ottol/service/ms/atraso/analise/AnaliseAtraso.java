@@ -15,7 +15,7 @@ import br.com.ottol.dto.Jogos;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Analise;
 import br.com.ottol.service.ms.MSService;
-import br.com.ottol.service.numero.NumeroService;
+import br.com.ottol.service.num.NumeroService;
 import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service

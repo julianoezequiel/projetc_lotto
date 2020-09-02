@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.combinacoes;
+package br.com.ottol.service.ms.comb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.Validacao;
-import br.com.ottol.service.ms.combinacoes.analise.AnaliseCombinacoes;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaD;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaE;
+import br.com.ottol.service.ms.comb.analise.AnaliseCombinacoes;
+import br.com.ottol.service.ms.comb.validacao.ListaA;
+import br.com.ottol.service.ms.comb.validacao.ListaB;
+import br.com.ottol.service.ms.comb.validacao.ListaC;
+import br.com.ottol.service.ms.comb.validacao.ListaD;
+import br.com.ottol.service.ms.comb.validacao.ListaE;
 import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
@@ -68,12 +68,13 @@ public class CombinacoesServices {
 		return this.analiseCombinacoes.init(params);
 	}
 
-	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
+	public synchronized List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
 		List<RespostaValidacao> validacaos = new ArrayList<>();
 		validacaos.add(this.listaA.validar(palpiteDTO));
 		validacaos.add(this.listaB.validar(palpiteDTO));
 		validacaos.add(this.listaC.validar(palpiteDTO));
 		validacaos.add(this.listaD.validar(palpiteDTO));
+		validacaos.add(this.listaE.validar(palpiteDTO));
 		return validacaos;
 	}
 

@@ -9,9 +9,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
 
@@ -36,19 +38,21 @@ import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
+import br.com.ottol.dto.NumeroDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
+import br.com.ottol.dto.ResultadoDTO;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.Validacao;
-import br.com.ottol.service.ms.combinacoes.CombinacoesServices;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaA;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaB;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaC;
-import br.com.ottol.service.ms.combinacoes.validacao.ListaD;
+import br.com.ottol.service.ms.comb.CombinacoesServices;
+import br.com.ottol.service.ms.comb.validacao.ListaA;
+import br.com.ottol.service.ms.comb.validacao.ListaB;
+import br.com.ottol.service.ms.comb.validacao.ListaC;
+import br.com.ottol.service.ms.comb.validacao.ListaD;
 import br.com.ottol.service.ms.dto.MSSincronizarDTO;
-import br.com.ottol.service.ms.frequencia.FrequenciaService;
+import br.com.ottol.service.ms.frequ.FrequenciaService;
 
 /**
  * @author Juliano
@@ -69,6 +73,8 @@ public class MSService {
 	private RestTemplateProxy restTemplateProxy;
 	@Autowired
 	private ObjectMapper mapper;
+	@Autowired
+	private Gerador gerador;
 
 	/**
 	 * Lista todos os concursos
@@ -252,9 +258,78 @@ public class MSService {
 	}
 
 	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
-		HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+		Integer id = palpiteDTO.getMegasenaidconcurso().getIdconcurso();
+		this.combinacoesServices.limparListas();
+		Collection<MS> list = this.msRepository.buscarMenorQue(id);
+		this.combinacoesServices.carregarLista(new ArrayList<MS>(list));
 		List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
 		return validar;
 	}
+
+	public List<ResultadoDTO> gerar(Integer qtd) {
+		List<ResultadoDTO> result = new ArrayList<>();
+		List<NumeroDTO> listTeste = getListTeste();
+		try {
+			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+			Integer tentativa = 0;
+			Integer ap = 0;
+			for (int ix = 1; ix <= qtd; ix++) {
+
+				PalpiteDTO ppt = new PalpiteDTO();
+				ConfiguracoesDTO conf = new ConfiguracoesDTO();
+				ppt.getConfiguracoesCollection().add(conf);
+				MS ms = new MS(1);
+				ppt.setMegasenaidconcurso(ms);
+				Integer[] valor2 = this.gerador.Valor2();
+				List<NumeroDTO> nList = new ArrayList<>();
+				for (Integer i : valor2) {
+					nList.add(new NumeroDTO(i));
+				}
+
+				ppt.setNumeroCollection(nList);
+				List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
+				if (validar.stream().anyMatch(p -> !p.getAprovado())) {
+					ix--;
+				} else {
+					ap++;
+					AtomicInteger v = new AtomicInteger(0);
+					listTeste.stream().forEach(f -> {
+						nList.stream().forEach(ff -> {
+							if (f.getIdNumero().equals(ff.getIdNumero())) {
+								v.getAndIncrement();
+							}
+						});
+					});
+					if (v.get() >= 4) {
+						result.add(new ResultadoDTO(ppt, validar));
+					} else {
+						ix--;
+					}
+				}
+				tentativa++;
+				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
+//				LOGGER.debug("Result: {}", validar);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private List<NumeroDTO> getListTeste() {
+		List<NumeroDTO> nList = new ArrayList<>();
+		nList.add(new NumeroDTO(8));
+		nList.add(new NumeroDTO(11));
+		nList.add(new NumeroDTO(27));
+		nList.add(new NumeroDTO(28));
+		nList.add(new NumeroDTO(43));
+		nList.add(new NumeroDTO(46));
+		return nList;
+	}
+	
+	//8 11 27 28 43 46
+	//11	12	26	30	37	53
+	//
+
 
 }

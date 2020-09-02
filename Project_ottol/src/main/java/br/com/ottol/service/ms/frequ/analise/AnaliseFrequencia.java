@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.frequencia.analise;
+package br.com.ottol.service.ms.frequ.analise;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

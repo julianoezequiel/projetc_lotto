@@ -1,4 +1,4 @@
-package br.com.ottol.service.ms.frequencia;
+package br.com.ottol.service.ms.frequ;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.FrequenciaDTO;
-import br.com.ottol.service.ms.frequencia.analise.AnaliseFrequencia;
+import br.com.ottol.service.ms.frequ.analise.AnaliseFrequencia;
 import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
