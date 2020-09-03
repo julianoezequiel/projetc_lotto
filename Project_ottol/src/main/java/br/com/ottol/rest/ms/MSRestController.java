@@ -21,6 +21,7 @@ import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
+import br.com.ottol.dto.ResultResumido;
 import br.com.ottol.dto.ResultadoDTO;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.Validacao;
@@ -74,5 +75,11 @@ public class MSRestController {
 	@GetMapping(value = "gerar/{qtd}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<ResultadoDTO>> gerar(@PathVariable Integer qtd) throws ServiceException {
 		return new ResponseEntity<>(this.msService.gerar(qtd), HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "validar-recursivo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<ResultResumido>> validarRecursivo(@RequestBody PalpiteDTO palpiteDTO)
+			throws ServiceException {
+		return new ResponseEntity<>(this.msService.validarRecursivo(palpiteDTO), HttpStatus.OK);
 	}
 }

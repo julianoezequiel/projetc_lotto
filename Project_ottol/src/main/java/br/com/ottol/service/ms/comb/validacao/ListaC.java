@@ -57,7 +57,7 @@ public class ListaC implements Validacao {
 				}
 			});
 		});
-		return new RespostaValidacao("Lista C", repetido.get() == 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), repetido.get() == 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
@@ -65,8 +65,7 @@ public class ListaC implements Validacao {
 		list.stream().forEach(ms -> criarTipoListaC(ms.getIdconcurso(),
 				ms.getMegasenanumeroCollection().stream().map(Megasenanumero::getNumero).collect(Collectors.toList()),
 				LISTA_C));
-
-		LOGGER.debug("Lista C criada");
+//		LOGGER.debug("Lista C criada");
 	}
 
 	private void criarTipoListaC(Integer idConcurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {

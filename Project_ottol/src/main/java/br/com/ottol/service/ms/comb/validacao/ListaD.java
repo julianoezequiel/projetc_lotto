@@ -52,27 +52,30 @@ public class ListaD implements Validacao {
 		criarTipoListaB(palpiteDTO.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), listaRet);
 		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_D);
 		AtomicInteger repetido = new AtomicInteger(0);
-		newList.stream().forEach(o -> {
-			listaRet.stream().forEach(palpite -> {
+		AtomicInteger repetidoMaior = new AtomicInteger(0);
+		listaRet.stream().forEach(o -> {
+			newList.stream().forEach(palpite -> {
 				Collection<Numero> numeros = o.getNumeros();
 
 				boolean equals = numeros.equals(palpite.getNumeros());
 				if (Boolean.TRUE.equals(equals)) {
 					repetido.getAndIncrement();
 					Integer concurso = o.getConcurso();
+					repetidoMaior.set(repetido.get() > repetidoMaior.get() ? repetido.get() : repetidoMaior.get());
 //					System.out.println("LISTA D Integer c " + concurso + " - N:" + numeros);
 				}
 
 			});
+			repetido.set(0);
 		});
-		return new RespostaValidacao("Lista B", repetido.get() > 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), repetidoMaior.get() == 0, repetidoMaior.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		list.stream().forEach(ms -> criarTipoListaB(ms.getIdconcurso(),
 				ms.getMegasenanumeroCollection().stream().map(Megasenanumero::getNumero).collect(Collectors.toList()),
 				LISTA_D));
-		LOGGER.debug("Lista D criada");
+//		LOGGER.debug("Lista D criada");
 	}
 
 	private void criarTipoListaB(Integer idConcurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {

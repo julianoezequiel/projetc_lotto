@@ -59,12 +59,12 @@ public class ListaB implements Validacao {
 
 			});
 		});
-		return new RespostaValidacao("Lista B", repetido.get() == 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), repetido.get() == 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		list.stream().forEach(ms -> criarTipoListaB(ms));
-		LOGGER.debug("Lista B criada");
+//		LOGGER.debug("Lista B criada");
 	}
 
 	private void criarTipoListaB(MS ms) {

@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -41,8 +42,10 @@ import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.dto.NumeroDTO;
 import br.com.ottol.dto.PalpiteDTO;
 import br.com.ottol.dto.RespostaValidacao;
+import br.com.ottol.dto.ResultResumido;
 import br.com.ottol.dto.ResultadoDTO;
 import br.com.ottol.entity.MS;
+import br.com.ottol.entity.Numero;
 import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.Validacao;
@@ -51,6 +54,7 @@ import br.com.ottol.service.ms.comb.validacao.ListaA;
 import br.com.ottol.service.ms.comb.validacao.ListaB;
 import br.com.ottol.service.ms.comb.validacao.ListaC;
 import br.com.ottol.service.ms.comb.validacao.ListaD;
+import br.com.ottol.service.ms.comb.validacao.ListaE;
 import br.com.ottol.service.ms.dto.MSSincronizarDTO;
 import br.com.ottol.service.ms.frequ.FrequenciaService;
 
@@ -260,10 +264,38 @@ public class MSService {
 	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
 		Integer id = palpiteDTO.getMegasenaidconcurso().getIdconcurso();
 		this.combinacoesServices.limparListas();
-		Collection<MS> list = this.msRepository.buscarMenorQue(id);
+		Collection<MS> list = this.msRepository.buscarMenorQue(id-1);
 		this.combinacoesServices.carregarLista(new ArrayList<MS>(list));
 		List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
+		ResultResumido r = new ResultResumido(id, validar);
+		LOGGER.debug("VALIDADO :{}", r.toString());
 		return validar;
+	}
+
+	public List<ResultResumido> validarRecursivo(PalpiteDTO palpiteDTO) {
+		List<ResultResumido> result = new ArrayList<>();
+		MS ultimo = this.msRepository.getUltimoConcurso();
+		List<MS> todos = this.msRepository.findAll();
+		for (Integer i = palpiteDTO.getMegasenaidconcurso().getIdconcurso(); i < ultimo.getIdconcurso(); i++) {
+			final int ii = i;
+			this.combinacoesServices.limparListas();
+			List<MS> menor = todos.stream().filter(p -> p.getIdconcurso() <= ii).collect(Collectors.toList());
+			this.combinacoesServices.carregarLista(new ArrayList<MS>(menor));
+			PalpiteDTO p = new PalpiteDTO();
+			p.getConfiguracoesCollection().add(new ConfiguracoesDTO());
+			p.setMegasenaidconcurso(new MS(i));
+			MS proximo = todos.stream().filter(pp -> pp.getIdconcurso() == ii + 1).findAny().orElse(null);
+			if (proximo != null) {
+				List<NumeroDTO> list = proximo.getMegasenanumeroCollection().stream()
+						.map(m -> new NumeroDTO(m.getNumero().getIdnumero())).collect(Collectors.toList());
+				p.setNumeroCollection(list);
+				List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
+				ResultResumido r = new ResultResumido(i, validar);
+				result.add(r);
+				LOGGER.debug("VALIDADO :{}", r.toString());
+			}
+		}
+		return result;
 	}
 
 	public List<ResultadoDTO> gerar(Integer qtd) {
@@ -326,10 +358,9 @@ public class MSService {
 		nList.add(new NumeroDTO(46));
 		return nList;
 	}
-	
-	//8 11 27 28 43 46
-	//11	12	26	30	37	53
-	//
 
+	// 8 11 27 28 43 46
+	// 11 12 26 30 37 53
+	//
 
 }

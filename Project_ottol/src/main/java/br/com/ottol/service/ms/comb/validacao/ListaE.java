@@ -43,7 +43,7 @@ public class ListaE implements Validacao {
 
 	@Override
 	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-		LOGGER.debug("LISTA E");
+//		LOGGER.debug("LISTA E");
 		List<JGDerivadoValidacao> listaRet = new ArrayList<>();
 		List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
 				.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
@@ -52,27 +52,30 @@ public class ListaE implements Validacao {
 		criarTipoListaB(palpiteDTO.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), listaRet);
 		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_E);
 		AtomicInteger repetido = new AtomicInteger(0);
-		newList.stream().forEach(o -> {
-			listaRet.stream().forEach(palpite -> {
+		AtomicInteger repetidoMaior = new AtomicInteger(0);
+		listaRet.stream().forEach(o -> {
+			newList.stream().forEach(palpite -> {
 				Collection<Numero> numeros = o.getNumeros();
 
 				boolean equals = numeros.equals(palpite.getNumeros());
 				if (Boolean.TRUE.equals(equals)) {
 					repetido.getAndIncrement();
 					Integer concurso = o.getConcurso();
+					repetidoMaior.set(repetido.get() > repetidoMaior.get() ? repetido.get() : repetidoMaior.get());
 //					System.out.println("LISTA D Integer c " + concurso + " - N:" + numeros);
 				}
 
 			});
+			repetido.set(0);
 		});
-		return new RespostaValidacao("Lista E", repetido.get() > 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), repetidoMaior.get() == 0, repetidoMaior.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		list.stream().forEach(ms -> criarTipoListaB(ms.getIdconcurso(),
 				ms.getMegasenanumeroCollection().stream().map(Megasenanumero::getNumero).collect(Collectors.toList()),
 				LISTA_E));
-		LOGGER.debug("Lista E criada");
+//		LOGGER.debug("Lista E criada");
 	}
 
 	private synchronized void criarTipoListaB(Integer idConcurso, List<Numero> list, List<JGDerivadoValidacao> listaRet) {

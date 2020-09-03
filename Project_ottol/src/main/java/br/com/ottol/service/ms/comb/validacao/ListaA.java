@@ -51,14 +51,14 @@ public class ListaA implements Validacao {
 //				System.out.println("LISTA A Integer c " + concurso + " - N:" + collect);
 			}
 		});
-		return new RespostaValidacao("Lista B", repetido.get() == 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), repetido.get() == 0, repetido.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
 		LISTA_A = list.stream().map(m -> {
 			return criarTipoListaA(m);
 		}).collect(Collectors.toList());
-		LOGGER.debug("Lista A criada");
+//		LOGGER.debug("Lista A criada");
 	}
 
 	private JGDerivadoValidacao criarTipoListaA(MS ms) {
