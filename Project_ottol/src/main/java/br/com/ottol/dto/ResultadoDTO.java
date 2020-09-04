@@ -4,23 +4,23 @@ import java.util.List;
 
 public class ResultadoDTO {
 
-	private PalpiteDTO palpiteDTO;
+	private Ppt ppt;
 	private List<RespostaValidacao> validar;
 
 	public ResultadoDTO() {
 	}
 
-	public ResultadoDTO(PalpiteDTO ppt, List<RespostaValidacao> validar2) {
-		this.palpiteDTO = ppt;
+	public ResultadoDTO(Ppt ppt, List<RespostaValidacao> validar2) {
+		this.ppt = ppt;
 		this.validar = validar2;
 	}
 
-	public PalpiteDTO getPalpiteDTO() {
-		return palpiteDTO;
+	public Ppt getPalpiteDTO() {
+		return ppt;
 	}
 
-	public void setPalpiteDTO(PalpiteDTO palpiteDTO) {
-		this.palpiteDTO = palpiteDTO;
+	public void setPalpiteDTO(Ppt ppt) {
+		this.ppt = ppt;
 	}
 
 	public List<RespostaValidacao> getValidar() {

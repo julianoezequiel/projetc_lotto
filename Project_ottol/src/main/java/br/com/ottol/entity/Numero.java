@@ -168,7 +168,7 @@ public class Numero implements Serializable, Cloneable {
 
 	@Override
 	public String toString() {
-		return "Numero : " + idnumero;
+		return "N : " + idnumero;
 	}
 
 	public NumeroDTO toNumeroDTO() {
@@ -211,5 +211,7 @@ public class Numero implements Serializable, Cloneable {
 			return null;
 		}
 	}
+	
+	
 
 }

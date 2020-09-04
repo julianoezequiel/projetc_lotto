@@ -44,7 +44,7 @@ public class ResultResumido {
 				.findFirst().orElse(new RespostaValidacao(false)).getFrequencia();
 		this.freqlistaE = validar.stream().filter(f -> f.getValidacao().endsWith(ListaE.class.getSimpleName()))
 				.findFirst().orElse(new RespostaValidacao(false)).getFrequencia();
-		this.aprovado = validar.stream().allMatch(p->p.getAprovado());
+		this.aprovado = validar.stream().allMatch(p -> p.getAprovado());
 	}
 
 	public Integer getIdConc() {
@@ -95,13 +95,19 @@ public class ResultResumido {
 		this.freqlistaE = freqlistaE;
 	}
 
+	public Boolean getAprovado() {
+		return aprovado;
+	}
+
+	public void setAprovado(Boolean aprovado) {
+		this.aprovado = aprovado;
+	}
+
 	@Override
 	public String toString() {
 		return "ResultResumido [idConc=" + idConc + ", freqlistaA=" + freqlistaA + ", freqlistaB=" + freqlistaB
 				+ ", freqlistaC=" + freqlistaC + ", freqlistaD=" + freqlistaD + ", freqlistaE=" + freqlistaE
 				+ ", aprovado=" + aprovado + "]";
 	}
-
-
 
 }

@@ -3,18 +3,22 @@ package br.com.ottol.dto;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.glassfish.jersey.internal.guava.Sets;
+
 import br.com.ottol.entity.Lotofacil;
 import br.com.ottol.entity.MS;
 
-public class PalpiteDTO {
+public class Ppt {
 
 	private Integer idpalpite;
 
 	private Lotofacil lotolacilidconcursolotofacil;
 
 	private MS megasenaidconcurso;
+	private Integer[] s = null;
+	private Integer c = null;
 
-	private Collection<NumeroDTO> numeroCollection;
+	private Collection<NumeroDTO> numeroCollection = new ArrayList<>();
 
 	private Collection<ConfiguracoesDTO> configuracoesCollection = new ArrayList<>();
 
@@ -56,6 +60,22 @@ public class PalpiteDTO {
 
 	public void setConfiguracoesCollection(Collection<ConfiguracoesDTO> configuracoesCollection) {
 		this.configuracoesCollection = configuracoesCollection;
+	}
+
+	public Integer[] getS() {
+		return s;
+	}
+
+	public void setS(Integer[] s) {
+		this.s = s;
+	}
+
+	public Integer getC() {
+		return c;
+	}
+
+	public void setC(Integer c) {
+		this.c = c;
 	}
 
 }

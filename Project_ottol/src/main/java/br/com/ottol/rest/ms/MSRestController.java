@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.dto.ResultResumido;
 import br.com.ottol.dto.ResultadoDTO;
@@ -67,9 +67,9 @@ public class MSRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "validar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody PalpiteDTO palpiteDTO)
+	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody Ppt ppt)
 			throws ServiceException {
-		return new ResponseEntity<>(this.msService.validar(palpiteDTO), HttpStatus.OK);
+		return new ResponseEntity<>(this.msService.validar(ppt), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "gerar/{qtd}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,8 +78,8 @@ public class MSRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "validar-recursivo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<ResultResumido>> validarRecursivo(@RequestBody PalpiteDTO palpiteDTO)
+	public ResponseEntity<List<ResultResumido>> validarRecursivo(@RequestBody Ppt ppt)
 			throws ServiceException {
-		return new ResponseEntity<>(this.msService.validarRecursivo(palpiteDTO), HttpStatus.OK);
+		return new ResponseEntity<>(this.msService.validarRecursivo(ppt), HttpStatus.OK);
 	}
 }

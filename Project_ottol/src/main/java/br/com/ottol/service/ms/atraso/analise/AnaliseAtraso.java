@@ -5,13 +5,19 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.AtrasoDTO;
 import br.com.ottol.dto.Jogos;
+import br.com.ottol.dto.Ppt;
+import br.com.ottol.entity.MS;
 import br.com.ottol.entity.Numero;
 import br.com.ottol.service.Analise;
 import br.com.ottol.service.ms.MSService;
@@ -20,12 +26,16 @@ import br.com.ottol.utils.CONSTANTES.PARAM;
 
 @Service
 public class AnaliseAtraso implements Analise {
-
+	
+	public final static Logger LOGGER = LoggerFactory.getLogger(AnaliseAtraso.class.getName());
+	
 	@Autowired
 	private NumeroService numeroService;
 
 	@Autowired
 	private MSService msService;
+	@Autowired
+	private MSRepository msRepository;
 
 	/**
 	 * Calcula os atrasos das dezenas nos concursos realizados, corrigido
@@ -131,6 +141,17 @@ public class AnaliseAtraso implements Analise {
 		Collection<AtrasoDTO> list = buscarAtrasos(inicio.longValue(), numeroFiltro);
 		map.put(PARAM.RESULT, list);
 		return map;
+	}
+
+	public Map<Integer,Collection<AtrasoDTO>> analizarRecursivo(Ppt ppt) {
+		Map<Integer,Collection<AtrasoDTO>> mapResult = new HashMap<>();
+		MS ultimo = this.msRepository.getUltimoConcurso();
+		for (Integer i = ppt.getC(); i < ultimo.getIdconcurso(); i++) {
+			Collection<AtrasoDTO> list = buscarAtrasos(i.longValue(), 0);
+			mapResult.put(i, list);
+		}
+		LOGGER.debug("Termino");
+		return mapResult;
 	}
 
 }

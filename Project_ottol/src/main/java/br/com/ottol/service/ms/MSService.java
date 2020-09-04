@@ -40,7 +40,7 @@ import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
 import br.com.ottol.dto.MegaSenaResultadoSimples;
 import br.com.ottol.dto.NumeroDTO;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.dto.ResultResumido;
 import br.com.ottol.dto.ResultadoDTO;
@@ -261,27 +261,36 @@ public class MSService {
 
 	}
 
-	public List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
-		Integer id = palpiteDTO.getMegasenaidconcurso().getIdconcurso();
+	public List<RespostaValidacao> validar(Ppt ppt) {
+		if (ppt.getC() != null) {
+			ppt.setMegasenaidconcurso(new MS(ppt.getC()));
+		}
+
+		Integer id = ppt.getMegasenaidconcurso().getIdconcurso();
+		if (ppt.getS() != null) {
+			for (Integer i : ppt.getS()) {
+				ppt.getNumeroCollection().add(new NumeroDTO(i));
+			}
+		}
 		this.combinacoesServices.limparListas();
-		Collection<MS> list = this.msRepository.buscarMenorQue(id-1);
+		Collection<MS> list = this.msRepository.buscarMenorQue(id - 1);
 		this.combinacoesServices.carregarLista(new ArrayList<MS>(list));
-		List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
-		ResultResumido r = new ResultResumido(id, validar);
+		List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
+		ResultResumido r = new ResultResumido(id - 1, validar);
 		LOGGER.debug("VALIDADO :{}", r.toString());
 		return validar;
 	}
 
-	public List<ResultResumido> validarRecursivo(PalpiteDTO palpiteDTO) {
+	public List<ResultResumido> validarRecursivo(Ppt ppt) {
 		List<ResultResumido> result = new ArrayList<>();
 		MS ultimo = this.msRepository.getUltimoConcurso();
 		List<MS> todos = this.msRepository.findAll();
-		for (Integer i = palpiteDTO.getMegasenaidconcurso().getIdconcurso(); i < ultimo.getIdconcurso(); i++) {
+		for (Integer i = ppt.getMegasenaidconcurso().getIdconcurso(); i < ultimo.getIdconcurso(); i++) {
 			final int ii = i;
 			this.combinacoesServices.limparListas();
 			List<MS> menor = todos.stream().filter(p -> p.getIdconcurso() <= ii).collect(Collectors.toList());
 			this.combinacoesServices.carregarLista(new ArrayList<MS>(menor));
-			PalpiteDTO p = new PalpiteDTO();
+			Ppt p = new Ppt();
 			p.getConfiguracoesCollection().add(new ConfiguracoesDTO());
 			p.setMegasenaidconcurso(new MS(i));
 			MS proximo = todos.stream().filter(pp -> pp.getIdconcurso() == ii + 1).findAny().orElse(null);
@@ -289,12 +298,49 @@ public class MSService {
 				List<NumeroDTO> list = proximo.getMegasenanumeroCollection().stream()
 						.map(m -> new NumeroDTO(m.getNumero().getIdnumero())).collect(Collectors.toList());
 				p.setNumeroCollection(list);
-				List<RespostaValidacao> validar = this.combinacoesServices.validar(palpiteDTO);
+				List<RespostaValidacao> validar = this.combinacoesServices.validar(p);
 				ResultResumido r = new ResultResumido(i, validar);
 				result.add(r);
-				LOGGER.debug("VALIDADO :{}", r.toString());
+				LOGGER.debug("VALIDADO :{}", r);
 			}
 		}
+		Map<Integer, Long> countA = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaA, Collectors.counting()));
+		Map<Integer, Long> countB = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaB, Collectors.counting()));
+		Map<Integer, Long> countC = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaC, Collectors.counting()));
+		Map<Integer, Long> countD = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaD, Collectors.counting()));
+		Map<Integer, Long> countE = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaE, Collectors.counting()));
+		Map<Boolean, Long> countAP = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getAprovado, Collectors.counting()));
+
+		countA.entrySet().forEach(f -> {
+			LOGGER.debug("count A - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100 / ultimo.getIdconcurso());
+		});
+		countB.entrySet().forEach(f -> {
+			LOGGER.debug("count B - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100l / ultimo.getIdconcurso());
+		});
+		countC.entrySet().forEach(f -> {
+			LOGGER.debug("count C - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100l / ultimo.getIdconcurso());
+		});
+		countD.entrySet().forEach(f -> {
+			LOGGER.debug("count D - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100l / ultimo.getIdconcurso());
+		});
+		countE.entrySet().forEach(f -> {
+			LOGGER.debug("count E - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100l / ultimo.getIdconcurso());
+		});
+		countAP.entrySet().forEach(f -> {
+			LOGGER.debug("count AP - {} - T:{} - {}%", f.getKey(), f.getValue(),
+					f.getValue() * 100l / ultimo.getIdconcurso());
+		});
 		return result;
 	}
 
@@ -307,7 +353,7 @@ public class MSService {
 			Integer ap = 0;
 			for (int ix = 1; ix <= qtd; ix++) {
 
-				PalpiteDTO ppt = new PalpiteDTO();
+				Ppt ppt = new Ppt();
 				ConfiguracoesDTO conf = new ConfiguracoesDTO();
 				ppt.getConfiguracoesCollection().add(conf);
 				MS ms = new MS(1);
@@ -332,7 +378,7 @@ public class MSService {
 							}
 						});
 					});
-					if (v.get() >= 4) {
+					if (v.get() >= 5) {
 						result.add(new ResultadoDTO(ppt, validar));
 					} else {
 						ix--;
@@ -350,17 +396,18 @@ public class MSService {
 
 	private List<NumeroDTO> getListTeste() {
 		List<NumeroDTO> nList = new ArrayList<>();
-		nList.add(new NumeroDTO(8));
 		nList.add(new NumeroDTO(11));
-		nList.add(new NumeroDTO(27));
-		nList.add(new NumeroDTO(28));
-		nList.add(new NumeroDTO(43));
-		nList.add(new NumeroDTO(46));
+		nList.add(new NumeroDTO(12));
+		nList.add(new NumeroDTO(26));
+		nList.add(new NumeroDTO(30));
+		nList.add(new NumeroDTO(37));
+		nList.add(new NumeroDTO(53));
 		return nList;
 	}
 
 	// 8 11 27 28 43 46
 	// 11 12 26 30 37 53
-	//
+	//11	12	26	30	37	53
+
 
 }

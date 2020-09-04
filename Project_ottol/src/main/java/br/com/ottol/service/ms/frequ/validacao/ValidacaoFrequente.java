@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.FrequenciaDTO;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.service.Validacao;
 import br.com.ottol.service.ms.frequ.FrequenciaService;
@@ -37,7 +37,7 @@ public class ValidacaoFrequente implements Validacao {
 	 * @return
 	 */
 	@Override
-	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
+	public RespostaValidacao validar(ConfiguracoesDTO config, Ppt ppt) {
 
 		this.frequenciaList = this.frequenciaService.buscarFrequencias();
 
@@ -45,7 +45,7 @@ public class ValidacaoFrequente implements Validacao {
 
 		this.frequenciaList.stream().map(fr -> fr.getNumero()).forEach(fre -> {
 
-			palpiteDTO.getNumeroCollection().stream().forEach(jo -> {
+			ppt.getNumeroCollection().stream().forEach(jo -> {
 				if (jo.getIdNumero().equals(fre) && !valido.get()) {
 					valido.set(true);
 				}

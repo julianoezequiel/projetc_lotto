@@ -2,12 +2,14 @@ package br.com.ottol.service.ms.atraso;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ottol.dto.AtrasoDTO;
 import br.com.ottol.dto.ConfiguracoesDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.service.ms.MSService;
 import br.com.ottol.service.ms.atraso.analise.AnaliseAtraso;
 import br.com.ottol.utils.CONSTANTES.PARAM;
@@ -38,10 +40,17 @@ public class AtrasoService {
 	}
 
 	public HashMap<Object, Object> analisarAtraso() {
+		HashMap<Object, Object> map = new HashMap<>();
 		HashMap<PARAM, Object> params = new HashMap<>();
 		Integer inicio = (int) this.msService.total();
 		params.put(PARAM.PARAM_INICIO, inicio);
 		params.put(PARAM.PARAM_NUMERO, 0);
-		return this.analiseAtraso.init(params);
+//		return this.analiseAtraso.init(params);
+		map.put(PARAM.RESULT, this.analiseAtraso.buscarAtrasosAvancado());
+		return map;
+	}
+
+	public Map<Integer, Collection<AtrasoDTO>> analizarRecursivo(Ppt ppt) {
+		return this.analiseAtraso.analizarRecursivo(ppt);
 	}
 }

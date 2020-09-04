@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.NumeroDTO;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.entity.Megasenanumero;
@@ -34,32 +34,32 @@ public class ListaB implements Validacao {
 	private MSRepository msRepository;
 
 	@Override
-	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-//		LOGGER.debug("LISTA B");
+	public RespostaValidacao validar(ConfiguracoesDTO config, Ppt ppt) {
+		LOGGER.debug("LISTA B");
 		List<JGDerivadoValidacao> listaRet = new ArrayList<>();
-		List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
+		List<Numero> collect = ppt.getNumeroCollection().stream()
 				.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
 				.collect(Collectors.toList());
 		collect.stream().forEach(n -> {
-			criarSubListB1(palpiteDTO.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), n, listaRet);
+			criarSubListB1(ppt.getMegasenaidconcurso().getIdconcurso(), new ArrayList<>(collect), n, listaRet);
 		});
 
 		AtomicInteger repetido = new AtomicInteger(0);
-		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_B);
-		newList.stream().forEach(o -> {
-			listaRet.stream().forEach(palpite -> {
-				Collection<Numero> numeros = o.getNumeros();
-				
-				boolean equals = numeros.equals(palpite.getNumeros());
+		AtomicInteger repetidoMaior = new AtomicInteger(0);
+		ArrayList<JGDerivadoValidacao> listaB = new ArrayList<>(LISTA_B);
+		listaRet.stream().forEach(lt -> {
+			listaB.stream().forEach(pe -> {
+				boolean equals = lt.getNumeros().equals(pe.getNumeros());
 				if (Boolean.TRUE.equals(equals)) {
 					repetido.getAndIncrement();
-//					Integer concurso = o.getConcurso();
-//					System.out.println("LISTA B Integer c " + concurso + " - N:" + numeros);
+					Integer concurso = lt.getConcurso();
+					repetidoMaior.set(repetido.get() > repetidoMaior.get() ? repetido.get() : repetidoMaior.get());
+					LOGGER.debug("LISTA B Integer c " + concurso + " - N:" + pe.getNumeros());
 				}
-
 			});
+			repetido.set(0);
 		});
-		return new RespostaValidacao(this.getClass().getSimpleName(), repetido.get() == 0, repetido.get());
+		return new RespostaValidacao(this.getClass().getSimpleName(), config.getLimiteB().isValido(repetidoMaior.get()), repetidoMaior.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
@@ -93,9 +93,9 @@ public class ListaB implements Validacao {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
-	public RespostaValidacao validar(PalpiteDTO palpiteDTO) {
-		return this.validar(palpiteDTO.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
-				palpiteDTO);
+	public RespostaValidacao validar(Ppt ppt) {
+		return this.validar(ppt.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
+				ppt);
 	}
 
 }

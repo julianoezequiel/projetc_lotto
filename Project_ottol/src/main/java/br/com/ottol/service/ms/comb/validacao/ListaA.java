@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import br.com.ottol.dao.MSRepository;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.NumeroDTO;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.entity.Numero;
@@ -33,25 +33,29 @@ public class ListaA implements Validacao {
 	private MSRepository msRepository;
 
 	@Override
-	public RespostaValidacao validar(ConfiguracoesDTO config, PalpiteDTO palpiteDTO) {
-//		LOGGER.debug("LISTA A");
+	public RespostaValidacao validar(ConfiguracoesDTO config, Ppt ppt) {
+		LOGGER.debug("LISTA A");
 		AtomicInteger repetido = new AtomicInteger(0);
-		
+		AtomicInteger repetidoMaior = new AtomicInteger(0);
 		ArrayList<JGDerivadoValidacao> newList = new ArrayList<>(LISTA_A);
-		
+
 		newList.stream().forEach(p -> {
-			List<Numero> collect = palpiteDTO.getNumeroCollection().stream()
+			List<Numero> collect = ppt.getNumeroCollection().stream()
 					.sorted(Comparator.comparing(NumeroDTO::getIdNumero)).map(m -> new Numero(m.getIdNumero()))
 					.collect(Collectors.toList());
 
 			boolean equals = collect.equals(p.getNumeros());
 			if (Boolean.TRUE.equals(equals)) {
 				repetido.getAndIncrement();
-//				Integer concurso = p.getConcurso();
-//				System.out.println("LISTA A Integer c " + concurso + " - N:" + collect);
+				Integer concurso = p.getConcurso();
+				repetidoMaior.set(repetido.get() > repetidoMaior.get() ? repetido.get() : repetidoMaior.get());
+				LOGGER.debug("LISTA A Integer c " + concurso + " - N:" + collect);
 			}
+			repetido.set(0);
 		});
-		return new RespostaValidacao(this.getClass().getSimpleName(), repetido.get() == 0, repetido.get());
+
+		return new RespostaValidacao(this.getClass().getSimpleName(), config.getLimiteA().isValido(repetidoMaior.get()),
+				repetidoMaior.get());
 	}
 
 	public void carregarListaEmMemoria(List<MS> list) {
@@ -76,9 +80,9 @@ public class ListaA implements Validacao {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
-	public RespostaValidacao validar(PalpiteDTO palpiteDTO) {
-		return this.validar(palpiteDTO.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
-				palpiteDTO);
+	public RespostaValidacao validar(Ppt ppt) {
+		return this.validar(ppt.getConfiguracoesCollection().stream().findFirst().orElse(new ConfiguracoesDTO()),
+				ppt);
 
 	}
 

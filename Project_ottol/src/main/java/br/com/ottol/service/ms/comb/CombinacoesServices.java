@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ottol.dto.ConfiguracoesDTO;
-import br.com.ottol.dto.PalpiteDTO;
+import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
 import br.com.ottol.service.Validacao;
@@ -68,13 +68,13 @@ public class CombinacoesServices {
 		return this.analiseCombinacoes.init(params);
 	}
 
-	public synchronized List<RespostaValidacao> validar(PalpiteDTO palpiteDTO) {
+	public synchronized List<RespostaValidacao> validar(Ppt ppt) {
 		List<RespostaValidacao> validacaos = new ArrayList<>();
-		validacaos.add(this.listaA.validar(palpiteDTO));
-		validacaos.add(this.listaB.validar(palpiteDTO));
-		validacaos.add(this.listaC.validar(palpiteDTO));
-		validacaos.add(this.listaD.validar(palpiteDTO));
-		validacaos.add(this.listaE.validar(palpiteDTO));
+		validacaos.add(this.listaA.validar(ppt));
+		validacaos.add(this.listaB.validar(ppt));
+		validacaos.add(this.listaC.validar(ppt));
+		validacaos.add(this.listaD.validar(ppt));
+		validacaos.add(this.listaE.validar(ppt));
 		return validacaos;
 	}
 
