@@ -1,11 +1,20 @@
 package br.com.ottol.dto;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class AtrasoDTO {
 
+	private Integer conc;
 	private Integer numero;
 	private Integer ultimoAtraso;
 	private Integer maiorJaRegistrado;
 	private Integer atual;
+	@JsonIgnore
+	private LinkedList<Integer> ciclo = new LinkedList<>();
+	private Double mediaCiclo = 0d;
 
 	public AtrasoDTO(Integer numero, Integer atraso) {
 		this.numero = numero;
@@ -43,7 +52,28 @@ public class AtrasoDTO {
 	public void setUltimoAtraso(Integer ultimoAtraso) {
 		this.ultimoAtraso = ultimoAtraso;
 	}
-	
-	
 
+	public Integer getConc() {
+		return conc;
+	}
+
+	public void setConc(Integer conc) {
+		this.conc = conc;
+	}
+
+	public LinkedList<Integer> getCiclo() {
+		return ciclo;
+	}
+
+	public void setCiclo(LinkedList<Integer> ciclo) {
+		this.ciclo = ciclo;
+	}
+
+	public Double getMediaCiclo() {
+		return mediaCiclo;
+	}
+
+	public void setMediaCiclo(Double mediaCiclo) {
+		this.mediaCiclo = mediaCiclo;
+	}
 }

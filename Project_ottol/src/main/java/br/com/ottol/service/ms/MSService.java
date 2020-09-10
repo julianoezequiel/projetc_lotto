@@ -49,6 +49,7 @@ import br.com.ottol.entity.Numero;
 import br.com.ottol.service.RestTemplateProxy;
 import br.com.ottol.service.ServiceException;
 import br.com.ottol.service.Validacao;
+import br.com.ottol.service.ms.atraso.AtrasoService;
 import br.com.ottol.service.ms.comb.CombinacoesServices;
 import br.com.ottol.service.ms.comb.validacao.ListaA;
 import br.com.ottol.service.ms.comb.validacao.ListaB;
@@ -79,6 +80,8 @@ public class MSService {
 	private ObjectMapper mapper;
 	@Autowired
 	private Gerador gerador;
+	@Autowired
+	private AtrasoService atrasoService;
 
 	/**
 	 * Lista todos os concursos
@@ -349,6 +352,7 @@ public class MSService {
 		List<NumeroDTO> listTeste = getListTeste();
 		try {
 			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+			this.atrasoService.analisarAtraso();
 			Integer tentativa = 0;
 			Integer ap = 0;
 			for (int ix = 1; ix <= qtd; ix++) {
@@ -366,6 +370,7 @@ public class MSService {
 
 				ppt.setNumeroCollection(nList);
 				List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
+				validar.addAll(this.atrasoService.validar(ppt));
 				if (validar.stream().anyMatch(p -> !p.getAprovado())) {
 					ix--;
 				} else {
@@ -405,9 +410,54 @@ public class MSService {
 		return nList;
 	}
 
+	public List<ResultadoDTO>  gerar(Ppt ppt,Integer qtd) {
+		List<ResultadoDTO> result = new ArrayList<>();
+		List<NumeroDTO> listTeste = getListTeste();
+		try {
+			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+			this.atrasoService.analisarAtraso();
+			Integer tentativa = 0;
+			Integer ap = 0;
+			for (int ix = 1; ix <= qtd; ix++) {
+				Integer[] valor2 = this.gerador.Valor2();
+				List<NumeroDTO> nList = new ArrayList<>();
+				for (Integer i : valor2) {
+					nList.add(new NumeroDTO(i));
+				}
+
+				ppt.setNumeroCollection(nList);
+				List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
+				validar.addAll(this.atrasoService.validar(ppt));
+				if (validar.stream().anyMatch(p -> !p.getAprovado())) {
+					ix--;
+				} else {
+					ap++;
+					AtomicInteger v = new AtomicInteger(0);
+					listTeste.stream().forEach(f -> {
+						nList.stream().forEach(ff -> {
+							if (f.getIdNumero().equals(ff.getIdNumero())) {
+								v.getAndIncrement();
+							}
+						});
+					});
+					if (v.get() >= 5) {
+						result.add(new ResultadoDTO(ppt, validar));
+					} else {
+						ix--;
+					}
+				}
+				tentativa++;
+				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
+//				LOGGER.debug("Result: {}", validar);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	// 8 11 27 28 43 46
 	// 11 12 26 30 37 53
-	//11	12	26	30	37	53
-
+	// 11 12 26 30 37 53
 
 }

@@ -55,7 +55,7 @@ public class AtrasoRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "analisar-recursivo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Map<Integer, Collection<AtrasoDTO>>> validarRecursivo(@RequestBody Ppt ppt)
+	public ResponseEntity<Collection<AtrasoDTO>> validarRecursivo(@RequestBody Ppt ppt)
 			throws ServiceException {
 		return new ResponseEntity<>(this.atrasoService.analizarRecursivo(ppt), HttpStatus.OK);
 	}

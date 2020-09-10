@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.glassfish.jersey.internal.guava.Sets;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.ottol.entity.Lotofacil;
 import br.com.ottol.entity.MS;
 
@@ -76,6 +78,11 @@ public class Ppt {
 
 	public void setC(Integer c) {
 		this.c = c;
+	}
+
+	@JsonIgnore
+	public ConfiguracoesDTO getConfig() {
+		return this.configuracoesCollection.stream().findFirst().orElse(new ConfiguracoesDTO());
 	}
 
 }

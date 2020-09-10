@@ -67,8 +67,7 @@ public class MSRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "validar", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody Ppt ppt)
-			throws ServiceException {
+	public ResponseEntity<List<RespostaValidacao>> carregarListas(@RequestBody Ppt ppt) throws ServiceException {
 		return new ResponseEntity<>(this.msService.validar(ppt), HttpStatus.OK);
 	}
 
@@ -77,9 +76,13 @@ public class MSRestController {
 		return new ResponseEntity<>(this.msService.gerar(qtd), HttpStatus.OK);
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "gerar/{qtd}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<ResultadoDTO>> gerar2(@RequestBody Ppt ppt,@PathVariable Integer qtd) throws ServiceException {
+		return new ResponseEntity<>(this.msService.gerar(ppt,qtd), HttpStatus.OK);
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "validar-recursivo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<ResultResumido>> validarRecursivo(@RequestBody Ppt ppt)
-			throws ServiceException {
+	public ResponseEntity<List<ResultResumido>> validarRecursivo(@RequestBody Ppt ppt) throws ServiceException {
 		return new ResponseEntity<>(this.msService.validarRecursivo(ppt), HttpStatus.OK);
 	}
 }
