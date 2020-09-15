@@ -1,6 +1,7 @@
 package br.com.ottol.service.ms.frequ.validacao;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import br.com.ottol.dto.FrequenciaDTO;
 import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.service.Validacao;
+import br.com.ottol.service.ms.JGDerivadoValidacao;
 import br.com.ottol.service.ms.frequ.FrequenciaService;
 
 /**
@@ -37,7 +39,7 @@ public class ValidacaoFrequente implements Validacao {
 	 * @return
 	 */
 	@Override
-	public RespostaValidacao validar(ConfiguracoesDTO config, Ppt ppt) {
+	public RespostaValidacao validar(ConfiguracoesDTO config, Ppt ppt,List<JGDerivadoValidacao> list) {
 
 		this.frequenciaList = this.frequenciaService.buscarFrequencias();
 

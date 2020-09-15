@@ -1,6 +1,10 @@
 package br.com.ottol.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import br.com.ottol.service.ms.comb.validacao.ListaA;
 import br.com.ottol.service.ms.comb.validacao.ListaB;
@@ -8,6 +12,7 @@ import br.com.ottol.service.ms.comb.validacao.ListaC;
 import br.com.ottol.service.ms.comb.validacao.ListaD;
 import br.com.ottol.service.ms.comb.validacao.ListaE;
 
+@JsonPropertyOrder(alphabetic = true)
 public class ResultResumido {
 
 	private Integer idConc;
@@ -16,7 +21,12 @@ public class ResultResumido {
 	private Integer freqlistaC;
 	private Integer freqlistaD;
 	private Integer freqlistaE;
+	private Integer maisAtrazado;
+	private Integer menosAtrasado;
+	private Integer mediaCiclo;
+
 	private Boolean aprovado;
+	private ArrayList<String> resumo;
 
 	public ResultResumido() {
 	}
@@ -44,6 +54,13 @@ public class ResultResumido {
 				.findFirst().orElse(new RespostaValidacao(false)).getFrequencia();
 		this.freqlistaE = validar.stream().filter(f -> f.getValidacao().endsWith(ListaE.class.getSimpleName()))
 				.findFirst().orElse(new RespostaValidacao(false)).getFrequencia();
+		this.maisAtrazado = validar.stream().filter(f -> f.getValidacao().endsWith("VMA+")).findFirst()
+				.orElse(new RespostaValidacao(false)).getFrequencia();
+		this.menosAtrasado = validar.stream().filter(f -> f.getValidacao().endsWith("VMA-")).findFirst()
+				.orElse(new RespostaValidacao(false)).getFrequencia();
+		this.mediaCiclo = validar.stream().filter(f -> f.getValidacao().endsWith("VMA+")).findFirst()
+				.orElse(new RespostaValidacao(false)).getFrequencia();
+
 		this.aprovado = validar.stream().allMatch(p -> p.getAprovado());
 	}
 
@@ -103,11 +120,44 @@ public class ResultResumido {
 		this.aprovado = aprovado;
 	}
 
+	public Integer getMaisAtrazado() {
+		return maisAtrazado;
+	}
+
+	public void setMaisAtrazado(Integer maisAtrazado) {
+		this.maisAtrazado = maisAtrazado;
+	}
+
+	public ArrayList<String> getResumo() {
+		return resumo;
+	}
+
+	public void setResumo(ArrayList<String> resumo) {
+		this.resumo = resumo;
+	}
+
+	public Integer getMenosAtrasado() {
+		return menosAtrasado;
+	}
+
+	public void setMenosAtrasado(Integer menosAtrasado) {
+		this.menosAtrasado = menosAtrasado;
+	}
+
+	public Integer getMediaCiclo() {
+		return mediaCiclo;
+	}
+
+	public void setMediaCiclo(Integer mediaCiclo) {
+		this.mediaCiclo = mediaCiclo;
+	}
+
 	@Override
 	public String toString() {
-		return "ResultResumido [idConc=" + idConc + ", freqlistaA=" + freqlistaA + ", freqlistaB=" + freqlistaB
-				+ ", freqlistaC=" + freqlistaC + ", freqlistaD=" + freqlistaD + ", freqlistaE=" + freqlistaE
-				+ ", aprovado=" + aprovado + "]";
+		return "r [id=" + idConc + ", LA=" + freqlistaA + ", LB=" + freqlistaB
+				+ ", LC=" + freqlistaC + ", LD=" + freqlistaD + ", LE=" + freqlistaE
+				+ ", MA+=" + maisAtrazado + ", MA-=" + menosAtrasado + ", MDC=" + mediaCiclo
+				+ ", AP=" + aprovado + ", res=" + resumo + "]";
 	}
 
 }

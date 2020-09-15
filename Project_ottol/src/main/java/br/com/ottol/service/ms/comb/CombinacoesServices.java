@@ -8,11 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.Ppt;
 import br.com.ottol.dto.RespostaValidacao;
 import br.com.ottol.entity.MS;
-import br.com.ottol.service.Validacao;
+import br.com.ottol.service.ms.JGDerivadoValidacao;
 import br.com.ottol.service.ms.comb.analise.AnaliseCombinacoes;
 import br.com.ottol.service.ms.comb.validacao.ListaA;
 import br.com.ottol.service.ms.comb.validacao.ListaB;
@@ -37,45 +36,61 @@ public class CombinacoesServices {
 	@Autowired
 	private ListaE listaE;
 
-	public void carregarLista(List<MS> list) {
-		this.listaA.carregarListaEmMemoria(list);
-		this.listaB.carregarListaEmMemoria(list);
-		this.listaC.carregarListaEmMemoria(list);
-		this.listaD.carregarListaEmMemoria(list);
-		this.listaE.carregarListaEmMemoria(list);
-	}
-
-	public void limparListas() {
-		ListaA.LISTA_A.clear();
-		ListaB.LISTA_B.clear();
-		ListaC.LISTA_C.clear();
-		ListaD.LISTA_D.clear();
-		ListaE.LISTA_E.clear();
-	}
-
-	public Map<String, Map<String, Long>> frequencias() {
-		HashMap<String, Map<String, Long>> map = new HashMap<>();
-		map.put("A", this.listaA.frequencia());
-		map.put("B", this.listaB.frequencia());
-		map.put("C", this.listaC.frequencia());
-		map.put("D", this.listaD.frequencia());
-		map.put("E", this.listaE.frequencia());
+	public Map<String, List<JGDerivadoValidacao>> carregarLista(List<MS> list) {
+		HashMap<String, List<JGDerivadoValidacao>> map = new HashMap<>();
+		map.put(ListaA.class.getSimpleName(), this.listaA.carregarListaEmMemoria(list));
+		map.put(ListaB.class.getSimpleName(), this.listaB.carregarListaEmMemoria(list));
+		map.put(ListaC.class.getSimpleName(), this.listaC.carregarListaEmMemoria(list));
+		map.put(ListaD.class.getSimpleName(), this.listaD.carregarListaEmMemoria(list));
+		map.put(ListaE.class.getSimpleName(), this.listaE.carregarListaEmMemoria(list));
 		return map;
 	}
 
-	public HashMap<Object, Object> analiseCombinacoes() {
+
+	public Map<String, Map<String, Long>> frequencias(List<MS> list) {
+		Map<String, List<JGDerivadoValidacao>> hashMap = this.carregarLista(list);
+		HashMap<String, Map<String, Long>> map = new HashMap<>();
+		map.put("A", this.listaA.frequencia(hashMap.get(ListaA.class.getSimpleName())));
+		map.put("B", this.listaB.frequencia(hashMap.get(ListaB.class.getSimpleName())));
+		map.put("C", this.listaC.frequencia(hashMap.get(ListaC.class.getSimpleName())));
+		map.put("D", this.listaD.frequencia(hashMap.get(ListaD.class.getSimpleName())));
+		map.put("E", this.listaE.frequencia(hashMap.get(ListaE.class.getSimpleName())));
+		return map;
+	}
+
+	public Map<Object, Object> analiseCombinacoes() {
 		HashMap<PARAM, Object> params = new HashMap<>();
 		return this.analiseCombinacoes.init(params);
 	}
 
-	public synchronized List<RespostaValidacao> validar(Ppt ppt) {
+	public synchronized List<RespostaValidacao> validar(Ppt ppt, Map<String, List<JGDerivadoValidacao>> hashMap) {
 		List<RespostaValidacao> validacaos = new ArrayList<>();
-		validacaos.add(this.listaA.validar(ppt));
-		validacaos.add(this.listaB.validar(ppt));
-		validacaos.add(this.listaC.validar(ppt));
-		validacaos.add(this.listaD.validar(ppt));
-		validacaos.add(this.listaE.validar(ppt));
+		validacaos.add(this.listaA.validar(ppt, hashMap.get(ListaA.class.getSimpleName())));
+		validacaos.add(this.listaB.validar(ppt, hashMap.get(ListaB.class.getSimpleName())));
+		validacaos.add(this.listaC.validar(ppt, hashMap.get(ListaC.class.getSimpleName())));
+		validacaos.add(this.listaD.validar(ppt, hashMap.get(ListaD.class.getSimpleName())));
+		validacaos.add(this.listaE.validar(ppt, hashMap.get(ListaE.class.getSimpleName())));
 		return validacaos;
+	}
+
+	public RespostaValidacao validarListaA(Ppt ppt, List<JGDerivadoValidacao> list) {
+		return this.listaA.validar(ppt.getConfiguracoesDTO(), ppt, list);
+	}
+
+	public RespostaValidacao validarListaB(Ppt ppt, List<JGDerivadoValidacao> list) {
+		return this.listaB.validar(ppt.getConfiguracoesDTO(), ppt, list);
+	}
+
+	public RespostaValidacao validarListaC(Ppt ppt, List<JGDerivadoValidacao> list) {
+		return this.listaC.validar(ppt.getConfiguracoesDTO(), ppt, list);
+	}
+
+	public RespostaValidacao validarListaD(Ppt ppt, List<JGDerivadoValidacao> list) {
+		return this.listaD.validar(ppt.getConfiguracoesDTO(), ppt, list);
+	}
+
+	public RespostaValidacao validarListaE(Ppt ppt, List<JGDerivadoValidacao> list) {
+		return this.listaE.validar(ppt.getConfiguracoesDTO(), ppt, list);
 	}
 
 }

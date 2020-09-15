@@ -27,21 +27,20 @@ public class AnaliseCombinacoes implements Analise {
 	@Override
 	public HashMap<Object, Object> init(HashMap<PARAM, Object> params) {
 		HashMap<Object, Object> map = new HashMap<>();
-		this.combinacoesServices.limparListas();
 		List<MS> list = this.msRepository.findAll();
 		this.combinacoesServices.carregarLista(list);
-		Map<String, Map<String, Long>> result = analiseFrequenciasCombinacoes();
+		Map<String, Map<String, Long>> result = analiseFrequenciasCombinacoes(list);
 		map.put("RESULT", result);
 		return map;
 	}
 
-	private Map<String, Map<String, Long>> analiseFrequenciasCombinacoes() {
-		Map<String, Map<String, Long>> map = this.combinacoesServices.frequencias();
+	private Map<String, Map<String, Long>> analiseFrequenciasCombinacoes(List<MS> list) {
+		Map<String, Map<String, Long>> map = this.combinacoesServices.frequencias(list);
 		LOGGER.debug("Frequencias");
 		return map;
 	}
-	
+
 	public void analiseCompleta() {
-		
+
 	}
 }

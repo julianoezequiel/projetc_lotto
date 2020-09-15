@@ -22,6 +22,9 @@ public interface MSRepository extends JpaRepository<MS, Integer> {
 
 	@Query(value = "select m from MS m where m.idconcurso <= :idmega")
 	public Collection<MS> buscarMenorQue(@Param("idmega") Integer id);
+	
+	@Query(value = "select m from MS m where m.idconcurso >= :idmega")
+	public Collection<MS> buscarMaiorQue(@Param("idmega") Integer id);
 
 	@Query(value = "select m from MS m where m.idconcurso = :idmega")
 	public MS getMegaSena(@Param("idmega") Integer id);

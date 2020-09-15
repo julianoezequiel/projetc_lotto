@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottol.dao.MSRepository;
+import br.com.ottol.dto.AtrasoDTO;
 import br.com.ottol.dto.ConfiguracoesDTO;
 import br.com.ottol.dto.Jogos;
 import br.com.ottol.dto.MSDTO;
@@ -58,6 +59,7 @@ import br.com.ottol.service.ms.comb.validacao.ListaD;
 import br.com.ottol.service.ms.comb.validacao.ListaE;
 import br.com.ottol.service.ms.dto.MSSincronizarDTO;
 import br.com.ottol.service.ms.frequ.FrequenciaService;
+import br.com.ottol.service.num.NumeroService;
 
 /**
  * @author Juliano
@@ -82,6 +84,8 @@ public class MSService {
 	private Gerador gerador;
 	@Autowired
 	private AtrasoService atrasoService;
+	@Autowired
+	private NumeroService numeroService;
 
 	/**
 	 * Lista todos os concursos
@@ -195,7 +199,7 @@ public class MSService {
 //		List<JGDerivadoValidacao> listaC = ListaC.LISTA_C;
 //		List<JGDerivadoValidacao> listaD = ListaD.LISTA_D;
 
-		HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+		Map<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
 
 		System.out.println("Carregado");
 
@@ -265,48 +269,83 @@ public class MSService {
 	}
 
 	public List<RespostaValidacao> validar(Ppt ppt) {
-		if (ppt.getC() != null) {
-			ppt.setMegasenaidconcurso(new MS(ppt.getC()));
-		}
-
+		ppt.corrigirPpt();
 		Integer id = ppt.getMegasenaidconcurso().getIdconcurso();
-		if (ppt.getS() != null) {
-			for (Integer i : ppt.getS()) {
-				ppt.getNumeroCollection().add(new NumeroDTO(i));
-			}
-		}
-		this.combinacoesServices.limparListas();
+		Collection<MS> menorQue = this.msRepository.buscarMenorQue(id);
+		Map<String, List<JGDerivadoValidacao>> map = this.combinacoesServices.carregarLista(new ArrayList<>(menorQue));
+		Collection<Numero> numeros = this.numeroService.buscarTodos();
+		Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos(this.total(), 0, numeros);
 		Collection<MS> list = this.msRepository.buscarMenorQue(id - 1);
 		this.combinacoesServices.carregarLista(new ArrayList<MS>(list));
-		List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
+		List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt, map);
+		validar.addAll(this.atrasoService.validar(ppt, atrazados));
 		ResultResumido r = new ResultResumido(id - 1, validar);
 		LOGGER.debug("VALIDADO :{}", r.toString());
 		return validar;
 	}
 
+	// valida de forma recursiva se as regras implementadas estão com um percentual
+	// de acerto bom
 	public List<ResultResumido> validarRecursivo(Ppt ppt) {
+
 		List<ResultResumido> result = new ArrayList<>();
 		MS ultimo = this.msRepository.getUltimoConcurso();
-		List<MS> todos = this.msRepository.findAll();
-		for (Integer i = ppt.getMegasenaidconcurso().getIdconcurso(); i < ultimo.getIdconcurso(); i++) {
-			final int ii = i;
-			this.combinacoesServices.limparListas();
+		Collection<Numero> numeros = this.numeroService.buscarTodos();
+		ppt.corrigirPpt();
+		Collection<MS> todos = this.msRepository.buscarMaiorQue(ppt.getMegasenaidconcurso().getIdconcurso());
+
+		Collection<AtrasoDTO> atrasoRecursivo = this.atrasoService.analizarRecursivo(ppt);
+		Integer primeiro = ppt.getMegasenaidconcurso().getIdconcurso();
+		todos.stream().forEach(f -> {
+			final int ii = f.getIdconcurso();
+
 			List<MS> menor = todos.stream().filter(p -> p.getIdconcurso() <= ii).collect(Collectors.toList());
-			this.combinacoesServices.carregarLista(new ArrayList<MS>(menor));
-			Ppt p = new Ppt();
-			p.getConfiguracoesCollection().add(new ConfiguracoesDTO());
-			p.setMegasenaidconcurso(new MS(i));
+
+			Map<String, List<JGDerivadoValidacao>> map2 = this.combinacoesServices
+					.carregarLista(new ArrayList<MS>(menor));
+
+			Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos((long) ii, 0, numeros);
+
+			Ppt p = ppt;
+			p.setMegasenaidconcurso(f);
+
 			MS proximo = todos.stream().filter(pp -> pp.getIdconcurso() == ii + 1).findAny().orElse(null);
 			if (proximo != null) {
 				List<NumeroDTO> list = proximo.getMegasenanumeroCollection().stream()
 						.map(m -> new NumeroDTO(m.getNumero().getIdnumero())).collect(Collectors.toList());
 				p.setNumeroCollection(list);
-				List<RespostaValidacao> validar = this.combinacoesServices.validar(p);
-				ResultResumido r = new ResultResumido(i, validar);
+
+				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, p, map2);
+
+				ResultResumido r = new ResultResumido(f.getIdconcurso(), validar);
 				result.add(r);
-				LOGGER.debug("VALIDADO :{}", r);
+				LOGGER.debug("V :{}", r);
 			}
-		}
+		});
+//		for (Integer i = ppt.getMegasenaidconcurso().getIdconcurso(); i < ultimo.getIdconcurso(); i++) {
+//			final int ii = i;
+//			this.combinacoesServices.limparListas();
+//			List<MS> menor = todos.stream().filter(p -> p.getIdconcurso() <= ii).collect(Collectors.toList());
+//
+//			this.combinacoesServices.carregarLista(new ArrayList<MS>(menor));
+//			Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos((long) ii, 0, numeros);
+//
+//			Ppt p = ppt;
+//			p.setMegasenaidconcurso(new MS(i));
+//
+//			MS proximo = todos.stream().filter(pp -> pp.getIdconcurso() == ii + 1).findAny().orElse(null);
+//			if (proximo != null) {
+//				List<NumeroDTO> list = proximo.getMegasenanumeroCollection().stream()
+//						.map(m -> new NumeroDTO(m.getNumero().getIdnumero())).collect(Collectors.toList());
+//				p.setNumeroCollection(list);
+//
+//				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, p);
+//
+//				ResultResumido r = new ResultResumido(i, validar);
+//				result.add(r);
+//				LOGGER.debug("VALIDADO :{}", r);
+//			}
+//		}
 		Map<Integer, Long> countA = result.stream()
 				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaA, Collectors.counting()));
 		Map<Integer, Long> countB = result.stream()
@@ -317,51 +356,92 @@ public class MSService {
 				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaD, Collectors.counting()));
 		Map<Integer, Long> countE = result.stream()
 				.collect(Collectors.groupingBy(ResultResumido::getFreqlistaE, Collectors.counting()));
+		Map<Integer, Long> countVMA = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getMaisAtrazado, Collectors.counting()));
+		Map<Integer, Long> countVMEA = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getMenosAtrasado, Collectors.counting()));
+		Map<Integer, Long> countCiclo = result.stream()
+				.collect(Collectors.groupingBy(ResultResumido::getMediaCiclo, Collectors.counting()));
 		Map<Boolean, Long> countAP = result.stream()
 				.collect(Collectors.groupingBy(ResultResumido::getAprovado, Collectors.counting()));
-
+		ArrayList<String> resumo = new ArrayList<>();
+		Double divisor = Double.valueOf(ultimo.getIdconcurso() - primeiro);
 		countA.entrySet().forEach(f -> {
-			LOGGER.debug("count A - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100 / ultimo.getIdconcurso());
+			LOGGER.debug("count A - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100 / divisor);
+			resumo.add("count A - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
+
 		});
 		countB.entrySet().forEach(f -> {
-			LOGGER.debug("count B - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100l / ultimo.getIdconcurso());
+			LOGGER.debug("count B - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add("count B - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
 		});
 		countC.entrySet().forEach(f -> {
-			LOGGER.debug("count C - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100l / ultimo.getIdconcurso());
+			LOGGER.debug("count C - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add("count C - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
 		});
 		countD.entrySet().forEach(f -> {
-			LOGGER.debug("count D - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100l / ultimo.getIdconcurso());
+			LOGGER.debug("count D - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add("count D - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
 		});
 		countE.entrySet().forEach(f -> {
-			LOGGER.debug("count E - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100l / ultimo.getIdconcurso());
+			LOGGER.debug("count E - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add("count E - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
+		});
+		countVMA.entrySet().forEach(f -> {
+			LOGGER.debug("count VMA - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add(
+					"count VMA - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
+		});
+		countVMEA.entrySet().forEach(f -> {
+			LOGGER.debug("count VMEA - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add(
+					"count VMEA - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
+		});
+		countCiclo.entrySet().forEach(f -> {
+			LOGGER.debug("count CIC - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add(
+					"count CIC - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
 		});
 		countAP.entrySet().forEach(f -> {
-			LOGGER.debug("count AP - {} - T:{} - {}%", f.getKey(), f.getValue(),
-					f.getValue() * 100l / ultimo.getIdconcurso());
+			LOGGER.debug("count AP - {} - T:{} - {}%", f.getKey(), f.getValue(), f.getValue() * 100l / divisor);
+			resumo.add(
+					"count AP - " + f.getKey() + " - T:" + f.getValue() + " - " + f.getValue() * 100 / divisor + "%");
 		});
+		result.get(result.size() - 1).setResumo(resumo);
 		return result;
+	}
+
+	private List<RespostaValidacao> validar(Collection<AtrasoDTO> atrasoRecursivo, Collection<AtrasoDTO> atrazados,
+			Ppt p, Map<String, List<JGDerivadoValidacao>> map) {
+		List<RespostaValidacao> validar = this.combinacoesServices.validar(p, map);
+		validar.addAll(this.atrasoService.validar(p, atrazados));
+		validar.add(this.atrasoService.validarCiclo(p, atrasoRecursivo));
+		return validar;
 	}
 
 	public List<ResultadoDTO> gerar(Integer qtd) {
 		List<ResultadoDTO> result = new ArrayList<>();
 		List<NumeroDTO> listTeste = getListTeste();
 		try {
-			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+//			Map<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
 			this.atrasoService.analisarAtraso();
 			Integer tentativa = 0;
 			Integer ap = 0;
+			Ppt ppt = new Ppt();
+			ConfiguracoesDTO conf = new ConfiguracoesDTO();
+			ppt.setConfiguracoesDTO(conf);
+			MS ms = new MS(1);
+			ppt.setMegasenaidconcurso(ms);
+
+			Collection<MS> menorQue = this.msRepository.buscarMenorQue(1);
+			Map<String, List<JGDerivadoValidacao>> map = this.combinacoesServices
+					.carregarLista(new ArrayList<>(menorQue));
+
+			Collection<Numero> numeros = this.numeroService.buscarTodos();
+			Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos(this.total(), 0, numeros);
+			Collection<AtrasoDTO> atrasoRecursivo = this.atrasoService.analizarRecursivo(ppt);
 			for (int ix = 1; ix <= qtd; ix++) {
 
-				Ppt ppt = new Ppt();
-				ConfiguracoesDTO conf = new ConfiguracoesDTO();
-				ppt.getConfiguracoesCollection().add(conf);
-				MS ms = new MS(1);
-				ppt.setMegasenaidconcurso(ms);
 				Integer[] valor2 = this.gerador.Valor2();
 				List<NumeroDTO> nList = new ArrayList<>();
 				for (Integer i : valor2) {
@@ -369,8 +449,10 @@ public class MSService {
 				}
 
 				ppt.setNumeroCollection(nList);
-				List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
-				validar.addAll(this.atrasoService.validar(ppt));
+
+				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map);
+
+				tentativa++;
 				if (validar.stream().anyMatch(p -> !p.getAprovado())) {
 					ix--;
 				} else {
@@ -384,12 +466,12 @@ public class MSService {
 						});
 					});
 					if (v.get() >= 5) {
-						result.add(new ResultadoDTO(ppt, validar));
+						result.add(new ResultadoDTO(ppt, validar, tentativa, ap, ix));
 					} else {
 						ix--;
 					}
 				}
-				tentativa++;
+
 				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
 //				LOGGER.debug("Result: {}", validar);
 			}
@@ -410,14 +492,23 @@ public class MSService {
 		return nList;
 	}
 
-	public List<ResultadoDTO>  gerar(Ppt ppt,Integer qtd) {
+	public List<ResultadoDTO> gerar(Ppt ppt, Integer qtd) {
+		ppt.corrigirPpt();
 		List<ResultadoDTO> result = new ArrayList<>();
 		List<NumeroDTO> listTeste = getListTeste();
 		try {
-			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
+//			HashMap<Object, Object> map = this.combinacoesServices.analiseCombinacoes();
 			this.atrasoService.analisarAtraso();
+			Collection<AtrasoDTO> atrasoRecursivo = this.atrasoService.analizarRecursivo(ppt);
 			Integer tentativa = 0;
 			Integer ap = 0;
+			Collection<Numero> numeros = this.numeroService.buscarTodos();
+			Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos(this.total(), 0, numeros);
+
+			Collection<MS> menorQue = this.msRepository.buscarMenorQue(ppt.getMegasenaidconcurso().getIdconcurso() - 1);
+			Map<String, List<JGDerivadoValidacao>> map = this.combinacoesServices
+					.carregarLista(new ArrayList<>(menorQue));
+
 			for (int ix = 1; ix <= qtd; ix++) {
 				Integer[] valor2 = this.gerador.Valor2();
 				List<NumeroDTO> nList = new ArrayList<>();
@@ -426,8 +517,11 @@ public class MSService {
 				}
 
 				ppt.setNumeroCollection(nList);
-				List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt);
-				validar.addAll(this.atrasoService.validar(ppt));
+
+				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map);
+
+				tentativa++;
+//				validar.stream().forEach(f -> LOGGER.debug("V" + f.getValidacao() + " - " + f.getAprovado()));
 				if (validar.stream().anyMatch(p -> !p.getAprovado())) {
 					ix--;
 				} else {
@@ -440,19 +534,20 @@ public class MSService {
 							}
 						});
 					});
-					if (v.get() >= 5) {
-						result.add(new ResultadoDTO(ppt, validar));
+					if (v.get() >= ppt.getLimiteAcerto()) {
+						result.add(new ResultadoDTO(ppt, validar, tentativa, ap, ix));
 					} else {
 						ix--;
 					}
 				}
-				tentativa++;
+
 				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
 //				LOGGER.debug("Result: {}", validar);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 		return result;
 	}
 

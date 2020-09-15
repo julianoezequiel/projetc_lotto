@@ -5,6 +5,7 @@ public class RespostaValidacao {
 	private Boolean aprovado;
 	private String validacao;
 	private Integer frequencia = 0;
+	private Boolean desabilitado = false;
 
 	public RespostaValidacao(Boolean aprovado) {
 		super();
@@ -22,6 +23,12 @@ public class RespostaValidacao {
 		this.validacao = validacao;
 		this.aprovado = aprovado;
 		this.frequencia = f;
+	}
+
+	public RespostaValidacao(String validacao, boolean aprovado, boolean desabilitado) {
+		this.validacao = validacao;
+		this.aprovado = aprovado;
+		this.desabilitado = desabilitado;
 	}
 
 	public String getValidacao() {
@@ -46,6 +53,14 @@ public class RespostaValidacao {
 
 	public void setFrequencia(Integer frequencia) {
 		this.frequencia = frequencia;
+	}
+
+	public Boolean getDesabilitado() {
+		return desabilitado;
+	}
+
+	public void setDesabilitado(Boolean desabilitado) {
+		this.desabilitado = desabilitado;
 	}
 
 }

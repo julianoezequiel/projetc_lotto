@@ -160,7 +160,7 @@ public class AnaliseAtraso implements Analise {
 		});
 
 		Collection<AtrasoDTO> list = new ArrayList<AtrasoDTO>();
-		for (Integer i = ppt.getC(); i < ultimo.getIdconcurso(); i++) {
+		for (Integer i = ppt.getC() -1; i < ultimo.getIdconcurso(); i++) {
 			list = buscarAtrasos(i.longValue(), 0, buscarTodos);
 			final int ii = i;
 			list.stream().forEach(f -> {

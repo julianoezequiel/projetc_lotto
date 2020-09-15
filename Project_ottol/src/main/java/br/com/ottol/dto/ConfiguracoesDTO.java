@@ -1,21 +1,37 @@
 package br.com.ottol.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import br.com.ottol.service.ms.comb.validacao.ListaA;
-
 public class ConfiguracoesDTO implements Cloneable {
 
-	private Integer maisAtrazado = 0;
-	private Integer maisFrequente = 0;
+	private Integer maisAtrazado = 20;
 	private Integer menosAtrazado = 0;
+	private Integer maisFrequente = 0;
 	private Integer menosFrequente = 0;
+	private Double mediaCiclo = 10d;
 
 	private Limite limiteA = new Limite(0, 0);
 	private Limite limiteB = new Limite(0, 0);
 	private Limite limiteC = new Limite(0, 1);
 	private Limite limiteD = new Limite(1, 4);
 	private Limite limiteE = new Limite(2, 23);
+
+	public ConfiguracoesDTO() {
+
+	}
+
+	public ConfiguracoesDTO(Integer[] i) {
+
+		if (i.length >= 12) {
+			this.maisAtrazado = i[0];
+			this.menosAtrazado = i[1];
+			this.maisFrequente = i[2];
+			this.menosFrequente = i[3];
+			this.limiteA = new Limite(i[4], i[5]);
+			this.limiteB = new Limite(i[6], i[7]);
+			this.limiteC = new Limite(i[8], i[9]);
+			this.limiteD = new Limite(i[10], i[11]);
+			this.limiteE = new Limite(i[12], i[13]);
+		}
+	}
 
 	public Integer getMaisAtrazado() {
 		return maisAtrazado;
@@ -108,6 +124,14 @@ public class ConfiguracoesDTO implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
+	}
+
+	public Double getMediaCiclo() {
+		return mediaCiclo;
+	}
+
+	public void setMediaCiclo(Double mediaCiclo) {
+		this.mediaCiclo = mediaCiclo;
 	}
 
 }
