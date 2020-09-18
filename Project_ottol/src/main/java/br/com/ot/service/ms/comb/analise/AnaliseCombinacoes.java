@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import br.com.ot.dao.MSRepository;
@@ -15,6 +17,7 @@ import br.com.ot.service.ms.comb.CombinacoesServices;
 import br.com.ot.utils.CONSTANTES.PARAM;
 
 @Service
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class AnaliseCombinacoes implements Analise {
 
 	public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnaliseCombinacoes.class.getName());

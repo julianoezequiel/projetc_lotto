@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import br.com.ot.dto.Ppt;
@@ -21,6 +23,7 @@ import br.com.ot.service.ms.comb.validacao.ListaE;
 import br.com.ot.utils.CONSTANTES.PARAM;
 
 @Service
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class CombinacoesServices {
 
 	@Autowired

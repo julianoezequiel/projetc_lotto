@@ -20,6 +20,7 @@ public class Ppt {
 	private MS megasenaidconcurso;
 	private Integer[] s = null;
 	private Integer c = null;
+	private Integer init = 0;
 	// MA+,MA-,MF+,MF-,LMA(x,y),LMB(x,y),LMC(x,y),LMD(x,y),LME(x,y)
 	private Integer[] conf = null;
 
@@ -95,6 +96,14 @@ public class Ppt {
 
 	public void setLimiteAcerto(Integer tipoAcerto) {
 		this.limiteAcerto = tipoAcerto;
+	}
+
+	public Integer getInit() {
+		return init;
+	}
+
+	public void setInit(Integer init) {
+		this.init = init;
 	}
 
 	@JsonIgnore

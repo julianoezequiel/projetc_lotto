@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import br.com.ot.dto.AtrasoDTO;
@@ -22,6 +24,7 @@ import br.com.ot.utils.CONSTANTES;
 import br.com.ot.utils.CONSTANTES.PARAM;
 
 @Service
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class AtrasoService {
 
 	@Autowired

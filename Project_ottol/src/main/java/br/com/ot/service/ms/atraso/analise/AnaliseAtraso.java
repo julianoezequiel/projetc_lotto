@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import br.com.ot.dao.MSRepository;
@@ -29,6 +31,7 @@ import br.com.ot.service.num.NumeroService;
 import br.com.ot.utils.CONSTANTES.PARAM;
 
 @Service
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class AnaliseAtraso implements Analise {
 
 	public final static Logger LOGGER = LoggerFactory.getLogger(AnaliseAtraso.class.getName());
@@ -160,7 +163,7 @@ public class AnaliseAtraso implements Analise {
 		});
 
 		Collection<AtrasoDTO> list = new ArrayList<AtrasoDTO>();
-		for (Integer i = ppt.getC() -1; i < ultimo.getIdconcurso(); i++) {
+		for (Integer i = ppt.getInit(); i < ultimo.getIdconcurso(); i++) {
 			list = buscarAtrasos(i.longValue(), 0, buscarTodos);
 			final int ii = i;
 			list.stream().forEach(f -> {

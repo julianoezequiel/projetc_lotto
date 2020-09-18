@@ -21,6 +21,8 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -67,6 +69,7 @@ import br.com.ot.service.num.NumeroService;
  *
  */
 @Service
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class MSService {
 
 	public final static Logger LOGGER = LoggerFactory.getLogger(MSService.class.getName());
@@ -272,16 +275,22 @@ public class MSService {
 	public List<RespostaValidacao> validar(Ppt ppt) {
 		ppt.corrigirPpt();
 		Integer id = ppt.getMegasenaidconcurso().getIdconcurso();
-		Collection<MS> menorQue = this.msRepository.buscarMenorQue(id);
-		Map<String, List<JGDerivadoValidacao>> map = this.combinacoesServices.carregarLista(new ArrayList<>(menorQue));
+		
+		Collection<MS> menorQue = this.msRepository.buscarMenorQue(id-1);
+		
 		Collection<Numero> nums = this.numeroService.buscarTodos();
 		Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos(this.total(), 0, nums);
-		Collection<MS> list = this.msRepository.buscarMenorQue(id - 1);
-		this.combinacoesServices.carregarLista(new ArrayList<MS>(list));
-		List<RespostaValidacao> validar = this.combinacoesServices.validar(ppt, map);
-		validar.addAll(this.atrasoService.validar(ppt, atrazados));
-		ResultResumido r = new ResultResumido(id - 1, validar);
-		LOGGER.debug("VALIDADO :{}", r.toString());
+		
+		Map<String, List<JGDerivadoValidacao>> map2 = this.combinacoesServices
+				.carregarLista(new ArrayList<MS>(menorQue));
+		
+		Collection<FrequenciaDTO> frequencias = this.frequenciaService.buscarFrequencias(ppt);
+		
+		Collection<AtrasoDTO> atrasoRecursivo = this.atrasoService.analizarRecursivo(ppt);
+		List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map2, frequencias);
+		
+		ResultResumido r = new ResultResumido(id, validar);
+		LOGGER.debug("VALIDADO :{}", r);
 		return validar;
 	}
 

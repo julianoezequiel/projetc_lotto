@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import br.com.ot.dao.MSRepository;
@@ -23,6 +25,7 @@ import br.com.ot.service.Validacao;
 import br.com.ot.service.ms.JGDerivadoValidacao;
 
 @Component
+@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
 public class ListaB implements Validacao {
 	public final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ListaB.class.getName());
 
