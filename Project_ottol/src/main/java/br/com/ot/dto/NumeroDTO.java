@@ -4,6 +4,7 @@ public class NumeroDTO {
 
 	public NumeroDTO() {
 	}
+
 	private Integer idNumero;
 
 	public NumeroDTO(Integer idNumero) {
@@ -18,4 +19,10 @@ public class NumeroDTO {
 	public void setIdNumero(Integer idNumero) {
 		this.idNumero = idNumero;
 	}
+
+	@Override
+	public String toString() {
+		return  idNumero.toString() ;
+	}
+
 }

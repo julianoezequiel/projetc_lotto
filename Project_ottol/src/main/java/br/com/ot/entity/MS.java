@@ -199,7 +199,7 @@ public class MS implements Serializable {
 		return ganhadoresquina;
 	}
 
-	public void setGanhadoresQuina(Integer ganhadoresquina) {
+	public void setGanhadoresquina(Integer ganhadoresquina) {
 		this.ganhadoresquina = ganhadoresquina;
 	}
 

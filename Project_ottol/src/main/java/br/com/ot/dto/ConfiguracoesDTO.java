@@ -1,5 +1,7 @@
 package br.com.ot.dto;
 
+import java.util.List;
+
 public class ConfiguracoesDTO implements Cloneable {
 
 	private Integer maisAtrazado = 20;
@@ -18,18 +20,18 @@ public class ConfiguracoesDTO implements Cloneable {
 
 	}
 
-	public ConfiguracoesDTO(Integer[] i) {
+	public ConfiguracoesDTO(List<Integer> i) {
 
-		if (i.length >= 12) {
-			this.maisAtrazado = i[0];
-			this.menosAtrazado = i[1];
-			this.maisFrequente = i[2];
-			this.menosFrequente = i[3];
-			this.limiteA = new Limite(i[4], i[5]);
-			this.limiteB = new Limite(i[6], i[7]);
-			this.limiteC = new Limite(i[8], i[9]);
-			this.limiteD = new Limite(i[10], i[11]);
-			this.limiteE = new Limite(i[12], i[13]);
+		if (i.size() >= 12) {
+			this.maisAtrazado = i.get(0);
+			this.menosAtrazado = i.get(1);
+			this.maisFrequente = i.get(2);
+			this.menosFrequente = i.get(3);
+			this.limiteA = new Limite(i.get(4), i.get(5));
+			this.limiteB = new Limite(i.get(6), i.get(7));
+			this.limiteC = new Limite(i.get(8), i.get(9));
+			this.limiteD = new Limite(i.get(10), i.get(11));
+			this.limiteE = new Limite(i.get(12), i.get(13));
 		}
 	}
 

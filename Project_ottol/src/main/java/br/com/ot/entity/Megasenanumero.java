@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({ @NamedQuery(name = "Megasenanumero.findAll", query = "SELECT m FROM Megasenanumero m"),
 		@NamedQuery(name = "Megasenanumero.findByMegasenaidconcurso", query = "SELECT m FROM Megasenanumero m WHERE m.megasenanumeroPK.megasenaidconcurso = :megasenaidconcurso"),
-		@NamedQuery(name = "Megasenanumero.findByNumeroidnumero", query = "SELECT m FROM Megasenanumero m WHERE m.megasenanumeroPK.numeroidnumero = :numeroidnumero"),
-		@NamedQuery(name = "Megasenanumero.findByOrdemsorteio", query = "SELECT m FROM Megasenanumero m WHERE m.ordemsorteio = :ordemsorteio") })
+		@NamedQuery(name = "Megasenanumero.findByNumeroidnumero", query = "SELECT m FROM Megasenanumero m WHERE m.megasenanumeroPK.numeroidnumero = :numeroidnumero"),})
 public class Megasenanumero implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,8 +35,8 @@ public class Megasenanumero implements Serializable {
 	@EmbeddedId
 	protected MegasenanumeroPK megasenanumeroPK;
 
-	@Column(name = "ordemsorteio")
-	private Integer ordemsorteio;
+//	@Column(name = "ordemsorteio")
+//	private Integer ordemsorteio;
 
 	@JoinColumn(name = "megasenaidconcurso", referencedColumnName = "idconcurso", insertable = false, updatable = false)
 	@ManyToOne(optional = false)
@@ -66,13 +65,13 @@ public class Megasenanumero implements Serializable {
 		this.megasenanumeroPK = megasenanumeroPK;
 	}
 
-	public Integer getOrdemsorteio() {
-		return ordemsorteio;
-	}
-
-	public void setOrdemsorteio(Integer ordemsorteio) {
-		this.ordemsorteio = ordemsorteio;
-	}
+//	public Integer getOrdemsorteio() {
+//		return ordemsorteio;
+//	}
+//
+//	public void setOrdemsorteio(Integer ordemsorteio) {
+//		this.ordemsorteio = ordemsorteio;
+//	}
 
 	public MS getMegasena() {
 		return mS;

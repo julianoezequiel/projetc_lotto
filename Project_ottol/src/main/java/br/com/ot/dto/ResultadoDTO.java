@@ -1,9 +1,11 @@
 package br.com.ot.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ResultadoDTO {
+public class ResultadoDTO implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Ppt ppt;
 	private List<RespostaValidacao> validar;
 	private Integer T = 0;

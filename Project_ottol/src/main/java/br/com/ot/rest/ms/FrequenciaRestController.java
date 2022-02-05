@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ot.dto.FrequenciaDTO;
@@ -21,7 +21,7 @@ public class FrequenciaRestController {
 	@Autowired
 	private FrequenciaService frequenciaService;
 
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<FrequenciaDTO>> buscarFrequencias() {
 		return new ResponseEntity<>(this.frequenciaService.buscarFrequencias(), HttpStatus.OK);
 	}
@@ -34,7 +34,7 @@ public class FrequenciaRestController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/analisarFrequencia", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/analisarFrequencia", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HashMap<Object, Object>> analisarFrequencia() {
 		return new ResponseEntity<>(this.frequenciaService.analisarFrequencia(), HttpStatus.OK);
 	}

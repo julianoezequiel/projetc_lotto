@@ -7,23 +7,20 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -52,15 +49,8 @@ import br.com.ot.entity.MS;
 import br.com.ot.entity.Numero;
 import br.com.ot.service.RestTemplateProxy;
 import br.com.ot.service.ServiceException;
-import br.com.ot.service.Validacao;
 import br.com.ot.service.ms.atraso.AtrasoService;
 import br.com.ot.service.ms.comb.CombinacoesServices;
-import br.com.ot.service.ms.comb.validacao.ListaA;
-import br.com.ot.service.ms.comb.validacao.ListaB;
-import br.com.ot.service.ms.comb.validacao.ListaC;
-import br.com.ot.service.ms.comb.validacao.ListaD;
-import br.com.ot.service.ms.comb.validacao.ListaE;
-import br.com.ot.service.ms.dto.MSSincronizarDTO;
 import br.com.ot.service.ms.frequ.FrequenciaService;
 import br.com.ot.service.num.NumeroService;
 
@@ -69,7 +59,7 @@ import br.com.ot.service.num.NumeroService;
  *
  */
 @Service
-@Scope(value="prototype", proxyMode=ScopedProxyMode.TARGET_CLASS) 
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MSService {
 
 	public final static Logger LOGGER = LoggerFactory.getLogger(MSService.class.getName());
@@ -90,6 +80,8 @@ public class MSService {
 	private AtrasoService atrasoService;
 	@Autowired
 	private NumeroService numeroService;
+	@Autowired
+	private MSFirebaseService mSFirebaseService;
 
 	/**
 	 * Lista todos os concursos
@@ -275,20 +267,20 @@ public class MSService {
 	public List<RespostaValidacao> validar(Ppt ppt) {
 		ppt.corrigirPpt();
 		Integer id = ppt.getMegasenaidconcurso().getIdconcurso();
-		
-		Collection<MS> menorQue = this.msRepository.buscarMenorQue(id-1);
-		
+
+		Collection<MS> menorQue = this.msRepository.buscarMenorQue(id - 1);
+
 		Collection<Numero> nums = this.numeroService.buscarTodos();
 		Collection<AtrasoDTO> atrazados = this.atrasoService.buscarAtrasos(this.total(), 0, nums);
-		
+
 		Map<String, List<JGDerivadoValidacao>> map2 = this.combinacoesServices
 				.carregarLista(new ArrayList<MS>(menorQue));
-		
+
 		Collection<FrequenciaDTO> frequencias = this.frequenciaService.buscarFrequencias(ppt);
-		
+
 		Collection<AtrasoDTO> atrasoRecursivo = this.atrasoService.analizarRecursivo(ppt);
 		List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map2, frequencias);
-		
+
 		ResultResumido r = new ResultResumido(id, validar);
 		LOGGER.debug("VALIDADO :{}", r);
 		return validar;
@@ -549,9 +541,9 @@ public class MSService {
 					nList.add(new NumeroDTO(i));
 				}
 
-				ppt.setNumeroCollection(nList);
-
-				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map, null);
+				ppt.setNumeroCollection(new ArrayList<>(nList));
+				Collection<FrequenciaDTO> frequencias = this.frequenciaService.buscarFrequencias(ppt);
+				List<RespostaValidacao> validar = validar(atrasoRecursivo, atrazados, ppt, map, frequencias);
 
 				tentativa++;
 //				validar.stream().forEach(f -> LOGGER.debug("V" + f.getValidacao() + " - " + f.getAprovado()));
@@ -560,27 +552,33 @@ public class MSService {
 				} else {
 					ap++;
 					AtomicInteger v = new AtomicInteger(0);
-					listTeste.stream().forEach(f -> {
-						nList.stream().forEach(ff -> {
-							if (f.getIdNumero().equals(ff.getIdNumero())) {
-								v.getAndIncrement();
-							}
-						});
-					});
-					if (v.get() >= ppt.getLimiteAcerto()) {
-						result.add(new ResultadoDTO(ppt, validar, tentativa, ap, ix));
-					} else {
-						ix--;
-					}
+//					listTeste.stream().forEach(f -> {
+//						nList.stream().forEach(ff -> {
+//							if (f.getIdNumero().equals(ff.getIdNumero())) {
+//								v.getAndIncrement();
+//							}
+//						});
+//					});
+//					if (v.get() >= ppt.getLimiteAcerto()) {
+					result.add(new ResultadoDTO(ppt.clone(), validar, tentativa, ap, ix));
+					LOGGER.debug("DZ:{}", ppt.getNumeroCollection());
+//					} else {
+//						ix--;
+//					}
 				}
 
-				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
+//				LOGGER.debug("T:{} - A:{} - V:{}", tentativa, ap, ix);
 //				LOGGER.debug("Result: {}", validar);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
+		try {
+			this.mSFirebaseService.savePatientDetails(result.get(0), ppt);
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 

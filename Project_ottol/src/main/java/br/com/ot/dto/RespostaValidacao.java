@@ -1,7 +1,10 @@
 package br.com.ot.dto;
 
-public class RespostaValidacao {
+import java.io.Serializable;
 
+public class RespostaValidacao implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Boolean aprovado;
 	private String validacao;
 	private Integer frequencia = 0;

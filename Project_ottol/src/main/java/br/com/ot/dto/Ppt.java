@@ -1,14 +1,18 @@
 package br.com.ot.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.ot.entity.Lotofacil;
 import br.com.ot.entity.MS;
 
-public class Ppt {
+public class Ppt implements Serializable, Cloneable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Integer idpalpite;
 
@@ -18,11 +22,11 @@ public class Ppt {
 	private ConfiguracoesDTO configuracoesDTO = new ConfiguracoesDTO();
 
 	private MS megasenaidconcurso;
-	private Integer[] s = null;
+	private List<Integer> s = null;
 	private Integer c = null;
 	private Integer init = 0;
 	// MA+,MA-,MF+,MF-,LMA(x,y),LMB(x,y),LMC(x,y),LMD(x,y),LME(x,y)
-	private Integer[] conf = null;
+	private List<Integer> conf = null;
 
 	private Collection<NumeroDTO> numeroCollection = new ArrayList<>();
 
@@ -58,28 +62,12 @@ public class Ppt {
 		this.numeroCollection = numeroCollection;
 	}
 
-	public Integer[] getS() {
-		return s;
-	}
-
-	public void setS(Integer[] s) {
-		this.s = s;
-	}
-
 	public Integer getC() {
 		return c;
 	}
 
 	public void setC(Integer c) {
 		this.c = c;
-	}
-
-	public Integer[] getConf() {
-		return conf;
-	}
-
-	public void setConf(Integer[] conf) {
-		this.conf = conf;
 	}
 
 	public ConfiguracoesDTO getConfiguracoesDTO() {
@@ -106,6 +94,22 @@ public class Ppt {
 		this.init = init;
 	}
 
+	public List<Integer> getS() {
+		return s;
+	}
+
+	public void setS(List<Integer> s) {
+		this.s = s;
+	}
+
+	public List<Integer> getConf() {
+		return conf;
+	}
+
+	public void setConf(List<Integer> conf) {
+		this.conf = conf;
+	}
+
 	@JsonIgnore
 	public void corrigirPpt() {
 		if (this.conf != null) {
@@ -123,4 +127,12 @@ public class Ppt {
 		}
 	}
 
+	@Override
+	public Ppt clone() {
+		try {
+			return (Ppt) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 }
